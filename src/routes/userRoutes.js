@@ -6,7 +6,6 @@ const { register, login, getStats, updateProfile, deleteAccount } = require('../
 // router.post('/register', register);
 // Route for user to login
 router.post('/login', login);
-router.post('/logout', logout);
 // router.get('/stats', authenticate, getStats);
 // router.patch('/profile', authenticate, updateProfile);
 // router.delete('/', authenticate, deleteAccount);
