@@ -1,0 +1,5 @@
+2025-09-25T19:06:13.525Z [error]: data and salt arguments required
+2025-09-25T19:09:05.180Z [info]: Successful put command to db for user registration: {"$metadata":{"httpStatusCode":200,"requestId":"8S50642S5OS1J3EN8IHBPIIJBJVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0}}
+2025-09-25T19:09:05.343Z [info]: New user {"$metadata":{"httpStatusCode":200,"requestId":"8S50642S5OS1J3EN8IHBPIIJBJVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0}} created
+2025-09-25T19:10:40.917Z [info]: Successful put command to db for user registration: {"$metadata":{"httpStatusCode":200,"requestId":"B6B4Q6HAI5IF8JUR8OBL4AD1HFVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0}}
+2025-09-25T19:10:40.925Z [info]: New user {"$metadata":{"httpStatusCode":200,"requestId":"B6B4Q6HAI5IF8JUR8OBL4AD1HFVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0}} created
