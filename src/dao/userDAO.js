@@ -1,12 +1,12 @@
 const { DynamoDBClient } = require ("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, PutCommand, ScanCommand, QueryCommand} = require("@aws-sdk/lib-dynamodb");
-const { logger } = require ("../util/logger");
+const { DynamoDBDocumentClient, PutCommand} = require("@aws-sdk/lib-dynamodb");
+const { logger } = require ("../utils/logger");
 
 const client = new DynamoDBClient({region: "us-east-2"});
 const documentClient = DynamoDBDocumentClient.from(client);
 
 //table name
-const TableName = "trivia_users_table";
+const TableName = "Trivia_Table"; 
 
 //user attributes
 //  PK: `USER#${userId}`, 
@@ -24,8 +24,8 @@ async function registerNewUser(user) {  //userId: userId, username: username, pa
     const command = new PutCommand ({
         TableName,
          Item: {
-            User: `${user.userId}`,   // partition key
-            Profile: "Profile",              // Sort key Map of user data
+            PK: `USER#${user.userId}`,   // partition key
+            SK: "PROFILE",              // Sort key 
             ...user                     // ...user : Spread the rest of the user data 
         }
     })

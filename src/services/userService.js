@@ -1,6 +1,6 @@
-const userDAO = require('../repository/userDAO');
+const userDAO = require('../dao/userDAO');
 const bcrypt = require('bcrypt');
-const { logger }  = require("../util/logger");
+const { logger }  = require("../utils/logger");
 
 async function registerNewUser(user){
     const saltRounds = 10;
