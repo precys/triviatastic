@@ -1,7 +1,7 @@
 const userService = require("../userService.js");
 
 function deleteAccount(req, res) {
-    const authUser = res.locals.user;
+    const authUser = req.user;
     const user = userService.findUserById(authUser.userId);
 
     const delete_id = req.params.user_id;
@@ -19,7 +19,7 @@ function deleteAccount(req, res) {
     res.status(200).body({message: "Account deleted successfully."});
 }
 function updateProfile(req, res) {
-    const authUser = res.locals.user;
+    const authUser = req.user;
     const user = userService.findUserById(authUser.userId);
 
     const update_id = req.params.user_id;
@@ -35,7 +35,7 @@ function updateProfile(req, res) {
         return;
     }
 
-    const result = userService.updateProfile(update_user, req.body);
+    const result = userService.updateProfile(update_user, req.body.username);
     if(!result) {
         res.status(400).body({message: "Failed to update account information"});
         return;

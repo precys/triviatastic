@@ -3,12 +3,11 @@ const userDAO = require("../dao/userDAO.js");
 function findUserById(user_id) {
     return userDAO.findUserById(user_id);
 }
-function updateProfile(user, profile) {
+function updateProfile(user, username) {
     if(!profile) {
         return null;
     }
-    // UPDATE THE USER OBJECT
-    // WHAT IS THE "PROFILE", the current table has no personal info.
+    user.username = username;
     return userDAO.updateUser(user);
 }
 
