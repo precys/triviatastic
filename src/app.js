@@ -1,3 +1,4 @@
+
 // Package imports
 const express = require("express");
 const app = express();
@@ -19,7 +20,7 @@ app.get("/", (req, res) =>{
 })
 
 // We hook the userRoutes to "/"
-app.use("/", userRoutes);
+app.use("/user", userRoutes);
 
 // Server listening on port
 app.listen(PORT, () => {

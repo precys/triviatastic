@@ -5,14 +5,49 @@ const { DynamoDBDocumentClient,
         PutCommand, 
         ScanCommand, 
         QueryCommand, 
-        UpdateCommand } = require("@aws-sdk/lib-dynamodb");
+        UpdateCommand,
+        DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 // Util imports
 const { logger } = require("../utils/logger");
 
 const client = new DynamoDBClient({region: "us-east-2"});
 const documentClient = DynamoDBDocumentClient.from(client);
 
-const TableName = "trivia_table";
+const TableName = "Trivia_Table";
+
+async function findUserById(user_id) {
+    const command = new GetCommand({
+        TableName,
+        Key: {
+            PK: `USER#${user_id}`,
+            SK: "PROFILE"
+        }
+    });
+
+    try {
+        const data = await documentClient.send(command);
+        return data.Item;
+    }
+    catch(error) {
+        console.error(error);
+        return null;
+    }
+}
+
+async function updateUser(user) {
+    const command = new PutCommand({
+        TableName,
+        Item: user
+    });
+
+    try {
+        await documentClient.send(command);
+        return user;
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
 
 
 // Query function
@@ -36,8 +71,29 @@ async function getUserByUsername(username){
         return null;
     }
 }
+async function deleteUserById(user_id) {
+    const command = new DeleteCommand({
+        TableName,
+        Key: {
+            PK: `USER#${user_id}`,
+            SK: "PROFILE"
+        }
+    });
+
+    try {
+        await documentClient.send(command);
+        return true;
+    }
+    catch(error) {
+        console.error(error);
+        return false;
+    }
+}
 
 
 module.exports = {
     getUserByUsername,
+    findUserById,
+    updateUser,
+    deleteUserById
 }

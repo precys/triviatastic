@@ -1,9 +1,28 @@
 // Package imports
-const uuid = require("uuid");
+//const uuid = require("uuid");
 const bcrypt = require("bcrypt");
 // Util imports
 const { logger } = require("../utils/logger");
 const userDAO = require("../dao/userDAO");
+
+async function findUserById(user_id) {
+    return await userDAO.findUserById(user_id);
+}
+async function updateProfile(user, username) {
+    if(!username) {
+        return null;
+    }
+    user.username = username;
+    return await userDAO.updateUser(user);
+}
+
+async function deleteUserById(user_id) {
+    if(await userDAO.deleteUserById(user_id)) {
+        return true;
+    }
+    return false;
+}
+
 
 
 // Validates user credentials
@@ -23,8 +42,7 @@ function validateUserCredentials(user){
 async function validateUserLogin(username, password) {
     const user = await userDAO.getUserByUsername(username);
 
-
-    if (user && (await bcrypt.compare(password, user.password))){
+    if (user && (await bcrypt.compare(password, user.passwordHash))){
         logger.info(`User ${user.username} successfully logged in.`);
         return user;
     }
@@ -36,5 +54,8 @@ async function validateUserLogin(username, password) {
 
 module.exports = {
     validateUserCredentials,
-    validateUserLogin
+    validateUserLogin,
+    findUserById,
+    updateProfile,
+    deleteUserById
 }
