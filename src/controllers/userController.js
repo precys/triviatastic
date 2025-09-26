@@ -13,15 +13,15 @@ const secretKey = "secret-key";
 // Given a POST request for /login, log in User.
 const login = async (req, res) => {
     if (userService.validateUserCredentials(req.body)){
-        const { username, password } = req.body;
+        const { username, passwordHash } = req.body;
 
         try {
-            const data = await userService.validateUserLogin(username, password);
+            const data = await userService.validateUserLogin(username, passwordHash);
 
             if (data){
                 const token = jwt.sign(
                     {
-                        id: data.user_id,
+                        userId: data.userId,
                         username
                     },
                     secretKey,
@@ -47,6 +47,7 @@ const login = async (req, res) => {
     };
 }
 
+// 
 async function deleteAccount(req, res) {
     const authUser = req.user;
     const user = await userService.findUserById(authUser.userId);
@@ -65,9 +66,13 @@ async function deleteAccount(req, res) {
     }
     res.status(200).json({message: "Account deleted successfully."});
 }
+
+// 
 async function updateProfile(req, res) {
     const authUser = req.user;
+    console.log(authUser)
     const user = await userService.findUserById(authUser.userId);
+    console.log(user);
 
     const update_id = req.params.user_id;
     const update_user = await userService.findUserById(update_id);
@@ -90,11 +95,23 @@ async function updateProfile(req, res) {
     res.status(200).json({message: "Account updated successfully."});
 }
 
+async function register(req, res) { 
+    const userData = await userService.registerNewUser(req.body);
+    
+    if(userData){
+        res.status(201).json({message: `New user registered successfully${JSON.stringify(userData)}`});
+    } else{
+        res.status(400).json({message: "User registration failed", userData: req.body});
+    }
+ }
+
+
 
 module.exports = {
     login,
     deleteAccount,
-    updateProfile
+    updateProfile,
+    register
 }
 
 // const express = require('express')

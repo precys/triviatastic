@@ -5,12 +5,9 @@ const express = require("express");
 const app = express();
 // Util imports
 const { loggerMiddleware } = require("./utils/logger");
+const { logger } = require('./utils/logger');
 // Route imports
 const userRoutes = require("./routes/userRoutes");
-
-const { logger } = require('./utils/logger');
-
-//const userController = require('./controllers/userController');
 
 
 const PORT = 3000;

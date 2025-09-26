@@ -2,7 +2,7 @@
 const jwt = require("jsonwebtoken");
 const {logger} = require("./logger");
 
-const secretKey = "my-secret-key";
+const secretKey = "secret-key";
 
 async function authenticate(req, res, next){
     // Authorization: "Bearer tokenstring"
