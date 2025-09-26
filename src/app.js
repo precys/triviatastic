@@ -1,12 +1,28 @@
-const express = require('express');
+
+// Package imports
+const express = require("express");
 const app = express();
-const userRouter = require("./routes/userRoutes.js");
+// Util imports
+const { loggerMiddleware } = require("./utils/logger");
+// Route imports
+const userRoutes = require("./routes/userRoutes");
 
 const PORT = 3000;
 
 app.use(express.json());
-app.use("/user", userRouter);
 
+// Use Logger to log request
+app.use(loggerMiddleware);
+
+// Base get request
+app.get("/", (req, res) =>{
+    res.send("Please enter an username and password.");
+})
+
+// We hook the userRoutes to "/"
+app.use("/user", userRoutes);
+
+// Server listening on port
 app.listen(PORT, () => {
-    logger.info(`Listening on port ${PORT}`);
+    console.log(`Server is listening on http://localhost:${PORT}`);
 })

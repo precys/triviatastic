@@ -11,7 +11,8 @@ function authenticate(req, res, next) {
 
 const { register, login, getStats, updateProfile, deleteAccount } = require('../controllers/userController');
 
-router.post('/register', register);
+// router.post('/register', register);
+// Route for user to login
 router.post('/login', login);
 router.get('/stats', authenticate, getStats);
 router.patch('/:user_id/profile', authenticate, updateProfile);
