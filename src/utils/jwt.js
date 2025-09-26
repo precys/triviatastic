@@ -1,3 +1,4 @@
+
 const jwt = require("jsonwebtoken");
 const {logger} = require("./logger");
 
@@ -39,3 +40,4 @@ module.exports = {
     authenticate,
     decodeJWT
 }
+

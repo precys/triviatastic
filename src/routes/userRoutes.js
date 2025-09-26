@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 
@@ -19,3 +20,4 @@ router.patch('/:user_id/profile', authenticate, updateProfile);
 router.delete('/:user_id', authenticate, deleteAccount);
 
 module.exports = router;
+

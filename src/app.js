@@ -1,4 +1,5 @@
 
+
 // Package imports
 const express = require("express");
 const app = express();
@@ -7,9 +8,15 @@ const { loggerMiddleware } = require("./utils/logger");
 // Route imports
 const userRoutes = require("./routes/userRoutes");
 
+const { logger } = require('./utils/logger');
+
+//const userController = require('./controllers/userController');
+
+
 const PORT = 3000;
 
 app.use(express.json());
+
 
 // Use Logger to log request
 app.use(loggerMiddleware);
@@ -20,9 +27,10 @@ app.get("/", (req, res) =>{
 })
 
 // We hook the userRoutes to "/"
-app.use("/user", userRoutes);
+app.use("/users", userRoutes);
 
 // Server listening on port
+
 app.listen(PORT, () => {
     console.log(`Server is listening on http://localhost:${PORT}`);
 })
