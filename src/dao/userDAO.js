@@ -5,7 +5,8 @@ const { DynamoDBDocumentClient,
         PutCommand, 
         ScanCommand, 
         QueryCommand, 
-        UpdateCommand } = require("@aws-sdk/lib-dynamodb");
+        UpdateCommand,
+        DeleteCommand } = require("@aws-sdk/lib-dynamodb");
 // Util imports
 const { logger } = require("../utils/logger");
 
@@ -45,6 +46,8 @@ async function updateUser(user) {
     }
     catch(error) {
         console.error(error);
+    }
+}
 
 
 // Query function

@@ -1,11 +1,13 @@
 // Package Imports
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
+//require("dotenv").config();
 // Service imports
 const userService = require("../services/userService");
+const { logger } = require("../utils/logger");
 
 
-const secretKey = process.env.SECRET_KEY;
+//const secretKey = process.env.SECRET_KEY;
+const secretKey = "secret-key";
 
 // Given a POST request for /login, log in User.
 const login = async (req, res) => {
