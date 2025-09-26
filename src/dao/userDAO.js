@@ -4,14 +4,14 @@ const {DynamoDBDocumentClient, GetCommand, PutCommand, DeleteCommand} = require(
 const client = new DynamoDBClient({region: "us-east-2"});
 const documentClient = DynamoDBDocumentClient.from(client);
 
-const TableName = "user";
+const TableName = "Trivia_Table";
 
 async function findUserById(user_id) {
     const command = new GetCommand({
         TableName,
         Key: {
-            PK: { S: `USER#${user_id}` },
-            SK: { S: "PROFILE" }
+            PK: `USER#${user_id}`,
+            SK: "PROFILE"
         }
     });
 
@@ -41,12 +41,12 @@ async function updateUser(user) {
     }
 }
 
-async function deleteUserById(user_id) {s
+async function deleteUserById(user_id) {
     const command = new DeleteCommand({
         TableName,
         Key: {
-            PK: { S: `USER#${user_id}` },
-            SK: { S: "PROFILE" }
+            PK: `USER#${user_id}`,
+            SK: "PROFILE"
         }
     });
 
