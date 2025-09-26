@@ -1,24 +1,97 @@
-const { DynamoDBClient } = require ("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, PutCommand} = require("@aws-sdk/lib-dynamodb");
-const { logger } = require ("../utils/logger");
+
+// Package imports
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+const { DynamoDBDocumentClient, 
+        GetCommand,
+        PutCommand, 
+        ScanCommand, 
+        QueryCommand, 
+        UpdateCommand,
+        DeleteCommand } = require("@aws-sdk/lib-dynamodb");
+// Util imports
+const { logger } = require("../utils/logger");
+
 
 const client = new DynamoDBClient({region: "us-east-2"});
 const documentClient = DynamoDBDocumentClient.from(client);
 
-//table name
-const TableName = "Trivia_Table"; 
+const TableName = "Trivia_Table";
 
-//user attributes
-//  PK: `USER#${userId}`, 
-//  SK: `PROFILE`, 
-//  userId: userId,
-//  username: username,
-//  passwordHash: passwordHash,
-//  role: role,
-//  game_count: 0,
-//  streak: 0,
+async function findUserById(user_id) {
+    const command = new GetCommand({
+        TableName,
+        Key: {
+            PK: `USER#${user_id}`,
+            SK: "PROFILE"
+        }
+    });
 
-//register a new user
+    try {
+        const data = await documentClient.send(command);
+        return data.Item;
+    }
+    catch(error) {
+        console.error(error);
+        return null;
+    }
+}
+
+async function updateUser(user) {
+    const command = new PutCommand({
+        TableName,
+        Item: user
+    });
+
+    try {
+        await documentClient.send(command);
+        return user;
+    }
+    catch(error) {
+        console.error(error);
+    }
+}
+
+
+// Query function
+// args: username
+// return: data on success, null if not
+async function getUserByUsername(username){
+    const params = {
+        TableName,
+        FilterExpression: "#username = :username",
+        ExpressionAttributeNames: {"#username": "username"},
+        ExpressionAttributeValues: {":username": username}
+    };
+    const command = new ScanCommand(params);
+
+    try{
+        const data = await documentClient.send(command);
+        logger.info(`SCAN command complete | userDAO | getUserByUsername | data: ${JSON.stringify(data.Items[0])}`);
+        return data.Items[0];
+    }catch(err){
+        logger.error(`Error in userDAO | getUserByUsername | Error: ${err}`);
+        return null;
+    }
+}
+async function deleteUserById(user_id) {
+    const command = new DeleteCommand({
+        TableName,
+        Key: {
+            PK: `USER#${user_id}`,
+            SK: "PROFILE"
+        }
+    });
+
+    try {
+        await documentClient.send(command);
+        return true;
+    }
+    catch(error) {
+        console.error(error);
+        return false;
+    }
+}
+
 async function registerNewUser(user) {  //userId: userId, username: username, passwordHash: passwordHash,
     console.log("in userDAO registration method");
     const command = new PutCommand ({
@@ -40,8 +113,10 @@ async function registerNewUser(user) {  //userId: userId, username: username, pa
     }
 }
 
-//registerNewUser({userId: "133ca64a-ab9e-489d-b328-869712fc42ff", username: "testDAO1", passwordHash: "testDAO1", role: "player"});
-
 module.exports = {
+    getUserByUsername,
+    findUserById,
+    updateUser,
+    deleteUserById,
     registerNewUser
 }

@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start" :"node src/app.js",
-    "test": "jest --collectCoverage"
+    "test": "jest --collectCoverage",
+    "start": "node src/app.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
     "@aws-sdk/client-dynamodb": "^3.894.0",
     "@aws-sdk/lib-dynamodb": "^3.894.0",
     "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "uuid": "^13.0.0",
