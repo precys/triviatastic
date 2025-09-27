@@ -3,6 +3,7 @@ const app = express();
 const logger = require('./utils/logger');
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const userRoutes = require('./routes/userRoutes');
 const gameRoutes = require('./routes/gameRoutes');

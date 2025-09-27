@@ -7,7 +7,7 @@ async function createNewPost(req, res) {
     const { post_content } = req.body;
 
     const post = await postService.createPost(userId, post_content);
-    res.json(post);
+    res.status(201).json(post);
     logger.info(`Post created: ${post.postId} by user: ${userId}`);
   } catch (err) {
     logger.error('Create post error: %o', err);
