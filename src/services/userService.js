@@ -3,8 +3,14 @@ const { v4: uuidv4 } = require("uuid");
 const userDAO = require("../dao/userDAO");
 const { generateToken } = require("../utils/jwt");
 
-// Register a new user
-exports.registerUser = async ({ username, password, role }) => {
+// register a new user
+async function registerUser({ username, password, role }) {
+  // check if username already exists
+  const existingUser = await userDAO.getUserByUsername(username);
+  if (existingUser) {
+    throw new Error("Username already taken");
+  }
+
   const userId = uuidv4();
   const passwordHash = await bcrypt.hash(password, 10);
 
@@ -27,13 +33,15 @@ exports.registerUser = async ({ username, password, role }) => {
   };
 
   await userDAO.createUser(userItem);
+
   const token = generateToken(userItem);
   return { token, userId, username };
-};
+}
 
-// Login
-exports.loginUser = async ({ userId, password }) => {
-  const user = await userDAO.getUserById(userId);
+// login
+async function loginUser({ username, password }) {
+  // find username using gsi
+  const user = await userDAO.getUserByUsername(username);
   if (!user) throw new Error("User not found");
 
   const match = await bcrypt.compare(password, user.passwordHash);
@@ -41,10 +49,10 @@ exports.loginUser = async ({ userId, password }) => {
 
   const token = generateToken(user);
   return { token, userId: user.userId, username: user.username };
-};
+}
 
-// Get user stats
-exports.getStats = async (userId) => {
+// get user stats
+async function getStats(userId) {
   const user = await userDAO.getUserById(userId);
   if (!user) throw new Error("User not found");
 
@@ -58,20 +66,28 @@ exports.getStats = async (userId) => {
     category_counts: user.category_counts,
     category_scores: user.category_scores
   };
-};
+}
 
-// Update profile
-exports.updateProfile = async (userId, updates) => {
+// update profile
+async function updateProfile(userId, updates) {
   const user = await userDAO.getUserById(userId);
   if (!user) throw new Error("User not found");
 
+  if (updates.password) {
+    updates.passwordHash = await bcrypt.hash(updates.password, 10);
+    delete updates.password; // remove uncrypted password so it’s not saved
+  }
+
   Object.assign(user, updates);
   await userDAO.updateUser(user);
-  return user;
-};
 
-// Delete account
-exports.deleteAccount = async (userId) => {
+  return user;
+}
+
+// delete account
+async function deleteAccount(userId) {
   await userDAO.deleteUser(userId);
   return { message: `User ${userId} deleted` };
-};
+}
+
+module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount };

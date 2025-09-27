@@ -1,5 +1,6 @@
+const { logger } = require('./logger');
 const jwt = require('jsonwebtoken');
-const logger = require('./logger');
+
 
 const SECRET_KEY = process.env.JWT_SECRET || 'supersecretkey';
 

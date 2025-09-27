@@ -1,59 +1,38 @@
-const { v4: uuidv4 } = require('uuid');
-const gameDAO = require('../dao/gameDAO');
-const { getUserById, updateUser } = require('../dao/userDAO');
-const logger = require('../utils/logger');
+const { logger } = require('../utils/logger');
+const { v4: uuidv4 } = require("uuid");
+const gameDAO = require("../dao/gameDAO");
+const { getUserById, updateUser } = require("../dao/userDAO");
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// difficulty points
+// difficulties and point structure
 const difficultyPoints = { easy: 1, medium: 3, hard: 5 };
+const difficulties = ['easy', 'medium', 'hard'];
 
-
-
-
-
-
-
-
-
-
-
-
-
-// Start a new game
-async function startGame(userId, { category }) {
+// start a new game
+async function startGame(userId, { category, questionDifficulty } = {}) {
   const gameId = uuidv4();
   const gameItem = {
     PK: `GAME#${gameId}`,
     SK: `USER#${userId}`,
     gameId,
     userId,
-    category: category || "any",
+    category: category || 'any',
     currentQuestion: 0,
     score: 0,
     finished: false,
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toISOString(),
+    questionDifficulty: questionDifficulty === 'random'
+      ? difficulties[Math.floor(Math.random() * difficulties.length)]
+      : questionDifficulty || 'easy'
   };
+
   await gameDAO.createGame(gameItem);
   return gameItem;
 }
 
-// Submit answer for a question
-async function submitAnswer(userId, gameId, { questionDifficulty, correct }) {
+// submit answer
+async function submitAnswer(userId, gameId, { questionDifficulty, correct } = {}) {
   const game = await gameDAO.getGame(gameId, userId);
-  if (!game || game.finished) throw new Error('Invalid game');
+  if (!game || game.finished) throw new Error("invalid game");
 
   if (correct) game.score += difficultyPoints[questionDifficulty] || 0;
   game.currentQuestion += 1;
@@ -62,11 +41,11 @@ async function submitAnswer(userId, gameId, { questionDifficulty, correct }) {
   return game;
 }
 
-// Finish game normally
+// finish game normally
 async function finishGame(userId, gameId, answeredQuestions = []) {
   const user = await getUserById(userId);
   const game = await gameDAO.getGame(gameId, userId);
-  if (!game) throw new Error('Game not found');
+  if (!game) throw new Error("game not found");
 
   let easyCorrect = 0, medCorrect = 0, hardCorrect = 0, gameScore = 0;
 
@@ -81,7 +60,7 @@ async function finishGame(userId, gameId, answeredQuestions = []) {
     }
   });
 
-  // Update user stats
+  // update user stats
   user.game_count += 1;
   user.easy_count += easyCorrect;
   user.med_count += medCorrect;
@@ -100,16 +79,22 @@ async function finishGame(userId, gameId, answeredQuestions = []) {
   await updateUser(user);
   await gameDAO.deleteGame(gameId, userId);
 
-  logger.info(`Game finished: ${gameId} by user: ${userId}`);
+  logger.info(`game finished: ${gameId} by user: ${userId}`, { service: 'gameService' });
   return { gameScore, user };
 }
 
-// End game early
+// end game early
 async function endGame(userId, gameId) {
-  const game = await gameDAO.getGame(gameId, userId);
-  if (!game) throw new Error('Game not found');
+  // get the game by PK and SK combination
+  const command = await gameDAO.getGame(gameId, userId);
+  
+  if (!command) throw new Error("game not found");
+
+  // delete the game
   await gameDAO.deleteGame(gameId, userId);
-  logger.info(`Game ended early: ${gameId} by user: ${userId}`);
+
+  logger.info(`game ended early: ${gameId} by user: ${userId}`, { service: 'gameService' });
 }
+
 
 module.exports = { startGame, submitAnswer, finishGame, endGame };

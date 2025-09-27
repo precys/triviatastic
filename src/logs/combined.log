@@ -1,0 +1,24 @@
+{"level":"info","message":"Server running on port 3000","service":"trivia-app","timestamp":"2025-09-27 11:20:44"}
+{"level":"info","message":"Incoming POST: /users/register","service":"trivia-app","timestamp":"2025-09-27 11:26:43"}
+{"level":"error","message":"getUserByUsername error: CredentialsProviderError: Could not load credentials from any providers","service":"trivia-app","timestamp":"2025-09-27 11:26:43"}
+{"level":"error","message":"createUser error: CredentialsProviderError: Could not load credentials from any providers","service":"trivia-app","timestamp":"2025-09-27 11:26:43"}
+{"level":"info","message":"New user created: 8b7bb46c-8f3d-4699-bff2-09c2713134f1","service":"trivia-app","timestamp":"2025-09-27 11:26:43"}
+{"level":"info","message":"User registered: 8b7bb46c-8f3d-4699-bff2-09c2713134f1","service":"trivia-app","timestamp":"2025-09-27 11:26:43"}
+{"level":"info","message":"Server running on port 3000","service":"trivia-app","timestamp":"2025-09-27 11:29:52"}
+{"level":"info","message":"Incoming POST: /users/register","service":"trivia-app","timestamp":"2025-09-27 11:31:16"}
+{"level":"info","message":"User stored in DB: 014dfabf-dfc0-45c4-a0d9-acc21dac1c54","service":"trivia-app","timestamp":"2025-09-27 11:31:17"}
+{"level":"info","message":"New user created: 014dfabf-dfc0-45c4-a0d9-acc21dac1c54","service":"trivia-app","timestamp":"2025-09-27 11:31:17"}
+{"level":"info","message":"User registered: 014dfabf-dfc0-45c4-a0d9-acc21dac1c54","service":"trivia-app","timestamp":"2025-09-27 11:31:17"}
+{"level":"info","message":"Incoming POST: /users/login","service":"trivia-app","timestamp":"2025-09-27 11:33:02"}
+{"level":"info","message":"User PlayerOne logged in successfully.","service":"trivia-app","timestamp":"2025-09-27 11:33:02"}
+{"level":"info","message":"Incoming POST: /users/stats","service":"trivia-app","timestamp":"2025-09-27 11:34:32"}
+{"level":"info","message":"Incoming GET: /users/stats","service":"trivia-app","timestamp":"2025-09-27 11:34:39"}
+{"level":"info","message":"Incoming POST: /users/profile","service":"trivia-app","timestamp":"2025-09-27 11:36:41"}
+{"level":"info","message":"Incoming PATCH: /users/profile","service":"trivia-app","timestamp":"2025-09-27 11:36:48"}
+{"level":"info","message":"Incoming PATCH: /users/profile","service":"trivia-app","timestamp":"2025-09-27 11:37:05"}
+{"level":"info","message":"Incoming DELETE: /users/","service":"trivia-app","timestamp":"2025-09-27 11:38:35"}
+{"level":"info","message":"Incoming POST: /games/start","service":"trivia-app","timestamp":"2025-09-27 11:45:09"}
+{"level":"info","message":"Incoming POST: /games/start","service":"trivia-app","timestamp":"2025-09-27 11:45:19"}
+{"level":"info","message":"Incoming POST: /posts","service":"trivia-app","timestamp":"2025-09-27 11:50:18"}
+{"level":"info","message":"Incoming DELETE: /posts","service":"trivia-app","timestamp":"2025-09-27 11:53:10"}
+{"level":"info","message":"Incoming GET: /posts","service":"trivia-app","timestamp":"2025-09-27 11:53:16"}

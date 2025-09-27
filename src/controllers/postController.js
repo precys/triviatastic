@@ -1,5 +1,5 @@
+const { logger } = require('../utils/logger');
 const postService = require('../services/postService');
-const logger = require('../utils/logger');
 
 async function createNewPost(req, res) {
   try {
@@ -8,9 +8,9 @@ async function createNewPost(req, res) {
 
     const post = await postService.createPost(userId, post_content);
     res.status(201).json(post);
-    logger.info(`Post created: ${post.postId} by user: ${userId}`);
+    logger.info(`Post created: ${post.postId} by user: ${userId}`, { service: 'postController' });
   } catch (err) {
-    logger.error('Create post error: %o', err);
+    logger.error(`Create post error: ${err.message}`, { service: 'postController' });
     res.status(500).json({ message: 'Error creating post' });
   }
 }
@@ -21,7 +21,7 @@ async function getUserPosts(req, res) {
     const posts = await postService.getPosts(userId);
     res.json(posts);
   } catch (err) {
-    logger.error('Get posts error: %o', err);
+    logger.error(`Get posts error: ${err.message}`, { service: 'postController' });
     res.status(500).json({ message: 'Error fetching posts' });
   }
 }
