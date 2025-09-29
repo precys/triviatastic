@@ -58,13 +58,23 @@ async function createQuestion(questionItem, userId){
 // args: questionId, category
 // returns: question data
 async function updateQuestionStatus(questionId, category, status){
-    // if-conditional to check if User is admin
 
     try{
+        const question = await questionDAO.getQuestionById(questionId, category);
+        if (question.status != "pending"){
+            return null;
+        }
+
         if (status.toLowerCase() == "approved"){
-            const question = await questionDAO.getQuestionById(questionId, category);
-            const data = await questionDAO.updateQuestionStatus(question, status.toLowerCase());
-            return data;
+            if (question){
+                const data = await questionDAO.updateQuestionStatus(question, status.toLowerCase());
+                return data;
+            }
+            else{
+                logger.error(`Question does not exist`);
+                return null;
+            }
+
         }
         else if (status.toLowerCase() == "denied"){
             const data = await questionDAO.deleteQuestion(questionId, category);

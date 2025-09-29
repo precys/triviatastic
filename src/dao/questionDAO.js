@@ -42,27 +42,28 @@ async function updateQuestionStatus(question, status){
     const params = {
         TableName,
         Key: {
-            PK: `${question.category}`,
-            SK: `${question.questionId}`,
+            PK: question.PK,
+            SK: question.SK,
         },
-        UpdateExpress: "SET #status = :status",
-        ExpressionAttribueNames: {
+        UpdateExpression: "SET #status = :status",
+        ExpressionAttributeNames: {
             "#status": "status",
         },
-        ExpressionAttribueValues: {
+        ExpressionAttributeValues: {
             ":status": status,
         },
+        ReturnValues: "ALL_NEW",
     }
     const command = new UpdateCommand(params)
 
     try {
         const data = await documentClient.send(command);
         if (data) {
-            logger.info(`Successful UPDATE | updateQuestionStatus | ${data}`);
+            logger.info(`Successful UPDATE | updateQuestionStatus | ${JSON.stringify(data)}`);
             return data;
         }
         else {
-            logger.error(`Data is empty | updateQuestionStatus | ${data}`);
+            logger.error(`Data is empty | updateQuestionStatus | ${JSON.stringify(data)}`);
             return null;
         }
 
@@ -91,11 +92,11 @@ async function getQuestionById(questionId, category){
         const data = await documentClient.send(command);
         
         if (data){
-            logger.info(`Success GET command | getQuestionById | ${data.Item}`);
+            logger.info(`Success GET command | getQuestionById | ${JSON.stringify(data.Item)}`);
             return data.Item;
         }
         else {
-            logger.error(`Data is empty | getQuestionById | ${data}`);
+            logger.error(`Data is empty | getQuestionById | ${JSON.stringify(data)}`);
             return null;
         }
 
@@ -123,11 +124,11 @@ async function deleteQuestion(questionId, category){
         const data = await documentClient.send(command);
         
         if (data){
-            logger.info(`Success Delete | deleteQuestion | ${data}`);
+            logger.info(`Success Delete | deleteQuestion | ${JSON.stringify(data)}`);
             return {message: `Question ${questionId} deleted`};
         }
         else {
-            logger.error(`Data is empty | deleteQuestion | ${data}`);
+            logger.error(`Data is empty | deleteQuestion | ${JSON.stringify(data)}`);
             return null;
         }
 
