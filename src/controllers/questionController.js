@@ -8,7 +8,7 @@ const { logger } = require("../utils/logger");
 // return: res
 async function createQuestion(req, res) {
     try{
-        const data = await questionService.createQuestion(req.body, req.userId);
+        const data = await questionService.createQuestion(req.body, req.user.userId);
         if (data){
             res.status(201).json({message: `Successfully created question.`})
         }
