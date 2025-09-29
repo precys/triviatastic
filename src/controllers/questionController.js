@@ -25,8 +25,7 @@ async function createQuestion(req, res) {
 // function to updateQuestionStatus to the predetermined approved or denied
 async function updateQuestionStatus(req, res){
     try{
-        const category = req.query.category;
-        const status = req.query.status;
+        const { category, status } = req.query;
         const questionId = req.params.question_id;
 
         const data = await questionService.updateQuestionStatus(questionId, category, status);

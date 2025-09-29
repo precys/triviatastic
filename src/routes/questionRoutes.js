@@ -7,5 +7,7 @@ const { createQuestion } = require('../controllers/questionController');
 router.use(authenticate)
 // Route for question creation
 router.post(`/questions`, createQuestion);
+// Route for updating question
+router.patch(`/questions/:question_id`)
 
 module.exports = router;
