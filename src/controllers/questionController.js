@@ -1,4 +1,3 @@
-//require("dotenv").config();
 // Service imports
 const questionService = require("../services/questionService");
 const userService = require("../services/userService");
@@ -35,9 +34,9 @@ async function updateQuestionStatus(req, res){
     }
 
     try{
-        const { category, status } = req.query;
+        const { status } = req.query;
         const questionId = req.params.question_id;
-        const data = await questionService.updateQuestionStatus(questionId, category, status);
+        const data = await questionService.updateQuestionStatus(questionId, status);
 
         if (data){
             logger.info(`Successful request | updateQuestionStatus | ${data}`);
@@ -49,7 +48,7 @@ async function updateQuestionStatus(req, res){
             }
         }
         else {
-            return res.status(401).json({message: `Invalid question id, category, or question is not pending.`})
+            return res.status(401).json({message: `Invalid question id or question is not pending.`})
         }
     }
     catch (err){

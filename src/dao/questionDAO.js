@@ -113,12 +113,12 @@ async function getQuestionById(questionId){
 // function to delete question
 // args: question
 // return: message for deletion
-async function deleteQuestion(questionId, category){
+async function deleteQuestion(question){
     const params = {
         TableName,
         Key: {
-            PK: `CATEGORY#${category}`,
-            SK: `QUESTION#${questionId}`,
+            PK: question.PK,
+            SK: question.SK,
         },
     }
     const command = new DeleteCommand(params);

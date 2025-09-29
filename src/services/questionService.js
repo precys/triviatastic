@@ -56,10 +56,10 @@ async function createQuestion(questionItem, userId){
 // if denied, delete question element
 // args: questionId, category
 // returns: question data
-async function updateQuestionStatus(questionId, category, status){
+async function updateQuestionStatus(questionId, status){
 
     try{
-        const question = await questionDAO.getQuestionById(questionId, category);
+        const question = await questionDAO.getQuestionById(questionId);
         if (question.status != "pending"){
             return null;
         }
@@ -76,7 +76,7 @@ async function updateQuestionStatus(questionId, category, status){
 
         }
         else if (status.toLowerCase() == "denied"){
-            const data = await questionDAO.deleteQuestion(questionId, category);
+            const data = await questionDAO.deleteQuestion(question);
             return data;
         }
         else {
@@ -91,7 +91,6 @@ async function updateQuestionStatus(questionId, category, status){
     }
 
 }
-
 
 module.exports = {
     createQuestion,
