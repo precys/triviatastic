@@ -57,12 +57,16 @@ async function createQuestion(questionItem, userId){
 // args: questionId, category
 // returns: question data
 async function updateQuestionStatus(questionId, status){
-
     try{
         const question = await questionDAO.getQuestionById(questionId);
+        console.log(question)
         if (question.status != "pending"){
+            console.log(status)
+            logger.error(`Question is not pending`)
             return null;
         }
+
+        console.log(status)
 
         if (status.toLowerCase() == "approved"){
             if (question){
@@ -76,6 +80,7 @@ async function updateQuestionStatus(questionId, status){
 
         }
         else if (status.toLowerCase() == "denied"){
+            console.log("HERE");
             const data = await questionDAO.deleteQuestion(question);
             return data;
         }

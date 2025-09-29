@@ -24,7 +24,7 @@ async function createQuestion(req, res) {
 
 // function to updateQuestionStatus to the predetermined approved or denied
 // normalized category and status to lowercase for consistency
-// sample url: http://localhost:3000/questions/fdd12591-c0dd-4566-8872-4204dcea981c?category=art&status=approved
+// sample url: http://localhost:3000/questions/4f4b7bbd-8bbe-46ea-9dc9-73ccaa85cb5f?status=denied
 // query parameter can be change to approved or denied
 async function updateQuestionStatus(req, res){
     // Following Hunter's admin conditional, can be a handler function due to multiple use.

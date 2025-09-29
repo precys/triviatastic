@@ -94,8 +94,9 @@ async function getQuestionById(questionId){
 
     try {
         const data = await documentClient.send(command);
+        console.log(data);
         
-        if (data){
+        if (data.Items[0]){
             logger.info(`Success GET command | getQuestionById | ${JSON.stringify(data.Items[0])}`);
             return data.Items[0];
         }
@@ -129,7 +130,7 @@ async function deleteQuestion(question){
         
         if (data){
             logger.info(`Success Delete | deleteQuestion | ${JSON.stringify(data)}`);
-            return {message: `Question ${questionId} deleted`};
+            return {message: `Question ${question.questionId} deleted`};
         }
         else {
             logger.error(`Data is empty | deleteQuestion | ${JSON.stringify(data)}`);
