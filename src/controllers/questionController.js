@@ -22,6 +22,32 @@ async function createQuestion(req, res) {
     }
 }
 
+// function to updateQuestionStatus to the predetermined approved or denied
+async function updateQuestionStatus(req, res){
+    try{
+        const category = req.query.category;
+        const status = req.query.status;
+        const questionId = req.params.question_id;
+
+        const data = await questionService.updateQuestionStatus(questionId, category, status);
+
+        if (data){
+            logger.info(`Successful request | updateQuestionStatus | ${data}`);
+            if (status.toLowerCase() == "approved"){
+                res.status(201).json({message: `Successfully update ${questionId} to ${status}`});
+            }
+            else if (status.toLowerCase == "denied"){
+                res.status(201).json({message: `Delete question: ${questionId}`});
+            }
+        }
+    }
+    catch (err){
+        logger.error(`Error in questionController | updateQuestionStatus | ${err}`);
+        res.status(501).json({message:`Error on server-side`});
+    }
+}
+
 module.exports = {
     createQuestion,
+    updateQuestionStatus,
 }
