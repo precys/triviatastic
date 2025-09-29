@@ -1,5 +1,5 @@
 // Package imports
-const uuid = require("uuid");
+//const uuid = require("uuid");
 const bcrypt = require("bcrypt");
 // Util imports
 const { logger } = require("../utils/logger");
@@ -12,7 +12,71 @@ async function updateProfile(user, username) {
     if(!username) {
         return null;
     }
+    if(!(typeof username === "string" && username.length > 0)) {
+        return null;
+    }
     user.username = username;
+    return await userDAO.updateUser(user);
+}
+
+async function updateAccount(user, newUser) {
+    const saltRounds = 10;
+    if(newUser.passwordHash) {
+        if(typeof newUser.passwordHash === "string" && newUser.passwordHash.length > 0) {
+            user.passwordHash = await bcrypt.hash(newUser.passwordHash, saltRounds);
+        }
+        else return null;
+    }
+    if(newUser.game_count) {
+        if(typeof newUser.game_count === "number" && newUser.game_count >= 0) {
+            user.game_count = newUser.game_count;
+        }
+        else return null;
+    }
+    if(newUser.streak) {
+        if(typeof newUser.streak === "number" && newUser.streak >= 0) {
+            user.streak = newUser.streak;
+        }
+        else return null;
+    }
+    if(newUser.category_counts) {
+        if (Array.isArray(newUser.category_counts) 
+            && newUser.category_counts.every(element => typeof element === "number" && element >= 0)) {
+            user.category_counts = newUser.category_counts;
+        }
+        else return null;
+    }
+    if(newUser.category_scores) {
+        if (Array.isArray(newUser.category_scores)
+            && newUser.category_scores.every(element => typeof element === "number" && element >= 0)) {
+            user.category_scores = newUser.category_scores;
+        }
+        else return null;
+    }
+    if(newUser.hi_score) {
+        if(typeof newUser.hi_score === "number" && newUser.hi_score >= 0) {
+            user.hi_score = newUser.hi_score;
+        }
+        else return null;
+    }
+    if(newUser.easy_count) {
+        if(typeof newUser.easy_count === "number" && newUser.easy_count >= 0) {
+            user.easy_count = newUser.easy_count;
+        }
+        else return null;
+    }
+    if(newUser.med_count) {
+        if(typeof newUser.med_count === "number" && newUser.med_count >= 0) {
+            user.med_count = newUser.med_count;
+        }
+        else return null;
+    }
+    if(newUser.hard_count) {
+        if(typeof newUser.hard_count === "number" && newUser.hard_count >= 0) {
+            user.hard_count = newUser.hard_count;
+        }
+        else return null;
+    }
     return await userDAO.updateUser(user);
 }
 
@@ -61,7 +125,7 @@ async function registerNewUser(user){
             throw new Error ("User does not exist");
         }else{
             const passwordHash = await bcrypt.hash(user.passwordHash, saltRounds);
-            const userId = uuid.v4();
+            const userId = crypto.randomUUID();
 
             const userItem = {
                 PK: `USER#${userId}`,
@@ -97,6 +161,7 @@ module.exports = {
     validateUserLogin,
     findUserById,
     updateProfile,
+    updateAccount,
     deleteUserById,
     registerNewUser
 }

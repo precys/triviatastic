@@ -54,7 +54,7 @@ async function deleteAccount(req, res) {
 
     const delete_id = req.params.user_id;
 
-    if(user.userId !== delete_id && user.role !== "admin" ) {
+    if(user.userId !== delete_id && user.role !== "ADMIN" ) {
         res.status(403).json({message: "You may not delete this account."});
         return;
     }
@@ -82,12 +82,18 @@ async function updateProfile(req, res) {
         return;
     }
 
-    if(user.userId !== update_id && user.role !== "admin" ) {
+    if(user.userId !== update_id && user.role !== "ADMIN" ) {
         res.status(403).json({message: "You may not update this account's information."});
         return;
     }
 
-    const result = await userService.updateProfile(update_user, req.body.username);
+    let result;
+    if(user.role === "ADMIN") {
+        result = await userService.updateAccount(update_user, req.body);
+    }
+    else {
+        result = await userService.updateProfile(update_user, req.body.username);
+    }
     if(!result) {
         res.status(400).json({message: "Failed to update account information"});
         return;
