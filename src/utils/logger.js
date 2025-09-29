@@ -1,26 +1,35 @@
-const { createLogger, format, transports } = require('winston');
-const { combine, timestamp, printf, colorize } = format;
+const { createLogger, transports, format } = require("winston");
+const fs = require("fs");
+const path = require("path");
 
-// custom log format
-const logFormat = printf(({ level, message, timestamp }) => {
-  return `${timestamp} [${level}]: ${message}`;
-});
+const logDir = path.join(__dirname, "..", "logs");
 
-// create logger
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
+
 const logger = createLogger({
-  level: 'info',
-  format: combine(
-    colorize(),
-    timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    logFormat
+  format: format.combine(
+    format.timestamp(),
+    format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} [${level}]: ${message}`;
+    })
   ),
-  transports: [new transports.Console()]
+  transports: [
+    new transports.Console(),
+    new transports.File({ filename: path.join(logDir, "app.log"), level: "info" }),
+    new transports.File({ filename: path.join(logDir, "error.log"), level: "error" }),
+    new transports.File({ filename: path.join(logDir, "test.log"), level: "debug" })
+  ],
 });
 
-// optional middleware for express
-const loggerMiddleware = (req, res, next) => {
-  logger.info(`Incoming request: ${req.method} ${req.url}`);
-  next();
-};
 
-module.exports = { logger, loggerMiddleware };
+function loggerMiddleware(req, res, next){
+    logger.info(`Incoming ${req.method} : ${req.url}`);
+    next();
+}
+
+module.exports = {
+  logger,
+  loggerMiddleware
+}

@@ -10,6 +10,10 @@ const documentClient = DynamoDBDocumentClient.from(client);
 
 const TABLE_NAME = "Trivia_Table";
 
+
+
+
+
 // create new post
 async function createPost(postItem) {
   const command = new PutCommand({ TableName: TABLE_NAME, Item: postItem });
@@ -22,6 +26,11 @@ async function createPost(postItem) {
     throw err;
   }
 }
+
+
+
+
+
 
 // get posts by user
 async function getPostsByUser(userId) {
@@ -42,5 +51,10 @@ async function getPostsByUser(userId) {
     throw err;
   }
 }
+
+
+
+
+
 
 module.exports = { createPost, getPostsByUser };

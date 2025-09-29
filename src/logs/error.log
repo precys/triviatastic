@@ -1,2 +1,21 @@
 {"level":"error","message":"getUserByUsername error: CredentialsProviderError: Could not load credentials from any providers","service":"trivia-app","timestamp":"2025-09-27 11:26:43"}
 {"level":"error","message":"createUser error: CredentialsProviderError: Could not load credentials from any providers","service":"trivia-app","timestamp":"2025-09-27 11:26:43"}
+2025-09-29T15:14:44.602Z [error]: data and salt arguments required
+2025-09-29T15:16:34.869Z [error]: data and salt arguments required
+2025-09-29T15:23:07.918Z [error]: Requested resource not found
+2025-09-29T15:37:39.243Z [error]: Requested resource not found
+2025-09-29T15:48:08.783Z [error]: Register error: Requested resource not found
+2025-09-29T15:59:17.092Z [error]: Register error: Requested resource not found
+2025-09-29T16:08:09.132Z [error]: Register error: Requested resource not found
+2025-09-29T16:08:53.892Z [error]: Register error: Requested resource not found
+2025-09-29T18:34:03.698Z [error]: Login error: Invalid credentials
+2025-09-29T18:37:17.640Z [error]: Answer question error: invalid game
+2025-09-29T18:37:36.877Z [error]: Answer question error: invalid game
+2025-09-29T18:38:19.468Z [error]: Finish game error: game not found
+2025-09-29T19:35:14.592Z [error]: Login error: Invalid credentials
+2025-09-29T19:59:00.945Z [error]: Finish game error: game not found
+2025-09-29T20:56:23.035Z [error]: Login error: Invalid credentials
+2025-09-29T20:56:34.637Z [error]: Register error: Cannot read properties of undefined (reading 'userId')
+2025-09-29T21:08:48.402Z [error]: Register error: Username already taken
+2025-09-29T21:09:59.128Z [error]: Login error: Invalid credentials
+2025-09-29T21:44:00.781Z [error]: Register error: Cannot read properties of undefined (reading 'userId')

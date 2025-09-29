@@ -1,6 +1,10 @@
 const { logger } = require('../utils/logger');
 const gameService = require('../services/gameService');
 
+
+
+
+
 // Start game
 async function startGame(req, res) {
   try {
@@ -14,6 +18,11 @@ async function startGame(req, res) {
     res.status(500).json({ message: 'Error starting game' });
   }
 }
+
+
+
+
+
 
 // Answer question
 async function answerQuestion(req, res) {
@@ -29,6 +38,10 @@ async function answerQuestion(req, res) {
   }
 }
 
+
+
+
+
 // Finish game
 async function finishGame(req, res) {
   try {
@@ -43,6 +56,10 @@ async function finishGame(req, res) {
   }
 }
 
+
+
+
+
 // End game early
 async function endGame(req, res) {
   try {
@@ -56,5 +73,8 @@ async function endGame(req, res) {
     res.status(500).json({ message: "Error ending game" });
   }
 }
+
+
+
 
 module.exports = { startGame, answerQuestion, finishGame, endGame };

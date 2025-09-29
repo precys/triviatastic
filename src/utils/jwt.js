@@ -45,3 +45,5 @@ function authorizeRole(role) {
 }
 
 module.exports = { generateToken, verifyToken, authenticate, authorizeRole };
+
+

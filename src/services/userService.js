@@ -3,14 +3,17 @@ const { v4: uuidv4 } = require("uuid");
 const userDAO = require("../dao/userDAO");
 const { generateToken } = require("../utils/jwt");
 
+
 // register a new user
-async function registerUser({ username, password, role }) {
+async function registerUser({ username, password }) {
+
   // check if username already exists
   const existingUser = await userDAO.getUserByUsername(username);
   if (existingUser) {
     throw new Error("Username already taken");
   }
-
+  
+  // create user
   const userId = uuidv4();
   const passwordHash = await bcrypt.hash(password, 10);
 
@@ -20,7 +23,8 @@ async function registerUser({ username, password, role }) {
     userId,
     username,
     passwordHash,
-    role: role || "USER",
+    role: "USER",
+    friends: [],
     game_count: 0,
     streak: 0,
     category_counts: { art: 0, history: 0, mythology: 0, sports: 0, any: 0 },
@@ -32,15 +36,18 @@ async function registerUser({ username, password, role }) {
     createdAt: new Date().toISOString()
   };
 
-  await userDAO.createUser(userItem);
-
-  const token = generateToken(userItem);
-  return { token, userId, username };
+  const createdUser = await userDAO.createUser(userItem);
+  return { userId: createdUser.userId, username: createdUser.username };
 }
+
+
 
 // login
 async function loginUser({ username, password }) {
-  // find username using gsi
+  if (!username || !password) {
+    throw new Error("Username and password cannot be blank");
+  }
+
   const user = await userDAO.getUserByUsername(username);
   if (!user) throw new Error("User not found");
 
@@ -50,6 +57,82 @@ async function loginUser({ username, password }) {
   const token = generateToken(user);
   return { token, userId: user.userId, username: user.username };
 }
+
+
+
+
+// // ADMINS: update user accounts
+async function updateAccount(user, newUser) {
+  const saltRounds = 10;
+
+  if (newUser.password) {
+    user.passwordHash = await bcrypt.hash(newUser.password, saltRounds);
+  }
+  if (typeof newUser.game_count === "number" && newUser.game_count >= 0) {
+    user.game_count = newUser.game_count;
+  }
+  if (typeof newUser.streak === "number" && newUser.streak >= 0) {
+    user.streak = newUser.streak;
+  }
+  if (newUser.category_counts && typeof newUser.category_counts === "object") {
+    user.category_counts = newUser.category_counts;
+  }
+  if (newUser.category_scores && typeof newUser.category_scores === "object") {
+    user.category_scores = newUser.category_scores;
+  }
+  if (typeof newUser.hi_score === "number" && newUser.hi_score >= 0) {
+    user.hi_score = newUser.hi_score;
+  }
+  if (typeof newUser.easy_count === "number" && newUser.easy_count >= 0) {
+    user.easy_count = newUser.easy_count;
+  }
+  if (typeof newUser.med_count === "number" && newUser.med_count >= 0) {
+    user.med_count = newUser.med_count;
+  }
+  if (typeof newUser.hard_count === "number" && newUser.hard_count >= 0) {
+    user.hard_count = newUser.hard_count;
+  }
+
+  return await userDAO.updateUser(user);
+}
+
+
+
+
+// // update profile/password for user
+async function updateProfile(user, password) {
+  if (!password || typeof password !== "string" || password.length === 0) return null;
+
+  const saltRounds = 10;
+  user.passwordHash = await bcrypt.hash(password, saltRounds);
+
+  return await userDAO.updateUser(user);
+}
+
+
+
+
+// delete user by id
+async function deleteUserById(userId) {
+    if(await userDAO.deleteUserById(userId)) {
+        return true;
+    }
+    return false;
+}
+
+
+
+// find user by id
+async function findUserById(userId) {
+    const user = await userDAO.findUserById(userId);
+    if (!user) {
+        throw new Error(`User with ID ${userId} not found`);
+    }
+    return user;
+}
+
+
+
 
 // get user stats
 async function getStats(userId) {
@@ -68,26 +151,23 @@ async function getStats(userId) {
   };
 }
 
-// update profile
-async function updateProfile(userId, updates) {
-  const user = await userDAO.getUserById(userId);
-  if (!user) throw new Error("User not found");
 
-  if (updates.password) {
-    updates.passwordHash = await bcrypt.hash(updates.password, 10);
-    delete updates.password; // remove uncrypted password so it’s not saved
-  }
 
-  Object.assign(user, updates);
-  await userDAO.updateUser(user);
 
-  return user;
+// get user's friends
+async function getUsersFriends(user) {
+    if (!user) {
+        throw new Error("User does not exist");
+    }
+
+    const friends = await userDAO.getUsersFriendsByUserId(user.userId) || [];
+
+    return {
+        "Friend Count": friends.length,
+        friends
+    };
 }
 
-// delete account
-async function deleteAccount(userId) {
-  await userDAO.deleteUser(userId);
-  return { message: `User ${userId} deleted` };
-}
 
-module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount };
+module.exports = { registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, updateAccount };
+

@@ -1,26 +1,37 @@
 const postDAO = require('../dao/postDAO');
 const { logger } = require('../utils/logger');
 
+
+
 async function createPost({ userId, content }) {
-  const post = await postDAO.createPost({ userId, content });
-  logger.info(`Post created by user ${userId}, postId=${post.postId}`);
-  return post;
+  if (!userId || !content) throw new Error('userId and content are required');
+
+  const postId = uuidv4();
+
+  const postItem = {
+    PK: `USER#${userId}`,
+    SK: `POST#${postId}`,
+    postId,
+    userId,
+    content,
+    createdAt: new Date().toISOString()
+  };
+
+  return await postDAO.createPost(postItem);
 }
 
-async function getPosts() {
-  const posts = await postDAO.getAllPosts();
-  logger.info(`Fetched ${posts.length} posts`);
+
+
+
+
+async function getPosts(userId) {
+  if (!userId) throw new Error('User ID is required to fetch posts');
+
+  const posts = await postDAO.getPostsByUser(userId);
+  logger.info(`Fetched ${posts.length} posts for user ${userId}`);
   return posts;
 }
 
-async function getPostById(postId) {
-  const post = await postDAO.getPostById(postId);
-  if (!post) {
-    logger.warn(`Post not found: ${postId}`);
-    throw new Error('Post not found');
-  }
-  return post;
-}
 
 async function deletePost(postId, userId) {
   const post = await postDAO.getPostById(postId);
@@ -41,6 +52,5 @@ async function deletePost(postId, userId) {
 module.exports = {
   createPost,
   getPosts,
-  getPostById,
   deletePost
 };

@@ -10,6 +10,10 @@ const documentClient = DynamoDBDocumentClient.from(client);
 
 const TABLE_NAME = "Trivia_Table";
 
+
+
+
+
 // create new game
 async function createGame(gameItem) {
   const command = new PutCommand({ TableName: TABLE_NAME, Item: gameItem });
@@ -17,6 +21,10 @@ async function createGame(gameItem) {
   logger.info(`game stored in db: ${gameItem.gameId}`, { service: 'gameDAO' });
   return gameItem;
 }
+
+
+
+
 
 // get game by id
 async function getGame(gameId, userId) {
@@ -28,6 +36,10 @@ async function getGame(gameId, userId) {
   return Item;
 }
 
+
+
+
+
 // delete game
 async function deleteGame(gameId, userId) {
   const command = new DeleteCommand({
@@ -37,5 +49,10 @@ async function deleteGame(gameId, userId) {
   await documentClient.send(command);
   logger.info(`game deleted from db: ${gameId}`, { service: 'gameDAO' });
 }
+
+
+
+
+
 
 module.exports = { createGame, getGame, deleteGame };

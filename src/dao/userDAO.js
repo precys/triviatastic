@@ -7,28 +7,111 @@ const { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand, QueryComm
 const client = new DynamoDBClient({ region: "us-east-1" });
 const documentClient = DynamoDBDocumentClient.from(client);
 
+// variables
 const TABLE_NAME = "Trivia_Table";
 const USERNAME_INDEX = "username-index"; // gsi name for username lookup
 
+
+
+
+
+
+
 // create a new user
-async function createUser(userItem) {
-  const command = new PutCommand({ TableName: TABLE_NAME, Item: userItem });
-  await documentClient.send(command);
-  logger.info(`User stored in DB: ${userItem.userId}`);
-  return userItem;
-}
+async function createUser(user) {
+  const item = {
+    PK: `USER#${user.userId}`,
+    SK: "PROFILE",
+    ...user, // ...user : Spread the rest of the user data 
+  };
 
-// get user by id
-async function getUserById(userId) {
-  const command = new GetCommand({
+  const command = new PutCommand({
     TableName: TABLE_NAME,
-    Key: { PK: `USER#${userId}`, SK: 'PROFILE' }
+    Item: item,
   });
-  const { Item } = await documentClient.send(command);
-  return Item;
+
+  try {
+    await documentClient.send(command);
+    logger.info(`User stored in DB: ${user.userId}`);
+    return item;
+  } catch (err) {
+    logger.error(`Error registering user ${user.userId}: ${err.message}`);
+    throw err; // rethrow so service layer knows registration failed
+  }
 }
 
-// get user by username using gsi
+
+
+
+
+// find user by id
+async function findUserById(userId) {
+    const command = new GetCommand({
+        TableName: TABLE_NAME,
+        Key: {
+            PK: `USER#${userId}`,
+            SK: "PROFILE"
+        }
+    });
+
+    try {
+        const data = await documentClient.send(command);
+        return data.Item;
+    }
+    catch(error) {
+        logger.error(`Error fetching user ${userId}: ${error.message}`);
+        throw error;
+    }
+}
+
+
+
+
+// delete user by id
+async function deleteUserById(userId) {
+    const command = new DeleteCommand({
+        TableName: TABLE_NAME,
+        Key: {
+            PK: `USER#${userId}`,
+            SK: "PROFILE"
+        }
+    });
+
+    try {
+        await documentClient.send(command);
+        return true;
+    }
+    catch(error) {
+        console.error(error);
+        return false;
+    }
+}
+
+
+
+
+
+// update a user
+async function updateUser(userItem) {
+  const command = new PutCommand({
+    TableName: TABLE_NAME,
+    Item: userItem
+  });
+
+  try {
+    await documentClient.send(command);
+    logger.info(`User updated in DB: ${userItem.userId}`);
+    return userItem;
+  }
+  catch(error) {
+    console.error(error);
+  }
+}
+
+
+
+
+// get user by username using gsi for query
 async function getUserByUsername(username) {
   const command = new QueryCommand({
     TableName: TABLE_NAME,
@@ -44,22 +127,38 @@ async function getUserByUsername(username) {
   return Items?.[0];
 }
 
-// update a user
-async function updateUser(userItem) {
-  const command = new PutCommand({ TableName: TABLE_NAME, Item: userItem });
-  await documentClient.send(command);
-  logger.info(`User updated in DB: ${userItem.userId}`);
-  return userItem;
+
+
+
+
+
+
+// get user's friends
+async function getUsersFriendsByUserId(userId) {
+    const command = new GetCommand({
+        TableName: TABLE_NAME,
+        Key: { 
+            PK: `USER#${userId}`,
+            SK: "PROFILE"
+        }
+    });
+
+    try {
+        const data = await documentClient.send(command);
+        return data.Item?.friends || [];
+    } catch (error) {
+        logger.error(`Error fetching friends for user ${userId}: ${error.message}`);
+        throw error;
+    }
 }
 
-// delete a user
-async function deleteUser(userId) {
-  const command = new DeleteCommand({
-    TableName: TABLE_NAME,
-    Key: { PK: `USER#${userId}`, SK: 'PROFILE' }
-  });
-  await documentClient.send(command);
-  logger.info(`User deleted from DB: ${userId}`);
-}
 
-module.exports = { createUser, getUserById, getUserByUsername, updateUser, deleteUser };
+
+
+
+
+
+
+
+module.exports = { createUser, deleteUserById, getUserByUsername, updateUser, findUserById, getUsersFriendsByUserId };
+

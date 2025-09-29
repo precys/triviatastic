@@ -10,6 +10,21 @@ app.use(express.urlencoded({ extended: true }));
 // middleware logging every incoming request
 app.use(loggerMiddleware);
 
+
+app.use((req, res, next) => {
+  console.log("----- DEBUG REQUEST BODY -----");
+  console.log("Headers:", req.headers["content-type"]);
+  console.log("Raw Body:", req.body);
+  console.log("-------------------------------");
+  next();
+});
+
+
+// Base get request
+app.get("/", (req, res) =>{
+    res.send("Welcome to Triviatastic API!");
+})
+
 // route imports
 const userRoutes = require('./routes/userRoutes');
 const gameRoutes = require('./routes/gameRoutes');
@@ -19,6 +34,7 @@ const postRoutes = require('./routes/postRoutes');
 app.use('/users', userRoutes);
 app.use('/games', gameRoutes);
 app.use('/posts', postRoutes);
+app.use("/", questionRoutes)
 
 // server start
 const PORT = process.env.PORT || 3000;
