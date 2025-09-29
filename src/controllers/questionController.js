@@ -1,4 +1,3 @@
-//require("dotenv").config();
 // Service imports
 const questionService = require("../services/questionService");
 const userService = require("../services/userService");
@@ -25,7 +24,7 @@ async function createQuestion(req, res) {
 
 // function to updateQuestionStatus to the predetermined approved or denied
 // normalized category and status to lowercase for consistency
-// sample url: http://localhost:3000/questions/fdd12591-c0dd-4566-8872-4204dcea981c?category=art&status=approved
+// sample url: http://localhost:3000/questions/4f4b7bbd-8bbe-46ea-9dc9-73ccaa85cb5f?status=denied
 // query parameter can be change to approved or denied
 async function updateQuestionStatus(req, res){
     // Following Hunter's admin conditional, can be a handler function due to multiple use.
@@ -35,9 +34,9 @@ async function updateQuestionStatus(req, res){
     }
 
     try{
-        const { category, status } = req.query;
+        const { status } = req.query;
         const questionId = req.params.question_id;
-        const data = await questionService.updateQuestionStatus(questionId, category, status);
+        const data = await questionService.updateQuestionStatus(questionId, status);
 
         if (data){
             logger.info(`Successful request | updateQuestionStatus | ${data}`);
@@ -49,7 +48,7 @@ async function updateQuestionStatus(req, res){
             }
         }
         else {
-            return res.status(401).json({message: `Invalid question id, category, or question is not pending.`})
+            return res.status(401).json({message: `Invalid question id or question is not pending.`})
         }
     }
     catch (err){

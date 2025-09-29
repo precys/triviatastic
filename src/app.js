@@ -29,12 +29,13 @@ app.get("/", (req, res) =>{
 const userRoutes = require('./routes/userRoutes');
 const gameRoutes = require('./routes/gameRoutes');
 const postRoutes = require('./routes/postRoutes');
+const questionRoutes = require("./routes/questionRoutes");
 
 // route hooks
 app.use('/users', userRoutes);
 app.use('/games', gameRoutes);
 app.use('/posts', postRoutes);
-app.use("/", questionRoutes)
+app.use("/questions", questionRoutes)
 
 // server start
 const PORT = process.env.PORT || 3000;

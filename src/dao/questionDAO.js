@@ -32,6 +32,7 @@ async function createQuestion(question) {
     }
     catch (err) {
         logger.error(`Error in questionDAO | createQuestion | ${err}`);
+        return null;
     }
 }
 
@@ -75,25 +76,29 @@ async function updateQuestionStatus(question, status){
 }
 
 // function to get a question by Id
-// args: questionId, category
+// args: questionId
 // return: question data
-// Should create a GSI for questionId
-async function getQuestionById(questionId, category){
+async function getQuestionById(questionId){
     const params = {
         TableName,
-        Key: {
-            PK: `CATEGORY#${category}`,
-            SK: `QUESTION#${questionId}`,
-        }
+        IndexName: "questionId-index",
+        KeyConditionExpression: "#questionId = :questionId",
+        ExpressionAttributeNames: {
+            "#questionId": "questionId"
+        },
+        ExpressionAttributeValues: {
+            ":questionId": questionId
+        },
     };
-    const command = new GetCommand(params);
+    const command = new QueryCommand(params)
 
     try {
         const data = await documentClient.send(command);
+        console.log(data);
         
-        if (data){
-            logger.info(`Success GET command | getQuestionById | ${JSON.stringify(data.Item)}`);
-            return data.Item;
+        if (data.Items[0]){
+            logger.info(`Success GET command | getQuestionById | ${JSON.stringify(data.Items[0])}`);
+            return data.Items[0];
         }
         else {
             logger.error(`Data is empty | getQuestionById | ${JSON.stringify(data)}`);
@@ -110,12 +115,12 @@ async function getQuestionById(questionId, category){
 // function to delete question
 // args: question
 // return: message for deletion
-async function deleteQuestion(questionId, category){
+async function deleteQuestion(question){
     const params = {
         TableName,
         Key: {
-            PK: `CATEGORY#${category}`,
-            SK: `QUESTION#${questionId}`,
+            PK: question.PK,
+            SK: question.SK,
         },
     }
     const command = new DeleteCommand(params);
@@ -125,7 +130,7 @@ async function deleteQuestion(questionId, category){
         
         if (data){
             logger.info(`Success Delete | deleteQuestion | ${JSON.stringify(data)}`);
-            return {message: `Question ${questionId} deleted`};
+            return {message: `Question ${question.questionId} deleted`};
         }
         else {
             logger.error(`Data is empty | deleteQuestion | ${JSON.stringify(data)}`);

@@ -14,7 +14,6 @@ async function createQuestion(questionItem, userId){
             throw new Error(`Sent Question: ${questionItem} does not exist`);
         }
         else {
-            console.log(questionItem);
             // Might need to add an if-conditional to check of edge cases on blank fields.
             const {
                 type,
@@ -25,7 +24,7 @@ async function createQuestion(questionItem, userId){
                 incorrect_answers
             } = questionItem;
 
-            const questionId = uuid.v4();
+            const questionId = crypto.randomUUID();
 
             const newQuestion = {
                 PK: `CATEGORY#${category}`,
@@ -57,13 +56,17 @@ async function createQuestion(questionItem, userId){
 // if denied, delete question element
 // args: questionId, category
 // returns: question data
-async function updateQuestionStatus(questionId, category, status){
-
+async function updateQuestionStatus(questionId, status){
     try{
-        const question = await questionDAO.getQuestionById(questionId, category);
+        const question = await questionDAO.getQuestionById(questionId);
+        console.log(question)
         if (question.status != "pending"){
+            console.log(status)
+            logger.error(`Question is not pending`)
             return null;
         }
+
+        console.log(status)
 
         if (status.toLowerCase() == "approved"){
             if (question){
@@ -77,7 +80,8 @@ async function updateQuestionStatus(questionId, category, status){
 
         }
         else if (status.toLowerCase() == "denied"){
-            const data = await questionDAO.deleteQuestion(questionId, category);
+            console.log("HERE");
+            const data = await questionDAO.deleteQuestion(question);
             return data;
         }
         else {
@@ -92,7 +96,6 @@ async function updateQuestionStatus(questionId, category, status){
     }
 
 }
-
 
 module.exports = {
     createQuestion,

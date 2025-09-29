@@ -6,8 +6,8 @@ const { createQuestion, updateQuestionStatus } = require('../controllers/questio
 // Route middleware for every request to URLs past this point
 router.use(authenticate)
 // Route for question creation
-router.post(`/questions`, createQuestion);
+router.post(`/`, createQuestion);
 // Route for updating question
-router.patch(`/questions/:question_id`, updateQuestionStatus);
+router.patch(`/:question_id`, updateQuestionStatus);
 
 module.exports = router;
