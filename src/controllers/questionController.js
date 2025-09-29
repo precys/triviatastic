@@ -23,11 +23,13 @@ async function createQuestion(req, res) {
 }
 
 // function to updateQuestionStatus to the predetermined approved or denied
+// normalized category and status to lowercase for consistency
+// sample url: http://localhost:3000/questions/fdd12591-c0dd-4566-8872-4204dcea981c?category=art&status=approved
+// query parameter can be change to approved or denied
 async function updateQuestionStatus(req, res){
     try{
         const { category, status } = req.query;
         const questionId = req.params.question_id;
-
         const data = await questionService.updateQuestionStatus(questionId, category, status);
 
         if (data){
@@ -35,8 +37,8 @@ async function updateQuestionStatus(req, res){
             if (status.toLowerCase() == "approved"){
                 res.status(201).json({message: `Successfully update ${questionId} to ${status}`});
             }
-            else if (status.toLowerCase == "denied"){
-                res.status(201).json({message: `Delete question: ${questionId}`});
+            else if (status.toLowerCase() == "denied"){
+                res.status(201).json({message: `Deleted question ${questionId}`});
             }
         }
     }

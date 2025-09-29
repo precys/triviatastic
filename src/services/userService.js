@@ -90,6 +90,8 @@ async function registerNewUser(user){
     }
 }
 
+
+
 module.exports = {
     validateUserCredentials,
     validateUserLogin,

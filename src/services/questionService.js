@@ -61,25 +61,23 @@ async function updateQuestionStatus(questionId, category, status){
     // if-conditional to check if User is admin
 
     try{
-        const question = await questionDAO.getQuestionById(questionId, category);
-        
         if (status.toLowerCase() == "approved"){
+            const question = await questionDAO.getQuestionById(questionId, category);
             const data = await questionDAO.updateQuestionStatus(question, status.toLowerCase());
             return data;
         }
         else if (status.toLowerCase() == "denied"){
-            // delete question element
-            const data = {message: `Question was denied. Question deleted`};
+            const data = await questionDAO.deleteQuestion(questionId, category);
             return data;
         }
         else {
             logger.error("Invalid status to update.");
-            return null
+            return null;
         }
 
     }
     catch (err){
-        logger.error(`Error in questionService | updateQuestion | $err`);
+        logger.error(`Error in questionService | updateQuestionStatus | ${err}`);
         return null;
     }
 

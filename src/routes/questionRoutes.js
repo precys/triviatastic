@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../utils/jwt');
-const { createQuestion } = require('../controllers/questionController');
-const { updateQuestionStatus } = require('../dao/questionDAO');
+const { createQuestion, updateQuestionStatus } = require('../controllers/questionController');
 
 // Route middleware for every request to URLs past this point
 router.use(authenticate)

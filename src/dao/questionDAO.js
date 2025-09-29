@@ -42,8 +42,8 @@ async function updateQuestionStatus(question, status){
     const params = {
         TableName,
         Key: {
-            PK: question.category,
-            SK: question.questionId,
+            PK: `${question.category}`,
+            SK: `${question.questionId}`,
         },
         UpdateExpress: "SET #status = :status",
         ExpressionAttribueNames: {
@@ -76,6 +76,7 @@ async function updateQuestionStatus(question, status){
 // function to get a question by Id
 // args: questionId, category
 // return: question data
+// Should create a GSI for questionId
 async function getQuestionById(questionId, category){
     const params = {
         TableName,
@@ -90,8 +91,8 @@ async function getQuestionById(questionId, category){
         const data = await documentClient.send(command);
         
         if (data){
-            logger.info(`Success GET command | getQuestionById | ${data}`);
-            return data;
+            logger.info(`Success GET command | getQuestionById | ${data.Item}`);
+            return data.Item;
         }
         else {
             logger.error(`Data is empty | getQuestionById | ${data}`);
@@ -105,8 +106,41 @@ async function getQuestionById(questionId, category){
     }
 }
 
+// function to delete question
+// args: question
+// return: message for deletion
+async function deleteQuestion(questionId, category){
+    const params = {
+        TableName,
+        Key: {
+            PK: `CATEGORY#${category}`,
+            SK: `QUESTION#${questionId}`,
+        },
+    }
+    const command = new DeleteCommand(params);
+
+    try {
+        const data = await documentClient.send(command);
+        
+        if (data){
+            logger.info(`Success Delete | deleteQuestion | ${data}`);
+            return {message: `Question ${questionId} deleted`};
+        }
+        else {
+            logger.error(`Data is empty | deleteQuestion | ${data}`);
+            return null;
+        }
+
+    }
+    catch (err) {
+        logger.error(`Error in questionDAO | deleteQuestion | ${err}`);
+        return null;
+    }
+}
+
 module.exports = {
     createQuestion,
     getQuestionById,
     updateQuestionStatus,
+    deleteQuestion,
 }
