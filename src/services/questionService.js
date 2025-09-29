@@ -14,9 +14,10 @@ async function createQuestion(questionItem, userId){
             throw new Error(`Question: ${questionItem} does not exist`);
         }
         else {
+            // Might need to add an if-conditional to check of edge cases on blank fields.
             const { type, difficulty, category, question, correct_answer, incorrect_answers} = questionItem
             const newQuestion = {
-                PK: `CATEGORY${category}`,
+                PK: `CATEGORY#${category}`,
                 SK: `CUSTOM`,
                 userId,
                 type,
@@ -24,6 +25,7 @@ async function createQuestion(questionItem, userId){
                 question,
                 correct_answer,
                 incorrect_answers,
+                status: "pending",
                 createdAt: new DataTransfer().toISOString(),
             }
 
