@@ -11,16 +11,26 @@ async function createQuestion(questionItem, userId){
     try{
         if (!questionItem){
             logger.error(`Error in questionService | createQuestion | questionItem is undefined`);
-            throw new Error(`Question: ${questionItem} does not exist`);
+            throw new Error(`Sent Question: ${questionItem} does not exist`);
         }
         else {
             console.log(questionItem);
             // Might need to add an if-conditional to check of edge cases on blank fields.
-            const { type, difficulty, category, question, correct_answer, incorrect_answers} = questionItem
-            console.log(type);
+            const {
+                type,
+                difficulty, 
+                category, 
+                question, 
+                correct_answer, 
+                incorrect_answers
+            } = questionItem;
+            
+            const questionId = uuid.v4();
+
             const newQuestion = {
                 PK: `CATEGORY#${category}`,
-                SK: `CUSTOM`,
+                SK: `QUESTION#${questionId}`,
+                questionId,
                 userId,
                 type,
                 difficulty,
@@ -30,7 +40,6 @@ async function createQuestion(questionItem, userId){
                 status: "pending",
                 createdAt: new Date().toISOString(),
             }
-
 
             const data = await questionDAO.createQuestion(newQuestion);
             logger.info(`Created new question: ${JSON.stringify(data)}`);

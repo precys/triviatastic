@@ -35,6 +35,49 @@ async function createQuestion(question) {
     }
 }
 
+// function to update a Question's status
+// args: status, question
+// return: question data
+async function updateQuestionStatus(status, question){
+    const params = {
+        TableName,
+
+    }
+}
+
+// function to get a question by Id
+// args: questionId, category
+// return: question data
+async function getQuestionById(questionId, category){
+    const params = {
+        TableName,
+        Key: {
+            PK: `CATEGORY#${category}`,
+            SK: `QUESTION#${questionId}`,
+        }
+    };
+    const command = new GetCommand(params);
+
+    try {
+        const data = await documentClient.send(command);
+        
+        if (data){
+            logger.info(`Success GET command | getQuestionById | ${data}`);
+            return data;
+        }
+        else {
+            logger.err(`Data is empty | getQuestionById | ${data}`);
+            return null;
+        }
+
+    }
+    catch (err) {
+        logger.error(`Error in questionDAO | getQuestionById | ${err}`);
+        return null;
+    }
+}
+
 module.exports = {
     createQuestion,
+    getQuestionById,
 }
