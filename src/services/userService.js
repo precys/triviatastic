@@ -1,4 +1,3 @@
-
 // Package imports
 const uuid = require("uuid");
 const bcrypt = require("bcrypt");

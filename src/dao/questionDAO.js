@@ -34,3 +34,7 @@ async function createQuestion(question) {
         logger.error(`Error in questionDAO | createQuestion | ${err}`);
     }
 }
+
+module.exports = {
+    createQuestion,
+}
