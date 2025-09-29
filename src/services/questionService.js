@@ -24,7 +24,7 @@ async function createQuestion(questionItem, userId){
                 correct_answer, 
                 incorrect_answers
             } = questionItem;
-            
+
             const questionId = uuid.v4();
 
             const newQuestion = {
@@ -52,6 +52,41 @@ async function createQuestion(questionItem, userId){
     }
 }
 
+// function that updates a pending Question
+// if approved, update status
+// if denied, delete question element
+// args: questionId, category
+// returns: question data
+async function updateQuestionStatus(questionId, category, status){
+    // if-conditional to check if User is admin
+
+    try{
+        const question = await questionDAO.getQuestionById(questionId, category);
+        
+        if (status.toLowerCase() == "approved"){
+            const data = await questionDAO.updateQuestionStatus(question, status.toLowerCase());
+            return data;
+        }
+        else if (status.toLowerCase() == "denied"){
+            // delete question element
+            const data = {message: `Question was denied. Question deleted`};
+            return data;
+        }
+        else {
+            logger.error("Invalid status to update.");
+            return null
+        }
+
+    }
+    catch (err){
+        logger.error(`Error in questionService | updateQuestion | $err`);
+        return null;
+    }
+
+}
+
+
 module.exports = {
     createQuestion,
+    updateQuestionStatus,
 }
