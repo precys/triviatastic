@@ -18,8 +18,8 @@ app.get("/", (req, res) =>{
 // We hook the userRoutes to "/users"
 app.use("/users", userRoutes);
 
-// Hook questionRouts to "/"
-app.use("/", questionRoutes)
+// Hook questionRoutes to "/"
+app.use("/questions", questionRoutes)
 
 // Server listening on port
 app.listen(PORT, () => {

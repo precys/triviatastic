@@ -124,7 +124,7 @@ async function registerNewUser(user){
             logger.error(`User does not exist`);
             throw new Error ("User does not exist");
         }else{
-            const passwordHash = await bcrypt.hash(user.passwordHash, saltRounds);
+            const passwordHash = await bcrypt.hash(user.password, saltRounds);
             const userId = crypto.randomUUID();
 
             const userItem = {

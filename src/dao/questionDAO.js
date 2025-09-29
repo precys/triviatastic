@@ -32,6 +32,7 @@ async function createQuestion(question) {
     }
     catch (err) {
         logger.error(`Error in questionDAO | createQuestion | ${err}`);
+        return null;
     }
 }
 
