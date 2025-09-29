@@ -1,4 +1,4 @@
-c// Package imports
+// Package imports
 const uuid = require("uuid");
 // Util imports
 const { logger } = require("../utils/logger");
@@ -14,8 +14,10 @@ async function createQuestion(questionItem, userId){
             throw new Error(`Question: ${questionItem} does not exist`);
         }
         else {
+            console.log(questionItem);
             // Might need to add an if-conditional to check of edge cases on blank fields.
             const { type, difficulty, category, question, correct_answer, incorrect_answers} = questionItem
+            console.log(type);
             const newQuestion = {
                 PK: `CATEGORY#${category}`,
                 SK: `CUSTOM`,
@@ -26,8 +28,9 @@ async function createQuestion(questionItem, userId){
                 correct_answer,
                 incorrect_answers,
                 status: "pending",
-                createdAt: new DataTransfer().toISOString(),
+                createdAt: new Date().toISOString(),
             }
+
 
             const data = await questionDAO.createQuestion(newQuestion);
             logger.info(`Created new question: ${JSON.stringify(data)}`);

@@ -1,5 +1,3 @@
-
-
 // Package imports
 const express = require("express");
 const app = express();
@@ -8,6 +6,7 @@ const { loggerMiddleware } = require("./utils/logger");
 const { logger } = require('./utils/logger');
 // Route imports
 const userRoutes = require("./routes/userRoutes");
+const questionRoutes = require("./routes/questionRoutes");
 
 
 const PORT = 3000;
@@ -23,11 +22,13 @@ app.get("/", (req, res) =>{
     res.send("Please enter an username and password.");
 })
 
-// We hook the userRoutes to "/"
+// We hook the userRoutes to "/users"
 app.use("/users", userRoutes);
 
-// Server listening on port
+// Hook questionRouts to "/"
+app.use("/", questionRoutes)
 
+// Server listening on port
 app.listen(PORT, () => {
     console.log(`Server is listening on http://localhost:${PORT}`);
 })
