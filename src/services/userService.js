@@ -1,4 +1,3 @@
-
 // Package imports
 //const uuid = require("uuid");
 const bcrypt = require("bcrypt");
@@ -154,6 +153,8 @@ async function registerNewUser(user){
         logger.error(err);
     }
 }
+
+
 
 module.exports = {
     validateUserCredentials,
