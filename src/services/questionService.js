@@ -14,7 +14,6 @@ async function createQuestion(questionItem, userId){
             throw new Error(`Sent Question: ${questionItem} does not exist`);
         }
         else {
-            console.log(questionItem);
             // Might need to add an if-conditional to check of edge cases on blank fields.
             const {
                 type,
@@ -25,7 +24,7 @@ async function createQuestion(questionItem, userId){
                 incorrect_answers
             } = questionItem;
 
-            const questionId = uuid.v4();
+            const questionId = crypto.randomUUID();
 
             const newQuestion = {
                 PK: `CATEGORY#${category}`,
@@ -61,6 +60,7 @@ async function updateQuestionStatus(questionId, category, status){
 
     try{
         const question = await questionDAO.getQuestionById(questionId, category);
+        console.log(question)
         if (question.status != "pending"){
             return null;
         }
