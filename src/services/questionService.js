@@ -60,7 +60,6 @@ async function updateQuestionStatus(questionId, category, status){
 
     try{
         const question = await questionDAO.getQuestionById(questionId, category);
-        console.log(question)
         if (question.status != "pending"){
             return null;
         }

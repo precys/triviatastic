@@ -93,7 +93,6 @@ async function getQuestionById(questionId){
 
     try {
         const data = await documentClient.send(command);
-        console.log(data)
         
         if (data){
             logger.info(`Success GET command | getQuestionById | ${JSON.stringify(data.Items[0])}`);
