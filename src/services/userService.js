@@ -22,12 +22,6 @@ async function updateProfile(user, username) {
 
 async function updateAccount(user, newUser) {
     const saltRounds = 10;
-    if(newUser.username) {
-        if(typeof newUser.username === "string" && newUser.username.length > 0) {
-            user.username = newUser.username;
-        }
-        else return null;
-    }
     if(newUser.passwordHash) {
         if(typeof newUser.passwordHash === "string" && newUser.passwordHash.length > 0) {
             user.passwordHash = await bcrypt.hash(newUser.passwordHash, saltRounds);
