@@ -38,10 +38,38 @@ async function createQuestion(question) {
 // function to update a Question's status
 // args: status, question
 // return: question data
-async function updateQuestionStatus(status, question){
+async function updateQuestionStatus(question, status){
     const params = {
         TableName,
+        Key: {
+            PK: question.category,
+            SK: question.questionId,
+        },
+        UpdateExpress: "SET #status = :status",
+        ExpressionAttribueNames: {
+            "#status": "status",
+        },
+        ExpressionAttribueValues: {
+            ":status": status,
+        },
+    }
+    const command = new UpdateCommand(params)
 
+    try {
+        const data = await documentClient.send(command);
+        if (data) {
+            logger.info(`Successful UPDATE | updateQuestionStatus | ${data}`);
+            return data;
+        }
+        else {
+            logger.error(`Data is empty | updateQuestionStatus | ${data}`);
+            return null;
+        }
+
+    }
+    catch (err){
+        logger.error(`Error in questionDAO | updateQuestionStatus | ${err}`);
+        return null;
     }
 }
 
@@ -66,7 +94,7 @@ async function getQuestionById(questionId, category){
             return data;
         }
         else {
-            logger.err(`Data is empty | getQuestionById | ${data}`);
+            logger.error(`Data is empty | getQuestionById | ${data}`);
             return null;
         }
 
@@ -80,4 +108,5 @@ async function getQuestionById(questionId, category){
 module.exports = {
     createQuestion,
     getQuestionById,
+    updateQuestionStatus,
 }
