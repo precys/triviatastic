@@ -4,7 +4,7 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb");
 
 // create document client
-const client = new DynamoDBClient({ region: "us-east-2" }); // change region as necessary.
+const client = new DynamoDBClient({ region: "us-east-1" }); // change region as necessary.
 const documentClient = DynamoDBDocumentClient.from(client);
 
 // variables

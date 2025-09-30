@@ -11,7 +11,7 @@ const { DynamoDBDocumentClient,
 const { logger } = require("../utils/logger");
 
 
-const client = new DynamoDBClient({region: "us-east-2"});
+const client = new DynamoDBClient({region: "us-east-1"});
 const documentClient = DynamoDBDocumentClient.from(client);
 
 const TABLE_NAME = "Trivia_Table";
