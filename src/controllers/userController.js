@@ -9,7 +9,7 @@ const userService = require('../services/userService');
 // register user
 async function registerUser(req, res) {
   try {
-    const { username, password, role } = req.body;
+    const { username, password, } = req.body;
     const result = await userService.registerUser({ username, password });
     logger.info(`User registered: ${result.userId}`, { service: 'userController' });
     res.json(result);
