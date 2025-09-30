@@ -23,13 +23,11 @@ async function createQuestion(req, res) {
 }
 
 // function to updateQuestionStatus to the predetermined approved or denied
-// normalized category and status to lowercase for consistency
+// normalized status to lowercase for consistency
 // sample url: http://localhost:3000/questions/4f4b7bbd-8bbe-46ea-9dc9-73ccaa85cb5f?status=denied
 // query parameter can be change to approved or denied
 async function updateQuestionStatus(req, res){
-    // Following Hunter's admin conditional, can be a handler function due to multiple use.
-    const user = await userService.findUserById(req.user.userId);
-    if (user.role !== "ADMIN"){
+    if (!(await isAdmin(req.user.userId))){
         return res.status(403).json({message: "Forbidden access for user."});
     }
 
@@ -48,7 +46,7 @@ async function updateQuestionStatus(req, res){
             }
         }
         else {
-            return res.status(401).json({message: `Invalid question id or question is not pending.`})
+            return res.status(401).json({message: `Invalid question id, question is not pending, or invalid status to change.`})
         }
     }
     catch (err){
@@ -57,7 +55,44 @@ async function updateQuestionStatus(req, res){
     }
 }
 
+// route function to handle request for all pending questions
+// User must be ADMIN
+async function getQuestionsByStatus(req, res){
+    if (!(await isAdmin(req.user.userId))){
+        return res.status(403).json({message: "Forbidden access for user."});
+    }
+
+    try {
+        const { status } = req.query;
+        let data;
+
+        if (status == "pending"){
+            data = await questionService.getAllPendingQuestions();
+        }
+
+        if (data){
+            logger.info(`Success | getQuestionByStatus | ${JSON.stringify(data.Items)}`);
+            return res.status(201).json({message:`[${data.Items.length}] ${status} questions: `, questions: data.Items})
+        }
+
+    }
+    catch (err) {
+        logger.error(`Error in questionController | getQuestionsByStatus | ${err}`)
+        return res.status(501).json({message:`Server-side error.`})
+    }
+}
+
+// handler function to check to user currently logged is of ADMIN role
+// args: userId
+// return: boolean
+async function isAdmin(userId){
+    const user = await userService.findUserById(userId);
+    // return true if user is ADMIN, false if not.
+    return user.role === "ADMIN"
+}
+
 module.exports = {
     createQuestion,
     updateQuestionStatus,
+    getQuestionsByStatus,
 }

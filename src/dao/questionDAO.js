@@ -11,17 +11,18 @@ const { DynamoDBDocumentClient,
 const { logger } = require("../utils/logger");
 
 
-const client = new DynamoDBClient({region: "us-east-2"});
+const client = new DynamoDBClient({region: "us-east-1"});
 const documentClient = DynamoDBDocumentClient.from(client);
 
-const TableName = "Trivia_Table";
+const TABLE_NAME = "Trivia_Table";
+const QUESTION_INDEX = "questionId-index"
 
 // function to create a new custom question by user
 // args: question item
 // return: question data, success message
 async function createQuestion(question) {
     const params = {
-        TableName,
+        TableName: TABLE_NAME,
         Item: question,
     };
     const command = new PutCommand(params);
@@ -41,7 +42,7 @@ async function createQuestion(question) {
 // return: question data
 async function updateQuestionStatus(question, status){
     const params = {
-        TableName,
+        TableName: TABLE_NAME,
         Key: {
             PK: question.PK,
             SK: question.SK,
@@ -80,8 +81,8 @@ async function updateQuestionStatus(question, status){
 // return: question data
 async function getQuestionById(questionId){
     const params = {
-        TableName,
-        IndexName: "questionId-index",
+        TableName: TABLE_NAME,
+        IndexName: QUESTION_INDEX,
         KeyConditionExpression: "#questionId = :questionId",
         ExpressionAttributeNames: {
             "#questionId": "questionId"
@@ -117,7 +118,7 @@ async function getQuestionById(questionId){
 // return: message for deletion
 async function deleteQuestion(question){
     const params = {
-        TableName,
+        TableName: TABLE_NAME,
         Key: {
             PK: question.PK,
             SK: question.SK,
@@ -144,9 +145,45 @@ async function deleteQuestion(question){
     }
 }
 
+// function to get all pending custom questions
+// args: status
+// return: list of questions filtered by status
+async function getAllQuestionsByStatus(status){
+    const params = {
+        TableName: TABLE_NAME,
+        FilterExpression: "#status = :status",
+        ExpressionAttributeNames: {
+            "#status": "status",
+        },
+        ExpressionAttributeValues: {
+            ":status": status,
+        }
+    };
+    const command = new ScanCommand(params);
+
+    try{
+        const data = await documentClient.send(command);
+
+        if (data){
+            logger.info(`Succesful SCAN | getQuestionsByStatus | ${JSON.stringify(data)}`);
+            return data;
+        }
+        else {
+            logger.error(`Failed SCAN | getQuestionsByStatus | ${data}`);
+            return null;
+        };
+
+    }
+    catch (err) {
+        logger.error(`Error in questionDAO | getQuestionsByStatus | ${err} `);
+        return null;
+    };
+}
+
 module.exports = {
     createQuestion,
     getQuestionById,
     updateQuestionStatus,
     deleteQuestion,
+    getAllQuestionsByStatus,
 }
