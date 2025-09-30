@@ -1,5 +1,4 @@
 const bcrypt = require("bcrypt");
-const { v4: uuidv4 } = require("uuid");
 const userDAO = require("../dao/userDAO");
 const { generateToken } = require("../utils/jwt");
 
@@ -13,7 +12,7 @@ async function registerUser({ username, password }) {
   }
   
   // create user
-  const userId = uuidv4();
+  const userId = crypto.randomUUID();
   const passwordHash = await bcrypt.hash(password, 10);
 
   const userItem = {

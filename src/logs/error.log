@@ -20,3 +20,37 @@
 2025-09-29T21:09:59.128Z [error]: Login error: Invalid credentials
 2025-09-29T21:44:00.781Z [error]: Register error: Cannot read properties of undefined (reading 'userId')
 2025-09-30T02:08:05.624Z [error]: Login error: Invalid credentials
+2025-09-30T20:31:26.383Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T20:31:26.384Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T20:33:11.086Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T20:33:11.087Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T20:33:59.912Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T20:33:59.913Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T20:35:30.284Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T20:35:30.285Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T20:49:49.927Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T20:49:49.928Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T20:55:32.976Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T20:55:32.977Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T20:55:52.890Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T20:55:52.891Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T20:57:35.222Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T20:57:35.223Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T20:57:35.226Z [error]: Error in questionService | updateQuestionStatus | TypeError: Cannot read properties of undefined (reading 'status')
+2025-09-30T20:59:01.079Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T20:59:01.080Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T20:59:01.086Z [error]: Error in questionService | updateQuestionStatus | TypeError: Cannot read properties of undefined (reading 'status')
+2025-09-30T21:02:44.120Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T21:02:44.121Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T21:02:44.127Z [error]: Invalid status to update.
+2025-09-30T21:02:44.128Z [error]: Error in questionService | updateQuestionStatus | TypeError: Cannot read properties of undefined (reading 'status')
+2025-09-30T21:03:29.530Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T21:03:29.531Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T21:03:29.537Z [error]: Invalid status to update.
+2025-09-30T21:03:29.539Z [error]: Error in questionService | updateQuestionStatus | TypeError: Cannot read properties of undefined (reading 'status')
+2025-09-30T21:03:29.540Z [error]: Question is not pending
+2025-09-30T21:09:11.115Z [error]: Error in questionService | createQuestion | questionItem is undefined
+2025-09-30T21:09:11.116Z [error]: Error in questionService | createQuestion | Error: Sent Question: undefined does not exist
+2025-09-30T21:09:11.123Z [error]: Invalid status to update.
+2025-09-30T21:09:11.125Z [error]: Error in questionService | updateQuestionStatus | TypeError: Cannot read properties of undefined (reading 'status')
+2025-09-30T21:09:11.127Z [error]: Question is not pending

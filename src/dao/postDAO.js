@@ -1,5 +1,4 @@
 const { logger } = require('../utils/logger');
-const { v4: uuidv4 } = require('uuid');
 
 // aws sdk v3 imports
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
@@ -13,7 +12,7 @@ const TABLE_NAME = "Trivia_Table";
 
 // create post
 async function createPost(userId, data) {
-  const postId = uuidv4();
+  const postId = crypto.randomUUID();
   const item = {
     PK: `USER#${userId}`,
     SK: `POST#${postId}`,
