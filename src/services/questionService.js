@@ -97,7 +97,7 @@ async function updateQuestionStatus(questionId, status){
 // function that handles request for all pending questions
 // returns: all pending questions
 async function getAllPendingQuestions(){
-    return await questionDAO.getQuestionsByStatus("pending");
+    return await questionDAO.getAllQuestionsByStatus("pending");
 }
 
 module.exports = {

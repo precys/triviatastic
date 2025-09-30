@@ -148,7 +148,7 @@ async function deleteQuestion(question){
 // function to get all pending custom questions
 // args: status
 // return: list of questions filtered by status
-async function getQuestionsByStatus(status){
+async function getAllQuestionsByStatus(status){
     const params = {
         TableName: TABLE_NAME,
         FilterExpression: "#status = :status",
@@ -185,5 +185,5 @@ module.exports = {
     getQuestionById,
     updateQuestionStatus,
     deleteQuestion,
-    getQuestionsByStatus,
+    getAllQuestionsByStatus,
 }
