@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 const userDAO = require("../dao/userDAO");
 const { generateToken } = require("../utils/jwt");
@@ -46,6 +46,7 @@ async function loginUser({ username, password }) {
   }
 
   const user = await userDAO.getUserByUsername(username);
+    console.log("HERE")
   if (!user) throw new Error("User not found");
 
   const match = await bcrypt.compare(password, user.passwordHash);
