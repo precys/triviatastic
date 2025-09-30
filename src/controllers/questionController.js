@@ -78,7 +78,7 @@ async function getQuestionsByStatus(req, res){
     }
     catch (err) {
         logger.error(`Error in questionController | getQuestionsByStatus | ${err}`)
-        res.status(501).json({message:`Server-side error.`})
+        return res.status(501).json({message:`Server-side error.`})
     }
 }
 
