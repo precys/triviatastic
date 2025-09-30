@@ -94,4 +94,5 @@ async function isAdmin(userId){
 module.exports = {
     createQuestion,
     updateQuestionStatus,
+    getQuestionsByStatus,
 }

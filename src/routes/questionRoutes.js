@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../utils/jwt');
-const { createQuestion, updateQuestionStatus } = require('../controllers/questionController');
+const { createQuestion, updateQuestionStatus, getQuestionsByStatus } = require('../controllers/questionController');
+
 
 // Route middleware for every request to URLs past this point
 router.use(authenticate)
@@ -9,5 +10,7 @@ router.use(authenticate)
 router.post(`/`, createQuestion);
 // Route for updating question
 router.patch(`/:question_id`, updateQuestionStatus);
+// Route to get all pending questions
+router.get(`/`, getQuestionsByStatus)
 
 module.exports = router;
