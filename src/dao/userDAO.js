@@ -11,12 +11,6 @@ const documentClient = DynamoDBDocumentClient.from(client);
 const TABLE_NAME = "Trivia_Table";
 const USERNAME_INDEX = "username-index"; // gsi name for username lookup
 
-
-
-
-
-
-
 // create a new user
 async function createUser(user) {
   const item = {
@@ -40,10 +34,6 @@ async function createUser(user) {
   }
 }
 
-
-
-
-
 // find user by id
 async function findUserById(userId) {
     const command = new GetCommand({
@@ -63,9 +53,6 @@ async function findUserById(userId) {
         throw error;
     }
 }
-
-
-
 
 // delete user by id
 async function deleteUserById(userId) {
@@ -87,10 +74,6 @@ async function deleteUserById(userId) {
     }
 }
 
-
-
-
-
 // update a user
 async function updateUser(userItem) {
   const command = new PutCommand({
@@ -108,9 +91,6 @@ async function updateUser(userItem) {
   }
 }
 
-
-
-
 // get user by username using gsi for query
 async function getUserByUsername(username) {
   const command = new QueryCommand({
@@ -126,12 +106,6 @@ async function getUserByUsername(username) {
   const { Items } = await documentClient.send(command);
   return Items?.[0];
 }
-
-
-
-
-
-
 
 // get user's friends
 async function getUsersFriendsByUserId(userId) {
@@ -152,13 +126,7 @@ async function getUsersFriendsByUserId(userId) {
     }
 }
 
-
-
-
-
-
-
-
-
-module.exports = { createUser, deleteUserById, getUserByUsername, updateUser, findUserById, getUsersFriendsByUserId };
+module.exports = {
+  createUser, deleteUserById, getUserByUsername, updateUser, findUserById, getUsersFriendsByUserId
+};
 

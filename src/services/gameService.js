@@ -3,14 +3,9 @@ const { v4: uuidv4 } = require("uuid");
 const gameDAO = require("../dao/gameDAO");
 const { getUserById, updateUser } = require("../dao/userDAO");
 
-
 // difficulties and point structure
 const difficultyPoints = { easy: 1, medium: 3, hard: 5 };
 const difficulties = ['easy', 'medium', 'hard'];
-
-
-
-
 
 // start a new game
 async function startGame(userId, { category, questionDifficulty } = {}) {
@@ -34,10 +29,6 @@ async function startGame(userId, { category, questionDifficulty } = {}) {
   return gameItem;
 }
 
-
-
-
-
 // submit answer
 async function submitAnswer(userId, gameId, { questionDifficulty, correct } = {}) {
   const game = await gameDAO.getGame(gameId, userId);
@@ -49,11 +40,6 @@ async function submitAnswer(userId, gameId, { questionDifficulty, correct } = {}
   await gameDAO.createGame(game);
   return game;
 }
-
-
-
-
-
 
 // finish game normally
 async function finishGame(userId, gameId, answeredQuestions = []) {
@@ -73,10 +59,6 @@ async function finishGame(userId, gameId, answeredQuestions = []) {
       if (q.question_difficulty === "hard") hardCorrect++;
     }
   });
-
-
-
-
   // update user stats
   user.game_count += 1;
   user.easy_count += easyCorrect;
@@ -100,10 +82,6 @@ async function finishGame(userId, gameId, answeredQuestions = []) {
   return { gameScore, user };
 }
 
-
-
-
-
 // end game early
 async function endGame(userId, gameId) {
   
@@ -116,6 +94,5 @@ async function endGame(userId, gameId) {
 
   logger.info(`game ended early: ${gameId} by user: ${userId}`, { service: 'gameService' });
 }
-
 
 module.exports = { startGame, submitAnswer, finishGame, endGame };

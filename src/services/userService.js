@@ -3,7 +3,6 @@ const { v4: uuidv4 } = require("uuid");
 const userDAO = require("../dao/userDAO");
 const { generateToken } = require("../utils/jwt");
 
-
 // register a new user
 async function registerUser({ username, password }) {
 
@@ -40,8 +39,6 @@ async function registerUser({ username, password }) {
   return { userId: createdUser.userId, username: createdUser.username };
 }
 
-
-
 // login
 async function loginUser({ username, password }) {
   if (!username || !password) {
@@ -58,10 +55,7 @@ async function loginUser({ username, password }) {
   return { token, userId: user.userId, username: user.username };
 }
 
-
-
-
-// // ADMINS: update user accounts
+// ADMINS: update user accounts
 async function updateAccount(user, newUser) {
   const saltRounds = 10;
 
@@ -96,10 +90,7 @@ async function updateAccount(user, newUser) {
   return await userDAO.updateUser(user);
 }
 
-
-
-
-// // update profile/password for user
+// update profile/password for user
 async function updateProfile(user, password) {
   if (!password || typeof password !== "string" || password.length === 0) return null;
 
@@ -109,9 +100,6 @@ async function updateProfile(user, password) {
   return await userDAO.updateUser(user);
 }
 
-
-
-
 // delete user by id
 async function deleteUserById(userId) {
     if(await userDAO.deleteUserById(userId)) {
@@ -119,8 +107,6 @@ async function deleteUserById(userId) {
     }
     return false;
 }
-
-
 
 // find user by id
 async function findUserById(userId) {
@@ -130,9 +116,6 @@ async function findUserById(userId) {
     }
     return user;
 }
-
-
-
 
 // get user stats
 async function getStats(userId) {
@@ -151,9 +134,6 @@ async function getStats(userId) {
   };
 }
 
-
-
-
 // get user's friends
 async function getUsersFriends(user) {
     if (!user) {
@@ -168,6 +148,7 @@ async function getUsersFriends(user) {
     };
 }
 
-
-module.exports = { registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, updateAccount };
+module.exports = {
+  registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, updateAccount
+};
 

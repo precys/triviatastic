@@ -1,11 +1,6 @@
 const { logger } = require('../utils/logger');
 const userService = require('../services/userService');
 
-
-
-
-
-
 // register user
 async function registerUser(req, res) {
   try {
@@ -18,10 +13,6 @@ async function registerUser(req, res) {
     res.status(500).json({ message: 'Error registering user' });
   }
 }
-
-
-
-
 
 // login user
 async function loginUser(req, res) {
@@ -36,10 +27,6 @@ async function loginUser(req, res) {
   }
 }
 
-
-
-
-
 // get user stats
 async function getStats(req, res) {
   try {
@@ -50,9 +37,6 @@ async function getStats(req, res) {
     res.status(500).json({ message: 'Error fetching stats' });
   }
 }
-
-
-
 
 // update user profile
 async function updateProfile(req, res) {
@@ -84,12 +68,6 @@ async function updateProfile(req, res) {
   res.status(200).json({ message: "Account updated successfully." });
 }
 
-
-
-
-
-
-
 // delete user account
 async function deleteAccount(req, res) {
     const authUser = req.user;
@@ -109,9 +87,6 @@ async function deleteAccount(req, res) {
     }
     res.status(200).json({message: "Account deleted successfully."});
 }
-
-
-
 
 // get user's friends
 async function getUsersFriends(req, res) {
@@ -141,13 +116,6 @@ async function getUsersFriends(req, res) {
         return res.status(500).json({ message: "Failed to retrieve friends" });
     }
 }
-
-
-
-
-
-
-
 
 module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends };
 
