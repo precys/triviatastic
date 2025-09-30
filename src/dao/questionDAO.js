@@ -179,17 +179,10 @@ async function getQuestionsByStatus(status){
     };
 }
 
-// handler function for pending questions
-// return: list of all pending questions
-async function getPendingQuestions(){
-    return await getQuestionsByStatus("pending");
-}
-
 module.exports = {
     createQuestion,
     getQuestionById,
     updateQuestionStatus,
     deleteQuestion,
     getQuestionsByStatus,
-    getPendingQuestions,
 }

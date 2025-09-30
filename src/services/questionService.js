@@ -54,19 +54,16 @@ async function createQuestion(questionItem, userId){
 // function that updates a pending Question
 // if approved, update status
 // if denied, delete question element
-// args: questionId, category
+// args: questionId
 // returns: question data
 async function updateQuestionStatus(questionId, status){
     try{
         const question = await questionDAO.getQuestionById(questionId);
-        console.log(question)
+
         if (question.status != "pending"){
-            console.log(status)
             logger.error(`Question is not pending`)
             return null;
         }
-
-        console.log(status)
 
         if (status.toLowerCase() == "approved"){
             if (question){
@@ -97,7 +94,14 @@ async function updateQuestionStatus(questionId, status){
 
 }
 
+// function that handles request for all pending questions
+// returns: all pending questions
+async function getAllPendingQuestions(){
+    return await questionDAO.getQuestionsByStatus("pending");
+}
+
 module.exports = {
     createQuestion,
     updateQuestionStatus,
+    getAllPendingQuestions
 }
