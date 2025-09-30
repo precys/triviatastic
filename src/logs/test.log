@@ -185,3 +185,18 @@
 2025-09-30T02:08:05.624Z [error]: Login error: Invalid credentials
 2025-09-30T02:08:27.681Z [info]: Incoming POST : /users/login
 2025-09-30T02:08:27.834Z [info]: User logged in: PlayerOne
+2025-09-30T03:54:08.249Z [info]: Server running on port 3000
+2025-09-30T03:54:40.245Z [info]: Incoming POST : /users/login
+2025-09-30T03:54:40.618Z [info]: User logged in: PlayerOne
+2025-09-30T03:56:35.834Z [info]: Incoming POST : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts
+2025-09-30T03:57:55.109Z [info]: Incoming POST : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts
+2025-09-30T04:00:05.378Z [info]: Server running on port 3000
+2025-09-30T04:00:11.669Z [info]: Incoming POST : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts
+2025-09-30T04:01:01.328Z [info]: Incoming GET : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts
+2025-09-30T04:03:08.771Z [info]: Incoming GET : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts/2654afc3-73b4-4c25-8b24-dfb4f462d82b
+2025-09-30T04:04:38.873Z [info]: Incoming GET : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts/2654afc3-73b4-4c25-8b24-dfb4f462d82b
+2025-09-30T04:04:46.039Z [info]: Incoming GET : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts/2654afc3-73b4-4c25-8b24-dfb4f462d82b
+2025-09-30T04:05:00.909Z [info]: Incoming PATCH : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts/2654afc3-73b4-4c25-8b24-dfb4f462d82b
+2025-09-30T04:05:10.966Z [info]: Incoming GET : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts/2654afc3-73b4-4c25-8b24-dfb4f462d82b
+2025-09-30T04:06:00.409Z [info]: Incoming DELETE : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts/2654afc3-73b4-4c25-8b24-dfb4f462d82b
+2025-09-30T04:06:44.761Z [info]: Incoming GET : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts/2654afc3-73b4-4c25-8b24-dfb4f462d82b

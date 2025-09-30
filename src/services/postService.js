@@ -1,56 +1,38 @@
 const postDAO = require('../dao/postDAO');
 const { logger } = require('../utils/logger');
 
-
-
-async function createPost({ userId, content }) {
-  if (!userId || !content) throw new Error('userId and content are required');
-
-  const postId = uuidv4();
-
-  const postItem = {
-    PK: `USER#${userId}`,
-    SK: `POST#${postId}`,
-    postId,
-    userId,
-    content,
-    createdAt: new Date().toISOString()
-  };
-
-  return await postDAO.createPost(postItem);
-}
-
-
-
-
-
-async function getPosts(userId) {
-  if (!userId) throw new Error('User ID is required to fetch posts');
-
-  const posts = await postDAO.getPostsByUser(userId);
-  logger.info(`Fetched ${posts.length} posts for user ${userId}`);
-  return posts;
-}
-
-
-async function deletePost(postId, userId) {
-  const post = await postDAO.getPostById(postId);
-  if (!post) {
-    logger.warn(`Delete failed: post ${postId} not found`);
-    throw new Error('Post not found');
+// create a new post
+async function createPost(userId, data) {
+  if (!data.content || data.content.trim() === '') {
+    throw new Error('Post content cannot be empty');
   }
-  if (post.userId !== userId) {
-    logger.warn(`Unauthorized delete attempt by ${userId} on post ${postId}`);
-    throw new Error('Not authorized');
-  }
-
-  await postDAO.deletePost(postId);
-  logger.info(`Post deleted: ${postId} by user ${userId}`);
-  return { message: 'Post deleted' };
+  return await postDAO.createPost(userId, data);
 }
 
-module.exports = {
-  createPost,
-  getPosts,
-  deletePost
-};
+// get all posts for a user
+async function getUserPosts(userId) {
+  return await postDAO.getUserPosts(userId);
+}
+
+// get a specific post by id
+async function getPostById(userId, postId) {
+  const post = await postDAO.getPostById(userId, postId);
+  if (!post) throw new Error('Post not found');
+  return post;
+}
+
+// update a post
+async function updatePost(userId, postId, updateData) {
+  const updated = await postDAO.updatePost(userId, postId, updateData);
+  if (!updated) throw new Error('Post not found or not owned by user');
+  return updated;
+}
+
+// delete a post
+async function deletePost(userId, postId) {
+  const deleted = await postDAO.deletePost(userId, postId);
+  if (!deleted) throw new Error('Post not found or not owned by user');
+  return deleted;
+}
+
+module.exports = { createPost, getUserPosts, getPostById, updatePost, deletePost, };
