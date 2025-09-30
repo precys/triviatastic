@@ -144,9 +144,52 @@ async function deleteQuestion(question){
     }
 }
 
+// function to get all pending custom questions
+// args: status
+// return: list of questions filtered by status
+async function getQuestionsByStatus(status){
+    const params = {
+        TableName,
+        FilterExpression: "#status = :status",
+        ExpressionAttributeNames: {
+            "#status": "status",
+        },
+        ExpressionAttributeValues: {
+            ":status": status,
+        }
+    };
+    const command = new ScanCommand(params);
+
+    try{
+        const data = await documentClient.send(command);
+
+        if (data){
+            logger.info(`Succesful SCAN | getQuestionsByStatus | ${JSON.stringify(data)}`);
+            return data;
+        }
+        else {
+            logger.error(`Failed SCAN | getQuestionsByStatus | ${data}`);
+            return null;
+        };
+
+    }
+    catch (err) {
+        logger.error(`Error in questionDAO | getQuestionsByStatus | ${err} `);
+        return null;
+    };
+}
+
+// handler function for pending questions
+// return: list of all pending questions
+async function getPendingQuestions(){
+    return await getQuestionsByStatus("pending");
+}
+
 module.exports = {
     createQuestion,
     getQuestionById,
     updateQuestionStatus,
     deleteQuestion,
+    getQuestionsByStatus,
+    getPendingQuestions,
 }
