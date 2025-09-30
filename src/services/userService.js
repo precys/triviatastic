@@ -34,7 +34,7 @@ async function registerUser({ username, password }) {
     hard_count: 0,
     createdAt: new Date().toISOString()
   };
-
+  
   const createdUser = await userDAO.createUser(userItem);
   return { userId: createdUser.userId, username: createdUser.username };
 }

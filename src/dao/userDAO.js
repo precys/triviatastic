@@ -4,7 +4,7 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb");
 
 // create document client
-const client = new DynamoDBClient({ region: "us-east-1" });
+const client = new DynamoDBClient({ region: "us-east-2" }); // change region as necessary.
 const documentClient = DynamoDBDocumentClient.from(client);
 
 // variables
@@ -103,7 +103,10 @@ async function getUserByUsername(username) {
     Limit: 1
   });
 
+  
+  console.log("HERE")
   const { Items } = await documentClient.send(command);
+  console.log( Items );
   return Items?.[0];
 }
 
