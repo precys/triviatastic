@@ -1,5 +1,4 @@
 // Package imports
-const uuid = require("uuid");
 // Util imports
 const { logger } = require("../utils/logger");
 const questionDAO = require("../dao/questionDAO");

@@ -1,5 +1,4 @@
 const { logger } = require('../utils/logger');
-const { v4: uuidv4 } = require("uuid");
 const gameDAO = require("../dao/gameDAO");
 const { getUserById, updateUser } = require("../dao/userDAO");
 
@@ -9,7 +8,7 @@ const difficulties = ['easy', 'medium', 'hard'];
 
 // start a new game
 async function startGame(userId, { category, questionDifficulty } = {}) {
-  const gameId = uuidv4();
+  const gameId = crypto.randomUUID();
   const gameItem = {
     PK: `GAME#${gameId}`,
     SK: `USER#${userId}`,

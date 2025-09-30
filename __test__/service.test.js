@@ -16,7 +16,7 @@ describe("User Service Testing", () => {
         spyGet = jest.spyOn(userDAO, 'getUserByUsername')
         spyUpdate = jest.spyOn(userDAO, 'updateUser');
         spyDelete = jest.spyOn(userDAO, 'deleteUserById');
-        spyRegister = jest.spyOn(userDAO, 'registerNewUser');
+        spyRegister = jest.spyOn(userDAO, 'createUser');
     });
     afterEach(() => {
         spyFind.mockClear();
@@ -31,7 +31,9 @@ describe("User Service Testing", () => {
         const username = "username";
         const password = "password";
 
-        const result = await userService.validateUserLogin(username, password);
+        const result = await userService.loginUser({username, password}).catch((e) => {
+            return null;
+        });
 
         expect(result).toBeTruthy();
         expect(result.username).toBe("username");
@@ -43,7 +45,9 @@ describe("User Service Testing", () => {
         const username = "username";
         const password = "password";
 
-        const result = await userService.validateUserLogin(username, password);
+        const result = await userService.loginUser({username, password}).catch((e) => {
+            return null;
+        });
 
         expect(result).toBeNull();
         expect(spyGet).toHaveBeenCalledTimes(1);
@@ -54,7 +58,9 @@ describe("User Service Testing", () => {
         const username = "username";
         const password = "BAD_PASSWORD";
 
-        const result = await userService.validateUserLogin(username, password);
+        const result = await userService.loginUser({username, password}).catch((e) => {
+            return null;
+        });
 
         expect(result).toBeNull();
         expect(spyGet).toHaveBeenCalledTimes(1);
@@ -64,10 +70,12 @@ describe("User Service Testing", () => {
         spyGet.mockImplementation(async () => {return null;});
         spyRegister.mockImplementation(async () => {return {username: "username", passwordHash: await bcrypt.hash("password", 10)};});
         const username = "username";
-        const passwordHash = "password";
-        const user = {username, passwordHash}
+        const password = "password";
+        const user = {username, password}
 
-        const result = await userService.registerNewUser(user);
+        const result = await userService.registerUser(user).catch((e) => {
+            return null;
+        });
 
         expect(result).toBeTruthy();
         expect(spyRegister).toHaveBeenCalledTimes(1);
@@ -78,10 +86,12 @@ describe("User Service Testing", () => {
         spyGet.mockImplementation(async () => {return {username: "username", passwordHash: await bcrypt.hash("password", 10)}; });
         spyRegister.mockImplementation(async () => {return {username: "username", passwordHash: await bcrypt.hash("password", 10)};});
         const username = "username";
-        const passwordHash = "password";
-        const user = {username, passwordHash}
+        const password = "password";
+        const user = {username, password}
 
-        const result = await userService.registerNewUser(user);
+        const result = await userService.registerUser(user).catch((e) => {
+            return null;
+        });
 
         expect(result).toBeFalsy();
         expect(spyRegister).toHaveBeenCalledTimes(0);
@@ -93,7 +103,9 @@ describe("User Service Testing", () => {
         const passwordHash = "password";
         const user = {passwordHash}
 
-        const result = await userService.registerNewUser(user);
+        const result = await userService.registerUser(user).catch((e) => {
+            return null;
+        });
 
         expect(result).toBeFalsy();
         expect(spyRegister).toHaveBeenCalledTimes(0);
@@ -103,7 +115,9 @@ describe("User Service Testing", () => {
         spyUpdate.mockImplementation(async (u) => {return u;});
         const user = {username: "username", passwordHash: await bcrypt.hash("password", 10)};
 
-        const result = await userService.updateProfile(user, "newPassword");
+        const result = await userService.updateProfile(user, "newPassword").catch((e) => {
+            return null;
+        });
 
         expect(result).toBeTruthy();
         expect(await bcrypt.compare("newPassword", result.passwordHash)).toBeTruthy();
@@ -114,7 +128,9 @@ describe("User Service Testing", () => {
         spyUpdate.mockImplementation(async (u) => {return u;});
         const user = {username: "username", passwordHash: await bcrypt.hash("password", 10), hi_score: 300 };
 
-        const result = await userService.updateProfile(user, "newPassword");
+        const result = await userService.updateProfile(user, "newPassword").catch((e) => {
+            return null;
+        });
 
         expect(result).toBeTruthy();
         expect(result.hi_score).toBe(300);
@@ -127,7 +143,9 @@ describe("User Service Testing", () => {
         spyUpdate.mockImplementation(async (u) => {return u;});
         const user = {username: "username", passwordHash: await bcrypt.hash("password", 10)};
 
-        const result = await userService.updateProfile(user, 500);
+        const result = await userService.updateProfile(user, 500).catch((e) => {
+            return null;
+        });
 
         expect(result).toBeFalsy();
         expect(spyUpdate).toHaveBeenCalledTimes(0);
@@ -138,7 +156,9 @@ describe("User Service Testing", () => {
         const user = {username: "username", passwordHash: await bcrypt.hash("password", 10)};
         const newUser = {username: "username", password: "newPassword"};
 
-        const result = await userService.updateAccount(user, newUser);
+        const result = await userService.updateAccount(user, newUser).catch((e) => {
+            return null;
+        });
 
         expect(result).toBeTruthy();
         expect(result.username).toBe("username");
@@ -152,7 +172,9 @@ describe("User Service Testing", () => {
         const user = {username: "username", passwordHash: await bcrypt.hash("password", 10), hi_score: 0, role: "PLAYER"};
         const newUser = {username: "username", password: "newPassword", hi_score: 50, role: "ADMIN" };
 
-        const result = await userService.updateAccount(user, newUser);
+        const result = await userService.updateAccount(user, newUser).catch((e) => {
+            return null;
+        });
 
         expect(result).toBeTruthy();
         expect(result.username).toBe("username");
@@ -168,7 +190,9 @@ describe("User Service Testing", () => {
         const user = {username: "username", passwordHash: await bcrypt.hash("password", 10)};
         const newUser = {username: "username", password: "newPassword", MADE_UP_ATTRIBUTE: "I should not be added." };
 
-        const result = await userService.updateAccount(user, newUser);
+        const result = await userService.updateAccount(user, newUser).catch((e) => {
+            return null;
+        });
 
         expect(result).toBeTruthy();
         expect(result.username).toBe("username");
@@ -177,10 +201,25 @@ describe("User Service Testing", () => {
         expect(spyUpdate).toHaveBeenCalledTimes(1);
     });
 
+    test("Update Does not add value below 0", async () => {
+        spyUpdate.mockImplementation(async (u) => {return u});
+        const user = {username: "username", passwordHash: await bcrypt.hash("password", 10), streak: 0};
+        const newUser = {username: "username", password: "newPassword", streak: -10 };
+
+        const result = await userService.updateAccount(user, newUser).catch((e) => {
+            return null;
+        });
+
+        expect(result.streak).toBe(0);
+        expect(spyUpdate).toHaveBeenCalledTimes(1);
+    });
+
     test("Delete Success", async () => {
         spyDelete.mockImplementation(async () => {return true});
 
-        const result = await userService.deleteUserById("Example_Existing_Id");
+        const result = await userService.deleteUserById("Example_Existing_Id").catch((e) => {
+            return null;
+        });
 
         expect(result).toBeTruthy();
         expect(spyDelete).toHaveBeenCalledTimes(1);
@@ -189,7 +228,9 @@ describe("User Service Testing", () => {
     test("Delete Id does not exist", async () => {
         spyDelete.mockImplementation(async () => {return false});
 
-        const result = await userService.deleteUserById("Example_Existing_Id");
+        const result = await userService.deleteUserById("Example_Existing_Id").catch((e) => {
+            return null;
+        });
 
         expect(result).toBeFalsy();
         expect(spyDelete).toHaveBeenCalledTimes(1);
@@ -198,18 +239,241 @@ describe("User Service Testing", () => {
 });
 
 describe("Question Service Testing", () => {
-    var spyCreate, spyUpdate;
+    var spyCreate, spyUpdate, spyGetAll, spyFind, spyDelete;
 
     beforeAll(() => {
         spyCreate = jest.spyOn(questionDAO, 'createQuestion');
         spyUpdate = jest.spyOn(questionDAO, 'updateQuestionStatus');
+        spyGetAll = jest.spyOn(questionDAO, 'getAllQuestionsByStatus');
+        spyFind = jest.spyOn(questionDAO, 'getQuestionById');
+        spyDelete = jest.spyOn(questionDAO, 'deleteQuestion');
     });
     afterEach(() => {
         spyCreate.mockClear();
         spyUpdate.mockClear();
+        spyGetAll.mockClear();
+        spyFind.mockClear();
+        spyDelete.mockClear();
     });
 
     test("Create question success", async () => {
+        spyCreate.mockImplementation(async (u) => {return u});
+
+        const question = {
+            type: "Multiple Choice",
+            difficulty: "easy", 
+            category: "history", 
+            question: "What is my name?", 
+            correct_answer: "I don't know", 
+            incorrect_answers: ["Hunter", "Edwin", "Gwen", "Andrew"]
+        };
+        const result = await questionService.createQuestion(question, "Example_Id");
+        
+        expect(result).toBeTruthy();
+        expect(result.PK).toBeTruthy();
+        expect(result.SK).toBeTruthy();
+        expect(result.userId).toBe("Example_Id");
+        expect(spyCreate).toHaveBeenCalledTimes(1);
 
     });
+
+    test("Create question missing fields", async () => {
+        spyCreate.mockImplementation(async (u) => {return u});
+
+        const question = {};
+
+        const result = await questionService.createQuestion(question, "Example_Id");
+
+        expect(result).toBeFalsy();
+        expect(spyCreate).toHaveBeenCalledTimes(0);
+    });
+
+    test("Create question should ignore extra fields", async () => {
+        spyCreate.mockImplementation(async (u) => {return u});
+
+        const question = {
+            type: "Multiple Choice",
+            difficulty: "easy", 
+            category: "history", 
+            question: "What is my name?", 
+            correct_answer: "I don't know", 
+            incorrect_answers: ["Hunter", "Edwin", "Gwen", "Andrew"],
+            EXTRA: "I SHOULD NOT BE ADDED"
+        };
+        const result = await questionService.createQuestion(question, "Example_Id");
+        
+        expect(result).toBeTruthy();
+        expect(result.PK).toBeTruthy();
+        expect(result.SK).toBeTruthy();
+        expect(result.userId).toBe("Example_Id");
+        expect(result.EXTRA).toBeUndefined();
+        expect(spyCreate).toHaveBeenCalledTimes(1);
+    });
+
+    test("Create question null object", async () => {
+        spyCreate.mockImplementation(async (u) => {return u});
+
+        const question = undefined;
+
+        const result = await questionService.createQuestion(question, "Example_Id");
+
+        expect(result).toBeFalsy();
+        expect(spyCreate).toHaveBeenCalledTimes(0);
+    });
+
+    test("Update question approve success", async () => {
+        const question = {
+            type: "Multiple Choice",
+            difficulty: "easy", 
+            question: "What is my name?", 
+            correct_answer: "I don't know", 
+            incorrect_answers: ["Hunter", "Edwin", "Gwen", "Andrew"],
+            userId: "Example_Id",
+            questionId: "Example_Question_Id",
+            PK: "PK",
+            SK: "SK",
+            status: "pending",
+            createdAt: new Date().toISOString(),
+        };
+        spyFind.mockImplementation(() => {return question;});
+        spyUpdate.mockImplementation((u, status) => {
+            u.status = status;
+            return u;
+        });
+        spyDelete.mockImplementation(() => {return true;});
+
+        const result = await questionService.updateQuestionStatus("Example_Question_Id", "approved");
+
+        expect(result).toBeTruthy();
+        expect(result.status).toBe("approved");
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyUpdate).toHaveBeenCalledTimes(1);
+        expect(spyDelete).toHaveBeenCalledTimes(0);
+    });
+
+    test("Update question deny success", async () => {
+        const question = {
+            type: "Multiple Choice",
+            difficulty: "easy", 
+            question: "What is my name?", 
+            correct_answer: "I don't know", 
+            incorrect_answers: ["Hunter", "Edwin", "Gwen", "Andrew"],
+            userId: "Example_Id",
+            questionId: "Example_Question_Id",
+            PK: "PK",
+            SK: "SK",
+            status: "pending",
+            createdAt: new Date().toISOString(),
+        };
+        spyFind.mockImplementation(() => {return question;});
+        spyUpdate.mockImplementation((u, status) => {
+            u.status = status;
+            return u;
+        });
+        spyDelete.mockImplementation(() => {return true;});
+
+        const result = await questionService.updateQuestionStatus("Example_Question_Id", "denied");
+
+        expect(result).toBeTruthy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyUpdate).toHaveBeenCalledTimes(0);
+        expect(spyDelete).toHaveBeenCalledTimes(1);
+    });
+
+    test("Update question invalid status", async () => {
+        const question = {
+            type: "Multiple Choice",
+            difficulty: "easy", 
+            question: "What is my name?", 
+            correct_answer: "I don't know", 
+            incorrect_answers: ["Hunter", "Edwin", "Gwen", "Andrew"],
+            userId: "Example_Id",
+            questionId: "Example_Question_Id",
+            PK: "PK",
+            SK: "SK",
+            status: "pending",
+            createdAt: new Date().toISOString(),
+        };
+        spyFind.mockImplementation(() => {return question;});
+        spyUpdate.mockImplementation((u, status) => {
+            u.status = status;
+            return u;
+        });
+        spyDelete.mockImplementation(() => {return true;});
+
+        const result = await questionService.updateQuestionStatus("Example_Question_Id", "I AM INVALID");
+
+        expect(result).toBeFalsy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyUpdate).toHaveBeenCalledTimes(0);
+        expect(spyDelete).toHaveBeenCalledTimes(0);
+    });
+
+    test("Update question not found", async () => {
+        spyFind.mockImplementation(() => {null});
+        spyUpdate.mockImplementation((u, status) => {
+            u.status = status;
+            return u;
+        });
+        spyDelete.mockImplementation(() => {return true;});
+
+        const result = await questionService.updateQuestionStatus("Example_Question_Id", "approved");
+
+        expect(result).toBeFalsy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyUpdate).toHaveBeenCalledTimes(0);
+        expect(spyDelete).toHaveBeenCalledTimes(0);
+    });
+
+    test("Update not pending question", async () => {
+        const question = {
+            type: "Multiple Choice",
+            difficulty: "easy", 
+            question: "What is my name?", 
+            correct_answer: "I don't know", 
+            incorrect_answers: ["Hunter", "Edwin", "Gwen", "Andrew"],
+            userId: "Example_Id",
+            questionId: "Example_Question_Id",
+            PK: "PK",
+            SK: "SK",
+            status: "approved",
+            createdAt: new Date().toISOString(),
+        };
+        spyFind.mockImplementation(() => {return question;});
+        spyUpdate.mockImplementation((u, status) => {
+            u.status = status;
+            return u;
+        });
+        spyDelete.mockImplementation(() => {return true;});
+
+        const result = await questionService.updateQuestionStatus("Example_Question_Id", "approved");
+
+        expect(result).toBeFalsy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyUpdate).toHaveBeenCalledTimes(0);
+        expect(spyDelete).toHaveBeenCalledTimes(0);
+    });
+
+    test("Gets all pending questions success", async() => {
+        spyGetAll.mockImplementation(() => {
+            return [{
+                type: "Multiple Choice",
+                difficulty: "easy", 
+                question: "What is my name?", 
+                correct_answer: "I don't know", 
+                incorrect_answers: ["Hunter", "Edwin", "Gwen", "Andrew"],
+                userId: "Example_Id",
+                questionId: "Example_Question_Id",
+                PK: "PK",
+                SK: "SK",
+                status: "approve",
+                createdAt: new Date().toISOString(),
+            }];
+        });
+        const result = await questionService.getAllPendingQuestions("approved");
+        
+        expect(result[0]).toBeTruthy();
+        expect(spyGetAll).toHaveBeenCalledTimes(1);
+    });
+
 });
