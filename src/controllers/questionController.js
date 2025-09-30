@@ -27,7 +27,7 @@ async function createQuestion(req, res) {
 // sample url: http://localhost:3000/questions/4f4b7bbd-8bbe-46ea-9dc9-73ccaa85cb5f?status=denied
 // query parameter can be change to approved or denied
 async function updateQuestionStatus(req, res){
-    if (!isAdmin(req.user.userId)){
+    if (!(await isAdmin(req.user.userId))){
         return res.status(403).json({message: "Forbidden access for user."});
     }
 
@@ -58,7 +58,7 @@ async function updateQuestionStatus(req, res){
 // route function to handle request for all pending questions
 // User must be ADMIN
 async function getQuestionsByStatus(req, res){
-    if (!isAdmin(req.user.userId)){
+    if (!(await isAdmin(req.user.userId))){
         return res.status(403).json({message: "Forbidden access for user."});
     }
 

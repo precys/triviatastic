@@ -104,9 +104,7 @@ async function getUserByUsername(username) {
   });
 
   
-  console.log("HERE")
   const { Items } = await documentClient.send(command);
-  console.log( Items );
   return Items?.[0];
 }
 
