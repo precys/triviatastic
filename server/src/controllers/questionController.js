@@ -82,6 +82,34 @@ async function getQuestionsByStatus(req, res){
     }
 }
 
+// route function to handle requests for custom questions
+// sample url: http://localhost:3000/questions/category?category=art&n=1
+async function getQuestionsByCategory(req, res){
+    if ((await isAdmin(req.user.userId))){
+        return res.status(403).json({message: "Forbidden access for user."});
+    }
+
+    try {
+        const { category, n } = req.query;
+        
+        const data = await questionService.getQuestionsByCategory(category, n)
+
+        if (data.error){
+            logger.error(`Client requested number of questions greater than what is stored.`)
+            res.status(401).json(data)
+        }
+        else {
+            logger.info(`Success | getQuestionByCategory | ${JSON.stringify(data.Items)}`);
+            return res.status(201).json({message:`Custom questions in ${category}: `, questions: data})
+        }
+
+    }
+    catch (err) {
+        logger.error(`Error in questionController | getQuestionsByCategory | ${err}`)
+        return res.status(501).json({message:`Server-side error.`})
+    }
+}
+
 // handler function to check to user currently logged is of ADMIN role
 // args: userId
 // return: boolean
@@ -95,4 +123,5 @@ module.exports = {
     createQuestion,
     updateQuestionStatus,
     getQuestionsByStatus,
+    getQuestionsByCategory,
 }
