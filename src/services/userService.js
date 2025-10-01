@@ -149,7 +149,98 @@ async function getUsersFriends(user) {
     };
 }
 
+//send friend request
+async function sendFriendRequest(userId, friendUsername){
+    const user = await userDAO.findUserById(userId);
+    const userFriend = await userDAO.getUserByUsername(friendUsername);
+
+    if (!user || !userFriend){
+        throw new Error ("User or friend does not exist")
+    }
+
+    if (user.username === userFriend.username) {
+        throw new Error("You cannot send a friend request to yourself");
+    }
+
+    if(user.friends.includes(userFriend.username)){
+        throw new Error(`${userFriend.username} is already your friend`);
+    }
+
+    const requestId = uuidv4();
+
+    const requestItem = {
+        PK: `FRIENDREQ#${userFriend.userId}`,
+        SK: `REQUEST#${requestId}`,
+        requestId,
+        userId: user.userId,
+        userFriendId: userFriend.userId,
+        senderUsername: user.username,
+        status: "pending", //may change attribute name
+        createdAt: new Date().toISOString()
+    };
+
+    const request = userDAO.sendFriendRequest(requestItem);
+    
+    return {
+        message: `Friend request to ${userFriend.username} sent!`,
+        request //might remove, may only need message 
+    }
+
+}
+
+//add a friend 
+//needs to add one way, still adding both ways
+async function addFriend(userId, friendUsername){ 
+    const user = await userDAO.findUserById(userId);
+    const userFriend = await userDAO.getUserByUsername(friendUsername);
+
+    if (!user || !userFriend){
+        throw new Error ("User or friend does not exist")
+    }
+
+    if (user.username === userFriend.username) {
+        throw new Error("You cannot add yourself as a friend");
+    }
+
+    if (!user.friends.includes(userFriend.username)){
+        user.friends.push(userFriend.username);
+        await userDAO.addFriend(user.userId, user.friends);
+    }
+
+    if(!userFriend.friends.includes(user.username)){
+        userFriend.friends.push(user.username);
+        await userDAO.addFriend(userFriend.userId, userFriend.friends);
+    }
+
+    return{
+        message: `${userFriend.username} added as a friend!`,
+        friends: user.friends
+    };
+
+}
+
+async function getFriendRequestsByStatus (userId, status){
+    let validStatuses = ["pending", "accepted", "denied"];
+    if (!validStatuses.includes(status)){
+        throw new Error ("Invalid Status");
+    }
+
+    const requestData = await userDAO.getFriendRequestsByStatus(userId, status);
+
+    const requestsToDisplay = requestData.map(r => ({
+        username: r.senderUsername,
+        status: r.status
+    }))
+
+    return {
+        message: `You have ${requestData.length} ${status} friend request(s)`,
+        requests: requestsToDisplay
+    }
+
+}
+
 module.exports = {
-  registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, updateAccount
+  registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, updateAccount, addFriend, sendFriendRequest,
+  getFriendRequestsByStatus 
 };
 

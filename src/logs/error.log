@@ -20,3 +20,21 @@
 2025-09-29T21:09:59.128Z [error]: Login error: Invalid credentials
 2025-09-29T21:44:00.781Z [error]: Register error: Cannot read properties of undefined (reading 'userId')
 2025-09-30T02:08:05.624Z [error]: Login error: Invalid credentials
+2025-09-30T18:35:01.750Z [error]: Register error: data and salt arguments required
+2025-09-30T18:37:21.434Z [error]: Register error: data and salt arguments required
+2025-09-30T18:38:31.753Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:38:31.841Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:41:51.488Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:41:51.590Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:42:00.132Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:42:00.500Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:46:33.065Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:46:33.216Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:57:02.003Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:57:02.096Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:57:09.994Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:57:10.086Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:58:07.316Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:58:07.412Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:58:23.570Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:58:23.950Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null

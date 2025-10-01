@@ -117,5 +117,51 @@ async function getUsersFriends(req, res) {
     }
 }
 
-module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends };
+//send friend request
+async function sendFriendRequest (req, res){
+  const { userId } = req.params;
+  const { friendUsername } = req.body;
+
+  const result = await userService.sendFriendRequest(userId, friendUsername);
+  
+  if(!result){
+    res.status(400).json({ message: "Unable to send friend request"})
+  } else{
+    res.status(200).json(result)
+  }
+
+}
+
+//add friend
+async function addFriend (req, res){
+    const { userId } = req.params;
+    const { friendUsername } = req.body;
+
+    const result = await userService.addFriend(userId, friendUsername);
+
+    if(!result){
+        res.status(500).json({ message: "Unable to add friend"})
+    }else{
+        res.status(200).json({ message: result.message, friends: result.friends})
+    }
+ 
+}
+
+async function getFriendRequestsByStatus (req, res){
+  const { userId } = req.params;
+  const { status } = req.query;
+  //console.log("REQ QUERY STATUS:", req.query.status);
+
+  const result = await userService.getFriendRequestsByStatus(userId, status);
+
+  if (!result){
+    res.status(400).json({ message: "Unable to retrive friend requests"});
+  }else{
+    res.status(200).json(result);
+  }
+
+}
+
+module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, addFriend, sendFriendRequest, 
+  getFriendRequestsByStatus };
 

@@ -200,3 +200,124 @@
 2025-09-30T04:05:10.966Z [info]: Incoming GET : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts/2654afc3-73b4-4c25-8b24-dfb4f462d82b
 2025-09-30T04:06:00.409Z [info]: Incoming DELETE : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts/2654afc3-73b4-4c25-8b24-dfb4f462d82b
 2025-09-30T04:06:44.761Z [info]: Incoming GET : /posts/users/51328eb7-5c66-4310-bdb7-366f6d51a4f1/posts/2654afc3-73b4-4c25-8b24-dfb4f462d82b
+2025-09-30T18:25:46.263Z [info]: Server running on port 3000
+2025-09-30T18:34:47.309Z [info]: Server running on port 3000
+2025-09-30T18:35:00.186Z [info]: Incoming POST : /users/register
+2025-09-30T18:35:01.750Z [error]: Register error: data and salt arguments required
+2025-09-30T18:37:07.083Z [info]: Incoming POST : /users/register
+2025-09-30T18:37:07.652Z [info]: User stored in DB: 57df55f5-3b48-4ab2-b0eb-0d90fb65e58a
+2025-09-30T18:37:08.047Z [info]: User registered: 57df55f5-3b48-4ab2-b0eb-0d90fb65e58a
+2025-09-30T18:37:21.332Z [info]: Incoming POST : /users/register
+2025-09-30T18:37:21.434Z [error]: Register error: data and salt arguments required
+2025-09-30T18:37:32.786Z [info]: Incoming POST : /users/register
+2025-09-30T18:37:33.204Z [info]: User stored in DB: 9b8b13c3-09e1-42aa-8a6e-b4f854650065
+2025-09-30T18:37:33.205Z [info]: User registered: 9b8b13c3-09e1-42aa-8a6e-b4f854650065
+2025-09-30T18:37:45.861Z [info]: Incoming POST : /users/register
+2025-09-30T18:37:46.173Z [info]: User stored in DB: a017d4c6-f810-41d0-8be9-b91bb23c9f47
+2025-09-30T18:37:46.174Z [info]: User registered: a017d4c6-f810-41d0-8be9-b91bb23c9f47
+2025-09-30T18:38:12.770Z [info]: Incoming GET : /users/57df55f5-3b48-4ab2-b0eb-0d90fb65e58a/friends
+2025-09-30T18:38:31.451Z [info]: Incoming POST : /users/57df55f5-3b48-4ab2-b0eb-0d90fb65e58a/friends-requests
+2025-09-30T18:38:31.753Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:38:31.841Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:38:53.169Z [info]: Incoming GET : /users/57df55f5-3b48-4ab2-b0eb-0d90fb65e58a/friends
+2025-09-30T18:41:06.353Z [info]: Server running on port 3000
+2025-09-30T18:41:50.643Z [info]: Incoming POST : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends-requests
+2025-09-30T18:41:51.488Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:41:51.590Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:41:59.847Z [info]: Incoming POST : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends-requests
+2025-09-30T18:42:00.132Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:42:00.500Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:42:10.333Z [info]: Incoming GET : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends
+2025-09-30T18:44:39.410Z [info]: Incoming POST : /users/register
+2025-09-30T18:44:39.953Z [info]: User stored in DB: eccce950-7557-49a9-8184-bd8d28349388
+2025-09-30T18:44:39.955Z [info]: User registered: eccce950-7557-49a9-8184-bd8d28349388
+2025-09-30T18:45:42.033Z [info]: Incoming GET : /users/eccce950-7557-49a9-8184-bd8d28349388
+2025-09-30T18:46:07.738Z [info]: Incoming GET : /users/eccce950-7557-49a9-8184-bd8d28349388/friends
+2025-09-30T18:46:32.775Z [info]: Incoming POST : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends-requests
+2025-09-30T18:46:33.065Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:46:33.216Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:46:52.897Z [info]: Incoming GET : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends
+2025-09-30T18:47:13.323Z [info]: Incoming GET : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends-requests
+2025-09-30T18:49:39.514Z [info]: Incoming GET : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends
+2025-09-30T18:56:53.115Z [info]: Server running on port 3000
+2025-09-30T18:57:01.250Z [info]: Incoming POST : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends-requests
+2025-09-30T18:57:02.003Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:57:02.096Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:57:09.722Z [info]: Incoming POST : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends-requests
+2025-09-30T18:57:09.994Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:57:10.086Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:57:14.204Z [info]: Incoming GET : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends
+2025-09-30T18:57:29.253Z [info]: Incoming GET : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends
+2025-09-30T18:57:57.650Z [info]: Server running on port 3000
+2025-09-30T18:58:06.733Z [info]: Incoming POST : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends-requests
+2025-09-30T18:58:07.316Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:58:07.412Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:58:23.299Z [info]: Incoming POST : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends-requests
+2025-09-30T18:58:23.570Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:58:23.950Z [error]: 1 validation error detected: Value null at 'tableName' failed to satisfy constraint: Member must not be null
+2025-09-30T18:58:33.263Z [info]: Incoming GET : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends
+2025-09-30T19:00:30.439Z [info]: Server running on port 3000
+2025-09-30T19:00:44.566Z [info]: Incoming POST : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends-requests
+2025-09-30T19:00:45.265Z [info]: UPDATE command complete | userDAO | addFriends | data: {"$metadata":{"httpStatusCode":200,"requestId":"GK8P9GRP09JS5VHTCFJL4BGN3BVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0}}
+2025-09-30T19:00:45.355Z [info]: UPDATE command complete | userDAO | addFriends | data: {"$metadata":{"httpStatusCode":200,"requestId":"LHCFBMVLOHBS8KNQUH9I9R0E0VVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0}}
+2025-09-30T19:00:54.384Z [info]: Incoming POST : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends-requests
+2025-09-30T19:00:54.648Z [info]: UPDATE command complete | userDAO | addFriends | data: {"$metadata":{"httpStatusCode":200,"requestId":"I0QH64C0BLTF1KP8SKUF1M9PQNVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0}}
+2025-09-30T19:00:54.741Z [info]: UPDATE command complete | userDAO | addFriends | data: {"$metadata":{"httpStatusCode":200,"requestId":"DKEG8A8982QFHO9NGKTKAUS5PFVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0}}
+2025-09-30T19:00:58.652Z [info]: Incoming GET : /users/a017d4c6-f810-41d0-8be9-b91bb23c9f47/friends
+2025-09-30T19:38:27.832Z [info]: Server running on port 3000
+2025-09-30T19:39:47.508Z [info]: Incoming POST : /users/register
+2025-09-30T19:39:48.368Z [info]: User stored in DB: df16ca8e-c150-46cd-a484-57df75639de0
+2025-09-30T19:39:48.369Z [info]: User registered: df16ca8e-c150-46cd-a484-57df75639de0
+2025-09-30T19:40:07.173Z [info]: Incoming POST : /users/register
+2025-09-30T19:40:07.685Z [info]: User stored in DB: f1b0102a-0f72-4490-81e3-d51f1025c9bf
+2025-09-30T19:40:07.686Z [info]: User registered: f1b0102a-0f72-4490-81e3-d51f1025c9bf
+2025-09-30T19:42:12.252Z [info]: Incoming GET : /users/df16ca8e-c150-46cd-a484-57df75639de0/friend-requests
+2025-09-30T19:42:19.116Z [info]: Incoming POST : /users/df16ca8e-c150-46cd-a484-57df75639de0/friend-requests
+2025-09-30T19:42:19.703Z [info]: PUT command complete | userDAO | sendFriendReq | data: {"$metadata":{"httpStatusCode":200,"requestId":"AK169OD6N6LGNG2177PC3LE4URVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0}}
+2025-09-30T20:12:44.578Z [info]: Server running on port 3000
+2025-09-30T20:14:42.896Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests
+2025-09-30T20:15:16.226Z [info]: Server running on port 3000
+2025-09-30T20:15:27.375Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests
+2025-09-30T20:16:31.417Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests
+2025-09-30T20:17:36.604Z [info]: Server running on port 3000
+2025-09-30T20:17:58.648Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests
+2025-09-30T20:22:52.243Z [info]: Server running on port 3000
+2025-09-30T20:22:57.899Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=Pending
+2025-09-30T20:28:58.840Z [info]: Server running on port 3000
+2025-09-30T20:29:06.991Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:29:40.592Z [info]: Server running on port 3000
+2025-09-30T20:29:50.292Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:31:46.018Z [info]: Server running on port 3000
+2025-09-30T20:31:56.456Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:32:31.707Z [info]: Server running on port 3000
+2025-09-30T20:32:41.720Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:33:05.387Z [info]: Server running on port 3000
+2025-09-30T20:33:09.351Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:33:09.849Z [info]: Query command complete | userDAO | getFriendRequestsByStatus | data: {"$metadata":{"httpStatusCode":200,"requestId":"TK2OF93MAS6PI91QAH8LKJR7S3VV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":0,"Items":[],"ScannedCount":0}
+2025-09-30T20:33:50.770Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:33:50.864Z [info]: Query command complete | userDAO | getFriendRequestsByStatus | data: {"$metadata":{"httpStatusCode":200,"requestId":"2PH19ERU68C2728G01T0AK1O0JVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":0,"Items":[],"ScannedCount":0}
+2025-09-30T20:39:51.611Z [info]: Server running on port 3000
+2025-09-30T20:40:14.648Z [info]: Incoming POST : /users/df16ca8e-c150-46cd-a484-57df75639de0/friend-requests
+2025-09-30T20:40:15.490Z [info]: PUT command complete | userDAO | sendFriendReq | data: {"$metadata":{"httpStatusCode":200,"requestId":"M4T4RAR55PBSGVUE03D5V7H9I7VV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0}}
+2025-09-30T20:40:20.315Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:40:20.408Z [info]: Query command complete | userDAO | getFriendRequestsByStatus | data: {"$metadata":{"httpStatusCode":200,"requestId":"I2DLBO1E2U10EQKIKNPPLE3C3BVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":1,"Items":[{"userId":"df16ca8e-c150-46cd-a484-57df75639de0","status":"pending","createdAt":"2025-09-30T20:40:15.392Z","SK":"REQUEST#26ac2b40-c514-43a4-b05d-321f6c86d7e2","PK":"FRIENDREQ#f1b0102a-0f72-4490-81e3-d51f1025c9bf","senderUsername":"spongebob","userFriendId":"f1b0102a-0f72-4490-81e3-d51f1025c9bf","requestId":"26ac2b40-c514-43a4-b05d-321f6c86d7e2"}],"ScannedCount":1}
+2025-09-30T20:41:49.443Z [info]: Server running on port 3000
+2025-09-30T20:42:01.238Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:42:01.848Z [info]: Query command complete | userDAO | getFriendRequestsByStatus | data: {"$metadata":{"httpStatusCode":200,"requestId":"KBU63JNKD74SVPU6I3IAE2UBHRVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":1,"Items":[{"userId":"df16ca8e-c150-46cd-a484-57df75639de0","status":"pending","createdAt":"2025-09-30T20:40:15.392Z","SK":"REQUEST#26ac2b40-c514-43a4-b05d-321f6c86d7e2","PK":"FRIENDREQ#f1b0102a-0f72-4490-81e3-d51f1025c9bf","senderUsername":"spongebob","userFriendId":"f1b0102a-0f72-4490-81e3-d51f1025c9bf","requestId":"26ac2b40-c514-43a4-b05d-321f6c86d7e2"}],"ScannedCount":1}
+2025-09-30T20:46:41.569Z [info]: Server running on port 3000
+2025-09-30T20:46:56.087Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:46:56.579Z [info]: Query command complete | userDAO | getFriendRequestsByStatus | data: {"$metadata":{"httpStatusCode":200,"requestId":"E47QLFU6VST2E1DFQJFPIAN16VVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":1,"Items":[{"userId":"df16ca8e-c150-46cd-a484-57df75639de0","status":"pending","createdAt":"2025-09-30T20:40:15.392Z","SK":"REQUEST#26ac2b40-c514-43a4-b05d-321f6c86d7e2","PK":"FRIENDREQ#f1b0102a-0f72-4490-81e3-d51f1025c9bf","senderUsername":"spongebob","userFriendId":"f1b0102a-0f72-4490-81e3-d51f1025c9bf","requestId":"26ac2b40-c514-43a4-b05d-321f6c86d7e2"}],"ScannedCount":1}
+2025-09-30T20:49:23.610Z [info]: Server running on port 3000
+2025-09-30T20:49:33.944Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:49:34.746Z [info]: Query command complete | userDAO | getFriendRequestsByStatus | data: {"$metadata":{"httpStatusCode":200,"requestId":"L3J3HBM4E22EID2D1HHM5GAAUBVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":1,"Items":[{"userId":"df16ca8e-c150-46cd-a484-57df75639de0","status":"pending","createdAt":"2025-09-30T20:40:15.392Z","SK":"REQUEST#26ac2b40-c514-43a4-b05d-321f6c86d7e2","PK":"FRIENDREQ#f1b0102a-0f72-4490-81e3-d51f1025c9bf","senderUsername":"spongebob","userFriendId":"f1b0102a-0f72-4490-81e3-d51f1025c9bf","requestId":"26ac2b40-c514-43a4-b05d-321f6c86d7e2"}],"ScannedCount":1}
+2025-09-30T20:51:13.471Z [info]: Server running on port 3000
+2025-09-30T20:51:29.308Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:51:29.816Z [info]: Query command complete | userDAO | getFriendRequestsByStatus | data: {"$metadata":{"httpStatusCode":200,"requestId":"MD20CURLCGFDASGP7M3S4IJ413VV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":1,"Items":[{"userId":"df16ca8e-c150-46cd-a484-57df75639de0","status":"pending","createdAt":"2025-09-30T20:40:15.392Z","PK":"FRIENDREQ#f1b0102a-0f72-4490-81e3-d51f1025c9bf","senderUsername":"spongebob","userFriendId":"f1b0102a-0f72-4490-81e3-d51f1025c9bf","requestId":"26ac2b40-c514-43a4-b05d-321f6c86d7e2","SK":"REQUEST#26ac2b40-c514-43a4-b05d-321f6c86d7e2"}],"ScannedCount":1}
+2025-09-30T20:55:37.768Z [info]: Server running on port 3000
+2025-09-30T20:55:46.673Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:55:47.147Z [info]: Query command complete | userDAO | getFriendRequestsByStatus | data: {"$metadata":{"httpStatusCode":200,"requestId":"4KBKHBI8T400BC4O817I8SD9L3VV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":1,"Items":[{"userId":"df16ca8e-c150-46cd-a484-57df75639de0","status":"pending","createdAt":"2025-09-30T20:40:15.392Z","PK":"FRIENDREQ#f1b0102a-0f72-4490-81e3-d51f1025c9bf","senderUsername":"spongebob","userFriendId":"f1b0102a-0f72-4490-81e3-d51f1025c9bf","requestId":"26ac2b40-c514-43a4-b05d-321f6c86d7e2","SK":"REQUEST#26ac2b40-c514-43a4-b05d-321f6c86d7e2"}],"ScannedCount":1}
+2025-09-30T20:57:02.723Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:57:02.820Z [info]: Query command complete | userDAO | getFriendRequestsByStatus | data: {"$metadata":{"httpStatusCode":200,"requestId":"H05788PJCIOK0P2AUAE8RCJ24BVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":1,"Items":[{"userId":"df16ca8e-c150-46cd-a484-57df75639de0","status":"pending","createdAt":"2025-09-30T20:40:15.392Z","PK":"FRIENDREQ#f1b0102a-0f72-4490-81e3-d51f1025c9bf","senderUsername":"spongebob","userFriendId":"f1b0102a-0f72-4490-81e3-d51f1025c9bf","requestId":"26ac2b40-c514-43a4-b05d-321f6c86d7e2","SK":"REQUEST#26ac2b40-c514-43a4-b05d-321f6c86d7e2"}],"ScannedCount":1}
+2025-09-30T20:57:15.285Z [info]: Server running on port 3000
+2025-09-30T20:57:23.404Z [info]: Incoming GET : /users/f1b0102a-0f72-4490-81e3-d51f1025c9bf/friend-requests?status=pending
+2025-09-30T20:57:23.803Z [info]: Query command complete | userDAO | getFriendRequestsByStatus | data: {"$metadata":{"httpStatusCode":200,"requestId":"ED8UBAIQJ09LRTS9Q4FE41UM5FVV4KQNSO5AEMVJF66Q9ASUAAJG","attempts":1,"totalRetryDelay":0},"Count":1,"Items":[{"userId":"df16ca8e-c150-46cd-a484-57df75639de0","status":"pending","createdAt":"2025-09-30T20:40:15.392Z","PK":"FRIENDREQ#f1b0102a-0f72-4490-81e3-d51f1025c9bf","senderUsername":"spongebob","userFriendId":"f1b0102a-0f72-4490-81e3-d51f1025c9bf","requestId":"26ac2b40-c514-43a4-b05d-321f6c86d7e2","SK":"REQUEST#26ac2b40-c514-43a4-b05d-321f6c86d7e2"}],"ScannedCount":1}
