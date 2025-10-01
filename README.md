@@ -2,7 +2,7 @@
 
 ## Description
 
-Triviatastics is a web-based platform that leverages the Open Trivia Database API to deliver interactive trivia games. Users will be able to create single-player trivia sessions, track performance statistics, and customize their experience. The platform will feature user profiles, leaderboards, and multiple game modes to ensure replayability and engagement. Administrators will have the ability to manage users and oversee platform activity.
+Triviatastic is a web-based platform that leverages the Open Trivia Database API to deliver interactive trivia games. Users will be able to create single-player trivia sessions, track performance statistics, and customize their experience. The platform will feature user profiles, leaderboards, and multiple game modes to ensure replayability and engagement. Administrators will have the ability to manage users and oversee platform activity.
 
 ## Tech Stack
 
