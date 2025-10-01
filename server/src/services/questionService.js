@@ -93,14 +93,40 @@ async function updateQuestionStatus(questionId, status){
 
 }
 
+// function that handles requests for number of custom questions by category
+// args: category, n (number of questions)
+// return: list of questions of n amount
+async function getQuestionsByCategory(category, n){
+    const questions = await questionDAO.getAllQuestionsByCategory(category);
+
+    if (n > questions.length){
+        return data = {error:`Number of questions requested is greater than questions stored. Currently, only ${questions.length} in the ${category} category exists.`}
+    }
+
+    // Fischer-Yates shuffle according to the internet
+    for (let i = questions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [questions[i], questions[j]] = [questions[j], questions[i]];
+    }
+
+    return questions.slice(0, n);
+}
+
 // function that handles request for all pending questions
 // returns: all pending questions
 async function getAllPendingQuestions(){
     return await questionDAO.getAllQuestionsByStatus("pending");
 }
 
+// function that handles request for all approved questions
+// returns: all approved questions
+async function getAllApprovedQuestions(){
+    return await questionDAO.getAllQuestionsByStatus("approved");
+}
+
 module.exports = {
     createQuestion,
     updateQuestionStatus,
-    getAllPendingQuestions
+    getAllPendingQuestions,
+    getQuestionsByCategory,
 }

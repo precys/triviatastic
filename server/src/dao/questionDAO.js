@@ -180,10 +180,44 @@ async function getAllQuestionsByStatus(status){
     };
 }
 
+// function to get all questions by category
+// args: category
+// return: list of questions
+async function getAllQuestionsByCategory(category){
+    const params = {
+        TableName: TABLE_NAME,
+        KeyConditionExpression: "PK = :PK",
+        ExpressionAttributeValues: {
+        ":PK": `CATEGORY#${category.toLowerCase()}`
+        }
+    };
+    const command = new QueryCommand(params);
+
+    
+    try{
+        const data = await documentClient.send(command);
+
+        if (data){
+            logger.info(`Successful QUERY | getAllQuestionsByCategory | ${JSON.stringify(data.Items)}`);
+            return data.Items;
+        }
+        else {
+            logger.error(`Failed QUERY | getAllQuestionsByCategory | ${data}`);
+            return null;
+        };
+
+    }
+    catch (err) {
+        logger.error(`Error in questionDAO | getQuestionsByStatus | ${err} `);
+        return null;
+    };
+}
+
 module.exports = {
     createQuestion,
     getQuestionById,
     updateQuestionStatus,
     deleteQuestion,
     getAllQuestionsByStatus,
+    getAllQuestionsByCategory,
 }
