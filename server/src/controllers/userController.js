@@ -129,22 +129,6 @@ async function sendFriendRequest (req, res){
   } else{
     res.status(200).json(result)
   }
-
-}
-
-//add friend
-async function addFriend (req, res){
-    const { userId } = req.params;
-    const { friendUsername } = req.body;
-
-    const result = await userService.addFriend(userId, friendUsername);
-
-    if(!result){
-        res.status(500).json({ message: "Unable to add friend"})
-    }else{
-        res.status(200).json({ message: result.message, friends: result.friends})
-    }
- 
 }
 
 //get a list of friend requests by status ("pending", "accepted", "denied" )
@@ -175,9 +159,21 @@ async function respondToFriendRequest(req, res){
   }else{
     res.status(200).json(result);
   }
-
 }
 
-module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, addFriend, sendFriendRequest, 
-  getFriendRequestsByStatus, respondToFriendRequest };
+//delete a friend request
+async function deleteFriendRequest (req, res){
+  const { userId, requestId } = req.params;
+
+  const result = await userService.deleteFriendRequest(userId, requestId);
+
+   if(!result){
+    res.status(400).json({ message: "Unable to delete friend request"})
+  } else{
+    res.status(200).json(result)
+  }
+}
+
+module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, sendFriendRequest, 
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest };
 

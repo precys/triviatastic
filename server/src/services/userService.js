@@ -203,19 +203,41 @@ async function addFriend(userId, friendId){
 
     if (!user.friends.includes(userFriend.username)){
         user.friends.push(userFriend.username);
-        await userDAO.addFriend(user.userId, user.friends);
+        await userDAO.updateFriendsList(user.userId, user.friends);
     }
 
     if(!userFriend.friends.includes(user.username)){
         userFriend.friends.push(user.username);
-        await userDAO.addFriend(userFriend.userId, userFriend.friends);
+        await userDAO.updateFriendsList(userFriend.userId, userFriend.friends);
     }
 
     return{
-        message: `${userFriend.username} accepted ${user.username}'s friend request!` //may have to adjust
+        message: `${userFriend.username} accepted ${user.username}'s friend request!` 
         //friends: user.friends
     };
+}
 
+//deny a friend req
+async function denyRequest (userId, friendId){
+  const user = await userDAO.findUserById(userId);
+  const userFriend = await userDAO.findUserById(friendId);
+
+   if (!user || !userFriend){
+        throw new Error ("User or friend does not exist");
+    }
+
+    if (user.username === userFriend.username) {
+        throw new Error("You cannot deny yourself as a friend");
+    }
+
+    if (user.friends.includes(userFriend.username)){
+        throw new Error("You cannot deny an existing friend in your list but you can delete them.");
+    }
+
+    return{
+        message: `${userFriend.username} denied ${user.username}'s friend request.` 
+        //friends: user.friends
+    };
 }
 
 //get a list of friend requests by status ("pending", "accepted", "denied" )
@@ -262,16 +284,43 @@ async function respondToFriendRequest (userFriendId, requestId, status){
       // message: acceptedResult.message,
       // friends: acceptedResult.friends
     };
-  } 
+  }else{
+    if(status == "denied"){
+      const { userId: userId, userFriendId: userFriendId } = response;
+      const denyResult = await denyRequest(userId, userFriendId);
 
-  //else deny friend 
+      return{
+        // message: `Friend request ${status}`,
+        message: denyResult.message,
+        requestId,
+        status,
+        // message: acceptedResult.message,
+        // friends: acceptedResult.friends
+      };
+    }else{
+      throw new Error ("Response to Friend Request Not Found");
+    }
+  }
+}
 
+//delete a friend request
+async function deleteFriendRequest (userId, requestId) {
+  if (!userId || !requestId){
+    throw new Error ("User or Friend Request Does Not Exist");
+  }else{
+    if (await userDAO.deleteFriendRequest(userId, requestId)){
+      return{
+        message: `${requestId} was successfully deleted!`
+      };
+    }else{
+      throw new Error ("Unable to delete Friend Request");
+    } 
+  }
 
 }
 
-
 module.exports = {
   registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, updateAccount, addFriend, sendFriendRequest,
-  getFriendRequestsByStatus, respondToFriendRequest
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest
 };
 

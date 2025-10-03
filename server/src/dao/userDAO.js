@@ -108,7 +108,7 @@ async function getUserByUsername(username) {
   return Items?.[0];
 }
 
-// get user's friends
+// get user's friends list
 async function getUsersFriendsByUserId(userId) {
     const command = new GetCommand({
         TableName: TABLE_NAME,
@@ -146,8 +146,8 @@ async function sendFriendRequest (request){
 
 }
 
-//add a user
-async function addFriend (userId, friendsList){
+//update a user's friends list 
+async function updateFriendsList (userId, friendsList){ //formerly called addFriend
     const command = new UpdateCommand({
         TableName: TABLE_NAME, 
         Key: { 
@@ -221,11 +221,30 @@ async function respondToFriendRequest (userFriendId, requestId, status){
       logger.error(err.message);
       return null;
   }
+}
+
+//delete a friend request
+async function deleteFriendRequest (userFriendId, requestId){
+  const command = new DeleteCommand ({
+    TableName: TABLE_NAME,
+        Key: {
+          PK: `FRIENDREQ#${userFriendId}`,
+          SK: `REQUEST#${requestId}`
+        }
+  });
+
+  try{
+      await documentClient.send(command);
+      return true;
+  }catch(err){
+      logger.error(err.message);
+      return null;
+  }
 
 }
 
 module.exports = {
-  createUser, deleteUserById, getUserByUsername, updateUser, findUserById, getUsersFriendsByUserId, addFriend, sendFriendRequest, 
-  getFriendRequestsByStatus, respondToFriendRequest
+  createUser, deleteUserById, getUserByUsername, updateUser, findUserById, getUsersFriendsByUserId, updateFriendsList, sendFriendRequest, 
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest
 };
 
