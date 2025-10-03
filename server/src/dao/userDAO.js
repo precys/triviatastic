@@ -1,7 +1,7 @@
 const { logger } = require('../utils/logger');
 // aws sdk v3 imports
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand, QueryCommand, UpdateCommand } = require("@aws-sdk/lib-dynamodb");
 
 // create document client
 const client = new DynamoDBClient({ region: "us-east-1" }); // change region as necessary.
@@ -127,7 +127,105 @@ async function getUsersFriendsByUserId(userId) {
     }
 }
 
+//send a friend request
+async function sendFriendRequest (request){
+    const command = new PutCommand({
+        TableName: TABLE_NAME,
+        Item: request
+    })
+
+    try{
+        const data = await documentClient.send(command);
+        logger.info(`PUT command complete | userDAO | sendFriendReq | data: ${JSON.stringify(data)}`);
+        return data.item;
+
+    }catch(err){
+        logger.error(err.message);
+        return null;
+    }
+
+}
+
+//add a user
+async function addFriend (userId, friendsList){
+    const command = new UpdateCommand({
+        TableName: TABLE_NAME, 
+        Key: { 
+            PK: `USER#${userId}`,
+            SK: "PROFILE"
+        },
+        UpdateExpression: "SET friends = :friends",
+        ExpressionAttributeValues: {
+            ":friends" : friendsList || []
+        },  ReturnValues: "ALL_NEW"
+    })
+
+    try{
+        const data = await documentClient.send(command);
+        logger.info(`UPDATE command complete | userDAO | addFriends | data: ${JSON.stringify(data)}`);
+        return data.Attributes;
+    }catch(err){
+        logger.error(err);
+        return null;
+    }
+}
+
+//get a list of friend requests by status ("pending", "accepted", "denied" )
+async function getFriendRequestsByStatus (userId, status){
+    const command = new QueryCommand ({
+        TableName: TABLE_NAME,
+        KeyConditionExpression: "PK = :pk",
+        FilterExpression: "#status = :status", 
+        ExpressionAttributeNames: { "#status": "status" },
+        ExpressionAttributeValues: {
+            ":pk": `FRIENDREQ#${userId}`,
+            ":status": status
+        }
+    });
+
+    try{
+        const data = await documentClient.send(command);
+        logger.info(`Query command complete | userDAO | getFriendRequestsByStatus | data: ${JSON.stringify(data)}`);
+        return data.Items || []
+
+    }catch(err){
+        logger.error(err.message);
+        return null;
+    }
+
+}
+
+//respond to a friend req
+async function respondToFriendRequest (userFriendId, requestId, status){
+  const command = new UpdateCommand ({
+    TableName: TABLE_NAME, 
+    Key: {
+      PK: `FRIENDREQ#${userFriendId}`,
+      SK: `REQUEST#${requestId}`
+    },
+    UpdateExpression: "SET #status = :status",
+    ExpressionAttributeNames:{
+      "#status": "status"
+    },
+    ExpressionAttributeValues:{
+      ":status": status
+    },
+    ReturnValues: "ALL_NEW" 
+  });
+
+  try{
+    const data = await documentClient.send(command);
+    return data.Attributes;
+
+  }catch(err){
+      logger.error(err.message);
+      return null;
+  }
+
+}
+
 module.exports = {
-  createUser, deleteUserById, getUserByUsername, updateUser, findUserById, getUsersFriendsByUserId
+  createUser, deleteUserById, getUserByUsername, updateUser, findUserById, getUsersFriendsByUserId, addFriend, sendFriendRequest, 
+  getFriendRequestsByStatus, respondToFriendRequest
 };
 
