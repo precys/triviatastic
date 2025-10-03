@@ -80,7 +80,6 @@ async function updateQuestionStatus(questionId, status){
 
         }
         else if (status.toLowerCase() == "denied"){
-            console.log("HERE");
             const data = await questionDAO.deleteQuestion(question);
             return data;
         }
