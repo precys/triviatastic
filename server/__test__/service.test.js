@@ -217,25 +217,33 @@ describe("User Service Testing", () => {
     });
 
     test("Delete Success", async () => {
+        spyFind.mockImplementation(async () => {return {user: "username", passwordHash: "whatever", friends: []}});
         spyDelete.mockImplementation(async () => {return true});
+        spyUpdate.mockImplementation(async () => {return true;});
 
         const result = await userService.deleteUserById("Example_Existing_Id").catch((e) => {
             return null;
         });
 
         expect(result).toBeTruthy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyUpdate).toHaveBeenCalledTimes(0);
         expect(spyDelete).toHaveBeenCalledTimes(1);
     });
 
     test("Delete Id does not exist", async () => {
+        spyFind.mockImplementation(async () => {return null;});
         spyDelete.mockImplementation(async () => {return false});
+        spyUpdate.mockImplementation(async () => {return;});
 
         const result = await userService.deleteUserById("Example_Existing_Id").catch((e) => {
             return null;
         });
 
         expect(result).toBeFalsy();
-        expect(spyDelete).toHaveBeenCalledTimes(1);
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyUpdate).toHaveBeenCalledTimes(0);
+        expect(spyDelete).toHaveBeenCalledTimes(0);
     });
 
     test("Get friends success", async () => {
