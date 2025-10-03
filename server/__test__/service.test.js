@@ -9,7 +9,7 @@ const gameDAO = require("../src/dao/gameDAO.js");
 const bcrypt = require("bcrypt");
 
 describe("User Service Testing", () => {
-    var spyFind, spyGet, spyUpdate, spyDelete, spyRegister;
+    var spyFind, spyGet, spyUpdate, spyDelete, spyRegister, spyFriends;
 
     beforeAll(() => {
         spyFind = jest.spyOn(userDAO, 'findUserById');
@@ -17,6 +17,7 @@ describe("User Service Testing", () => {
         spyUpdate = jest.spyOn(userDAO, 'updateUser');
         spyDelete = jest.spyOn(userDAO, 'deleteUserById');
         spyRegister = jest.spyOn(userDAO, 'createUser');
+        spyFriends = jest.spyOn(userDAO, 'getUsersFriendsByUserId');
     });
     afterEach(() => {
         spyFind.mockClear();
@@ -24,6 +25,7 @@ describe("User Service Testing", () => {
         spyUpdate.mockClear();
         spyDelete.mockClear();
         spyRegister.mockClear();
+        spyFriends.mockClear();
     });
 
     test("Login Success", async () => {
@@ -215,25 +217,54 @@ describe("User Service Testing", () => {
     });
 
     test("Delete Success", async () => {
+        spyFind.mockImplementation(async () => {return {user: "username", passwordHash: "whatever", friends: []}});
         spyDelete.mockImplementation(async () => {return true});
+        spyUpdate.mockImplementation(async () => {return true;});
 
         const result = await userService.deleteUserById("Example_Existing_Id").catch((e) => {
             return null;
         });
 
         expect(result).toBeTruthy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyUpdate).toHaveBeenCalledTimes(0);
         expect(spyDelete).toHaveBeenCalledTimes(1);
     });
 
     test("Delete Id does not exist", async () => {
+        spyFind.mockImplementation(async () => {return null;});
         spyDelete.mockImplementation(async () => {return false});
+        spyUpdate.mockImplementation(async () => {return;});
 
         const result = await userService.deleteUserById("Example_Existing_Id").catch((e) => {
             return null;
         });
 
         expect(result).toBeFalsy();
-        expect(spyDelete).toHaveBeenCalledTimes(1);
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyUpdate).toHaveBeenCalledTimes(0);
+        expect(spyDelete).toHaveBeenCalledTimes(0);
+    });
+
+    test("Get friends success", async () => {
+        spyFriends.mockImplementation(async () => {return ["Id1", "Id2"];});
+        const user = {username: "username", passwordHash: await bcrypt.hash("password", 10)};
+
+        const result = await userService.getUsersFriends(user);
+
+        expect(result).toBeTruthy();
+        expect(result["Friend Count"]).toBe(2);
+        expect(result.friends.length).toBe(2);
+        expect(spyFriends).toHaveBeenCalledTimes(1);
+    });
+
+    test("Get friends user does not exist", async () => {
+        spyFriends.mockImplementation(async () => {return ["Id1", "Id2"];});
+
+        const result = await userService.getUsersFriends(null).catch((error) => {return null;});
+
+        expect(result).toBeFalsy;
+        expect(spyFriends).toHaveBeenCalledTimes(0);
     });
 
 });
