@@ -2,4 +2,5 @@
 /server/node_modules
 /server/src/logs
 /server/coverage
+/client/coverage
 node_modules
