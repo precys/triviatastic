@@ -1,11 +1,13 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
 // logger and optional middleware
 const { logger, loggerMiddleware } = require('./utils/logger');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors())
 
 // middleware logging every incoming request
 app.use(loggerMiddleware);

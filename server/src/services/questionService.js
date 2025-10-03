@@ -23,6 +23,10 @@ async function createQuestion(questionItem, userId){
                 incorrect_answers
             } = questionItem;
 
+            if (type == null || difficulty == null || category == null || question == null || correct_answer == null || incorrect_answers == null){
+                throw new Error(`type, difficulty, category, question, correct_answer, and incorrect_answers cannot be blank`)
+            }
+
             const questionId = crypto.randomUUID();
 
             const newQuestion = {
@@ -76,7 +80,6 @@ async function updateQuestionStatus(questionId, status){
 
         }
         else if (status.toLowerCase() == "denied"){
-            console.log("HERE");
             const data = await questionDAO.deleteQuestion(question);
             return data;
         }

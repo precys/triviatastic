@@ -102,10 +102,18 @@ async function updateProfile(user, password) {
 
 // delete user by id
 async function deleteUserById(userId) {
-    if(await userDAO.deleteUserById(userId)) {
-        return true;
-    }
-    return false;
+  const user = await userDAO.findUserById(userId);
+  if(!user) return false;
+
+  const friends = user.friends;
+  for(let friendId of friends) {
+    await removeFriend(friendId, userId);
+  }
+
+  if(await userDAO.deleteUserById(userId)) {
+    return true;
+  }
+  return false;
 }
 
 // find user by id
@@ -319,8 +327,18 @@ async function deleteFriendRequest (userId, requestId) {
 
 }
 
+async function removeFriend(userIdToRemoveFrom, friendId) {
+  const userToUpdate = await userDAO.findUserById(userIdToRemoveFrom);
+  userToUpdate.friends = userToUpdate.friends.filter((element) => element != friendId);
+  if(!await userDAO.updateUser(userToUpdate)) {
+    return false;
+  }
+  return true;
+}
+
+
 module.exports = {
-  registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, updateAccount, addFriend, sendFriendRequest,
+  registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, removeFriend, updateAccount, addFriend, sendFriendRequest,
   getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest
 };
 
