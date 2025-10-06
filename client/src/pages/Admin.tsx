@@ -8,11 +8,13 @@ interface Question {
   category: string;
   type: string;
   difficulty: string;
+  correct_answer: string;
+  incorrect_answers: [];
 }
 
 function Admin() {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNWNkNzVkNy1lOTI2LTQyYjctOTM0OS1lYmViNWEzYWJiNzAiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTk0OTkwMTEsImV4cCI6MTc1OTU0MjIxMX0.Us2jIwACPxZhiI9eAvw3hQY6aBVBNJ0OxX9OScQ7KI4";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNWNkNzVkNy1lOTI2LTQyYjctOTM0OS1lYmViNWEzYWJiNzAiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTk3NTI3MDksImV4cCI6MTc1OTc5NTkwOX0.ap_Rp4gk0wIahMC3HtgOzNunUIMkSc9Sb7lTdlXZcqc";
   const [questions, setQuestions] = useState<Question[]>([]);
 
   useEffect(() => {
@@ -28,24 +30,37 @@ function Admin() {
         .catch((err) => console.error(err));
   }, []); 
 
-  useEffect(()=> {
-    console.log("QUESTIONS: ", JSON.stringify(questions));
-  }, [questions])
-
-
   return (
     <>
-      <div>
-        <h1>PENDING:</h1>
-        <ul>
-          {questions.map((question) => (
-            <li key={question.questionId}>
-              {question.question} {question.status}
-              <button> Approve </button>
-              <button> Deny </button>
-            </li>
-          ))}
-        </ul>
+      <div className="container margin-auto">
+          <div className="row">
+            <div className="col">
+              <h2 className="text-center"> Pending Questions </h2>
+              {questions.map((question) => (
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title"> {question.category} </h5>
+                    <p className="card-text"> 
+                      <span> Question: {question.question} </span> 
+                      <span> Correct Answer: {question.correct_answer} </span>
+                      <span> Incorrect Answers: 
+                        {question.incorrect_answers.map((incorrectAnswer) => (
+                          <span> {incorrectAnswer}, </span>
+                        ))} 
+                      </span>
+                    </p>
+                    <button className="btn btn-primary"> Deny </button>
+                    <button className="btn btn-primary"> Approve </button>
+                  </div>
+                </div>
+              ))}
+
+
+            </div>
+            <div className="col">
+              <h2 className="text-center"> Users </h2>
+            </div>
+          </div>
       </div>
     </>
   );
