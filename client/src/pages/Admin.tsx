@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import QuestionCard from "../components/QuestionCard/QuestionCard";
 
 interface Question {
   questionId: string;
   question: string;
-  status: string;
   category: string;
   type: string;
   difficulty: string;
@@ -63,29 +63,18 @@ function Admin() {
             <div className="col">
               <h2 className="text-center"> Pending Questions </h2>
               {questions.map((question) => (
-                <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title"> {question.category} </h5>
-                    <p className="card-text"> 
-                      <span> Question: {question.question} </span> 
-                      <span> Correct Answer: {question.correct_answer} </span>
-                      <span> Incorrect Answers: 
-                        {question.incorrect_answers.map((incorrectAnswer) => (
-                          <span> {incorrectAnswer}, </span>
-                        ))} 
-                      </span>
-                    </p>
-                    <button className="btn btn-primary" onClick={() => statusUpdate(question.questionId, "denied")}> 
-                      Deny 
-                    </button>
-                    <button className="btn btn-primary" onClick={() => statusUpdate(question.questionId, "approved")}> 
-                      Approve 
-                    </button>
-                  </div>
-                </div>
+                <QuestionCard
+                  key={question.questionId}
+                  questionId={question.questionId}
+                  category={question.category}
+                  question={question.question}
+                  type={question.type}
+                  difficulty={question.difficulty}
+                  correct_answer={question.correct_answer}
+                  incorrect_answers={question.incorrect_answers}
+                  statusUpdate={statusUpdate}
+                />
               ))}
-
-
             </div>
             <div className="col">
               <h2 className="text-center"> Users </h2>
