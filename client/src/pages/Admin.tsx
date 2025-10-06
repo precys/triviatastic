@@ -28,7 +28,33 @@ function Admin() {
         setQuestions(response.data.questions); 
       })
         .catch((err) => console.error(err));
-  }, []); 
+  }, []);
+
+  const statusUpdate = async (questionId: string, newStatus: string) => {
+    try {
+      const url = `http://localhost:3000/questions/${questionId}?status=${newStatus}`
+      await axios
+        .patch(url,
+          {},
+          {
+          headers: {
+            Authorization: `Bearer ${token}` 
+          },
+        })
+        .then((response) => {
+          console.log(response)
+        })
+        .catch((err) => console.error(err))
+
+
+        setQuestions((prev) =>
+          prev.filter((question) => question.questionId !== questionId)
+        );
+    }
+    catch (err) {
+      console.error(`Error updating question ${questionId} to ${newStatus}. Error: ${err}`)
+    }
+  }
 
   return (
     <>
@@ -49,8 +75,12 @@ function Admin() {
                         ))} 
                       </span>
                     </p>
-                    <button className="btn btn-primary"> Deny </button>
-                    <button className="btn btn-primary"> Approve </button>
+                    <button className="btn btn-primary" onClick={() => statusUpdate(question.questionId, "denied")}> 
+                      Deny 
+                    </button>
+                    <button className="btn btn-primary" onClick={() => statusUpdate(question.questionId, "approved")}> 
+                      Approve 
+                    </button>
                   </div>
                 </div>
               ))}
