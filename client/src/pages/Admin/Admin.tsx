@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import QuestionCard from "../components/QuestionCard/QuestionCard";
+import QuestionCard from "../../components/QuestionCard/QuestionCard";
 
 interface Question {
   questionId: string;
