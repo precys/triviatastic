@@ -35,4 +35,62 @@ async function deletePost(userId, postId) {
   return deleted;
 }
 
-module.exports = { createPost, getUserPosts, getPostById, updatePost, deletePost, };
+// toggle like
+async function toggleLike(userId, postId) {
+  const alreadyLiked = await postDAO.hasUserLiked(userId, postId);
+  const alreadyUnliked = await postDAO.hasUserUnliked(userId, postId);
+
+  if (alreadyLiked) {
+    await postDAO.removeLike(userId, postId);
+    return { toggled: 'off' }; // removed like
+  }
+
+  if (alreadyUnliked) {
+    await postDAO.removeUnlike(userId, postId); // mutually exclusive
+  }
+
+  const newLike = await postDAO.addLike(userId, postId);
+  return { toggled: 'on', like: newLike };
+}
+
+// toggle unlike
+async function toggleUnlike(userId, postId) {
+  const alreadyUnliked = await postDAO.hasUserUnliked(userId, postId);
+  const alreadyLiked = await postDAO.hasUserLiked(userId, postId);
+
+  if (alreadyUnliked) {
+    await postDAO.removeUnlike(userId, postId);
+    return { toggled: 'off' }; // removed unlike
+  }
+
+  if (alreadyLiked) {
+    await postDAO.removeLike(userId, postId);
+  }
+
+  const newUnlike = await postDAO.addUnlike(userId, postId);
+  return { toggled: 'on', unlike: newUnlike };
+}
+
+// comment
+async function addComment(userId, postId, text) {
+  if (!text || text.trim() === '') {
+    throw new Error('Comment cannot be empty');
+  }
+  return await postDAO.addComment(userId, postId, text);
+}
+
+//get comments for a post
+async function getComments(postId) {
+  return await postDAO.getComments(postId);
+}
+
+
+
+
+
+
+
+module.exports = {
+  createPost, getUserPosts, getPostById, updatePost, deletePost,
+  toggleLike, toggleUnlike, addComment, getComments
+};

@@ -56,4 +56,67 @@ async function deletePost(req, res) {
   }
 }
 
-module.exports = { createNewPost, getUserPosts, getSinglePost, updatePost, deletePost };
+// toggle like
+async function likePost(req, res) {
+  try {
+    const { userId, postId } = req.params;
+    const result = await postService.toggleLike(userId, postId);
+
+    res.status(200).json({
+      message: result.toggled === 'on' ? 'Post liked' : 'Like removed',
+      like: result.like || null,
+    });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+}
+
+// toggle unlike
+async function unlikePost(req, res) {
+  try {
+    const { userId, postId } = req.params;
+    const result = await postService.toggleUnlike(userId, postId);
+
+    res.status(200).json({
+      message: result.toggled === 'on' ? 'Post unliked' : 'Unlike removed',
+      unlike: result.unlike || null,
+    });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+}
+
+// add comment to post
+async function addComment(req, res) {
+  try {
+    const { userId, postId } = req.params;
+    const { text } = req.body;
+    const comment = await postService.addComment(userId, postId, text);
+    res.status(201).json(comment);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+}
+
+// get comments for a single post
+async function getComments(req, res) {
+  try {
+    const { postId } = req.params;
+    const comments = await postService.getComments(postId);
+    res.json(comments);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+}
+
+
+
+
+
+
+
+
+module.exports = {
+  createNewPost, getUserPosts, getSinglePost, updatePost, deletePost,
+  likePost, unlikePost, addComment, getComments
+};

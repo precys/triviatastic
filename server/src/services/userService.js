@@ -45,7 +45,7 @@ async function loginUser({ username, password }) {
   }
 
   const user = await userDAO.getUserByUsername(username);
-    console.log("HERE")
+
   if (!user) throw new Error("User not found");
 
   const match = await bcrypt.compare(password, user.passwordHash);

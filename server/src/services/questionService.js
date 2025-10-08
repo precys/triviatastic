@@ -32,6 +32,7 @@ async function createQuestion(questionItem, userId){
             const newQuestion = {
                 PK: `CATEGORY#${category}`,
                 SK: `QUESTION#${questionId}`,
+                category,
                 questionId,
                 userId,
                 type,
