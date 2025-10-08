@@ -18,7 +18,7 @@ function Authentication({children}: { children: ReactNode }) {
 
     // Set the Provider of the context to the values we want to get for the nested components
     return (
-        <AuthContext.Provider value= {{ token, login, logout}}>
+        <AuthContext.Provider value= {{ token, login, logout }}>
             {children}
         </AuthContext.Provider>
     )
