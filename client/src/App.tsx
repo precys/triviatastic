@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar/Navbar";
 // Page imports
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
+import Profile from './pages/Profile';
 // CSS imports
 import './App.css'
 
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/admin" element={<Admin />}></Route>
+        <Route path="/users/:userId" element={<Profile />}></Route>
       </Routes>
     </>
   )

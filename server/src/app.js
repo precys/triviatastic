@@ -7,7 +7,10 @@ const { logger, loggerMiddleware } = require('./utils/logger');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors())
+//app.use(cors())
+app.use(cors({
+  origin: "http://localhost:5173",
+}));
 
 // middleware logging every incoming request
 app.use(loggerMiddleware);

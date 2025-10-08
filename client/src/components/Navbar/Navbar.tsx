@@ -15,6 +15,11 @@ function Navbar() {
                   Admin
                 </Link>
               </li>
+              {/* <li className="nav-item">
+                <Link className="nav-link" to={`"/users/${userId}`}>
+                  Profile
+                </Link>
+              </li> */}
             </ul>
           </div>
         </div>

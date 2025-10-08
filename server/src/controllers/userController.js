@@ -88,6 +88,21 @@ async function deleteAccount(req, res) {
     res.status(200).json({message: "Account deleted successfully."});
 }
 
+//get a user by id
+async function findUserById(req, res){
+  const userId = req.params.userId;
+  const user = await userService.findUserById(userId);
+
+  if (!user){
+    res.status(404).json({message: "User Not Found"});
+  } else{
+    res.status(200).json({
+      username: user.username,
+    });
+  }
+
+}
+
 // get user's friends
 async function getUsersFriends(req, res) {
     try {
@@ -175,5 +190,5 @@ async function deleteFriendRequest (req, res){
 }
 
 module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, sendFriendRequest, 
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest };
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, findUserById };
 
