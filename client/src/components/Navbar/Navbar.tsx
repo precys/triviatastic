@@ -15,6 +15,11 @@ function Navbar() {
                   Admin
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/create-game">
+                  Create Game
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
