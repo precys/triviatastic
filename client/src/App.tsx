@@ -2,6 +2,7 @@
 import { Route, Routes } from 'react-router-dom'
 // Components imports
 import Navbar from "./components/Navbar/Navbar";
+import CreateQuiz from "./components/CreateQuiz/CreateQuiz";
 import AuthentificationHook from './components/Context/AuthentificationHook';
 // Page imports
 import Login from './pages/Login/Login';
@@ -21,6 +22,7 @@ function App() {
         <Route path="/" element={<Login />}></Route>
         <Route path="/home" element={<ProtectedRoute> <Home /> </ProtectedRoute>}></Route>
         <Route path="/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>
+        <Route path="/create-game" element={<ProtectedRoute> <CreateQuiz /> </ProtectedRoute>}></Route>
       </Routes>
     </>
   )

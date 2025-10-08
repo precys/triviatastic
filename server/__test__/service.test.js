@@ -17,7 +17,13 @@ describe("User Service Testing", () => {
         spyUpdate = jest.spyOn(userDAO, 'updateUser');
         spyDelete = jest.spyOn(userDAO, 'deleteUserById');
         spyRegister = jest.spyOn(userDAO, 'createUser');
+
         spyFriends = jest.spyOn(userDAO, 'getUsersFriendsByUserId');
+        spyCreateFriendRequest = jest.spyOn(userDAO, 'sendFriendRequest');
+        spyUpdateFriendsList = jest.spyOn(userDAO, 'updateFriendsList');
+        spyFriendsByStatus = jest.spyOn(userDAO, 'getFriendRequestsByStatus');
+        spyRespond = jest.spyOn(userDAO, 'respondToFriendRequest');
+        spyDeleteFriendRequest = jest.spyOn(userDAO, 'deleteFriendRequest');
     });
     afterEach(() => {
         spyFind.mockClear();
@@ -25,7 +31,13 @@ describe("User Service Testing", () => {
         spyUpdate.mockClear();
         spyDelete.mockClear();
         spyRegister.mockClear();
+
         spyFriends.mockClear();
+        spyCreateFriendRequest.mockClear();
+        spyUpdateFriendsList.mockClear();
+        spyFriendsByStatus.mockClear();
+        spyRespond.mockClear();
+        spyDeleteFriendRequest.mockClear();
     });
 
     test("Login Success", async () => {
@@ -219,7 +231,7 @@ describe("User Service Testing", () => {
     test("Delete Success", async () => {
         spyFind.mockImplementation(async () => {return {user: "username", passwordHash: "whatever", friends: []}});
         spyDelete.mockImplementation(async () => {return true});
-        spyUpdate.mockImplementation(async () => {return true;});
+        spyUpdate.mockImplementation(async () => {return true});
 
         const result = await userService.deleteUserById("Example_Existing_Id").catch((e) => {
             return null;
@@ -232,9 +244,9 @@ describe("User Service Testing", () => {
     });
 
     test("Delete Id does not exist", async () => {
-        spyFind.mockImplementation(async () => {return null;});
+        spyFind.mockImplementation(async () => {return null});
         spyDelete.mockImplementation(async () => {return false});
-        spyUpdate.mockImplementation(async () => {return;});
+        spyUpdate.mockImplementation(async () => {return});
 
         const result = await userService.deleteUserById("Example_Existing_Id").catch((e) => {
             return null;
@@ -267,6 +279,122 @@ describe("User Service Testing", () => {
         expect(spyFriends).toHaveBeenCalledTimes(0);
     });
 
+    test("Send friend request success", async () => {
+        spyCreateFriendRequest.mockImplementation(async () => {return;})
+        spyFind.mockImplementation(async () => {return {username: "username2", passwordHash: await bcrypt.hash("password", 10), userId: "1", friends: []}; });
+        spyGet.mockImplementation(async () => {return {username: "username", passwordHash: await bcrypt.hash("password", 10), userId: "2", friends: []}; });
+
+
+        const result = await userService.sendFriendRequest("1", "username");
+
+        expect(result).toBeTruthy();
+        expect(result.message).toBeTruthy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyGet).toHaveBeenCalledTimes(1);
+        expect(spyCreateFriendRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test("Send friend same user", async () => {
+        spyCreateFriendRequest.mockImplementation(async () => {return;})
+        spyFind.mockImplementation(async () => {return {username: "username", passwordHash: await bcrypt.hash("password", 10), userId: "1", friends: []}; });
+        spyGet.mockImplementation(async () => {return {username: "username", passwordHash: await bcrypt.hash("password", 10), userId: "1", friends: []}; });
+
+
+        const result = await userService.sendFriendRequest("1", "username").catch((error) => {return null;});
+
+        expect(result).toBeFalsy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyGet).toHaveBeenCalledTimes(1);
+        expect(spyCreateFriendRequest).toHaveBeenCalledTimes(0);
+    });
+
+    test("Send friend no sender", async () => {
+        spyCreateFriendRequest.mockImplementation(async () => {return;})
+        spyFind.mockImplementation(async () => {return null;});
+        spyGet.mockImplementation(async () => {return {username: "username", passwordHash: await bcrypt.hash("password", 10), userId: "1", friends: []}; });
+
+
+        const result = await userService.sendFriendRequest("1", "username").catch((error) => {return null;});
+
+        expect(result).toBeFalsy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyGet).toHaveBeenCalledTimes(1);
+        expect(spyCreateFriendRequest).toHaveBeenCalledTimes(0);
+    });
+
+    
+    test("Send friend no reciever", async () => {
+        spyCreateFriendRequest.mockImplementation(async () => {return;})
+        spyFind.mockImplementation(async () => {return {username: "username", passwordHash: await bcrypt.hash("password", 10), userId: "1", friends: []};});
+        spyGet.mockImplementation(async () => {return null; });
+
+
+        const result = await userService.sendFriendRequest("1", "username").catch((error) => {return null;});
+
+        expect(result).toBeFalsy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyGet).toHaveBeenCalledTimes(1);
+        expect(spyCreateFriendRequest).toHaveBeenCalledTimes(0);
+    });
+    
+    test("Send friend already friends", async () => {
+        spyCreateFriendRequest.mockImplementation(async () => {return;})
+        spyFind.mockImplementation(async () => {return {username: "username2", passwordHash: await bcrypt.hash("password", 10), userId: "1", friends: ["2"]}; });
+        spyGet.mockImplementation(async () => {return {username: "username", passwordHash: await bcrypt.hash("password", 10), userId: "2", friends: ["1"]}; });
+
+
+        const result = await userService.sendFriendRequest("1", "username").catch((error) => {return null;});
+
+        expect(result).toBeFalsy();
+        expect(spyFind).toHaveBeenCalledTimes(1);
+        expect(spyGet).toHaveBeenCalledTimes(1);
+        expect(spyCreateFriendRequest).toHaveBeenCalledTimes(0);
+    });
+
+    test("Respond to friend request", async () => {
+        spyRespond.mockImplementation(async () => {});
+        
+    });
+
+    test("Get requests by status success", async() => {
+        spyFriendsByStatus.mockImplementation(() => {return [{user_id: "ID1", status: "pending"}];});
+
+        const result = await userService.getFriendRequestsByStatus("ID1", "pending");
+
+        expect(result).toBeTruthy;
+        expect(result.requests.length).toBe(1);
+        expect(spyFriendsByStatus).toHaveBeenCalledTimes(1);
+    });
+
+    test("Get requests by invalid status", async() => {
+        spyFriendsByStatus.mockImplementation(() => {return [{user_id: "ID1", status: "pending"}];});
+
+        const result = await userService.getFriendRequestsByStatus("ID1", "INVALID_VALUE").catch((e) => {return null;});
+
+        expect(result).toBeFalsy;
+        expect(spyFriendsByStatus).toHaveBeenCalledTimes(0);
+    });
+
+    test("Delete friend request success", async() => {
+        spyDeleteFriendRequest.mockImplementation(() => {return true;});
+
+        const result = await userService.deleteFriendRequest("ID1", "ID2").catch((e) => {return null;});
+
+        expect(result).toBeTruthy;
+        expect(spyDeleteFriendRequest).toHaveBeenCalledTimes(1);
+    });
+
+
+    test("Delete friend request does not exist", async() => {
+        spyDeleteFriendRequest.mockImplementation(() => {return null;});
+
+        const result = await userService.deleteFriendRequest("ID1", "ID2").catch((e) => {return null;});
+
+        expect(result).toBeFalsy;
+        expect(spyDeleteFriendRequest).toHaveBeenCalledTimes(1);
+    });
+
+
 });
 
 describe("Question Service Testing", () => {
@@ -276,6 +404,7 @@ describe("Question Service Testing", () => {
         spyCreate = jest.spyOn(questionDAO, 'createQuestion');
         spyUpdate = jest.spyOn(questionDAO, 'updateQuestionStatus');
         spyGetAll = jest.spyOn(questionDAO, 'getAllQuestionsByStatus');
+        spyGetCategory = jest.spyOn(questionDAO, 'getAllQuestionsByCategory');
         spyFind = jest.spyOn(questionDAO, 'getQuestionById');
         spyDelete = jest.spyOn(questionDAO, 'deleteQuestion');
     });
@@ -283,6 +412,7 @@ describe("Question Service Testing", () => {
         spyCreate.mockClear();
         spyUpdate.mockClear();
         spyGetAll.mockClear();
+        spyGetCategory.mockClear();
         spyFind.mockClear();
         spyDelete.mockClear();
     });
@@ -497,14 +627,61 @@ describe("Question Service Testing", () => {
                 questionId: "Example_Question_Id",
                 PK: "PK",
                 SK: "SK",
-                status: "approve",
+                status: "pending",
                 createdAt: new Date().toISOString(),
             }];
         });
-        const result = await questionService.getAllPendingQuestions("approved");
+        const result = await questionService.getAllPendingQuestions();
         
         expect(result[0]).toBeTruthy();
         expect(spyGetAll).toHaveBeenCalledTimes(1);
+    });
+
+    test("Get questions by category success", async () => {
+        spyGetCategory.mockImplementation(() => {
+            return [{
+                type: "Multiple Choice",
+                difficulty: "easy", 
+                question: "What is my name?", 
+                correct_answer: "I don't know", 
+                incorrect_answers: ["Hunter", "Edwin", "Gwen", "Andrew"],
+                userId: "Example_Id",
+                questionId: "Example_Question_Id",
+                PK: "PK",
+                SK: "SK",
+                status: "pending",
+                createdAt: new Date().toISOString(),
+            }];
+        });
+
+        const result = await questionService.getQuestionsByCategory("PK", 1);
+        
+        expect(result[0]).toBeTruthy();
+        expect(spyGetCategory).toHaveBeenCalledTimes(1);
+    });
+
+
+    test("Get more questions than in database", async () => {
+        spyGetCategory.mockImplementation(() => {
+            return [{
+                type: "Multiple Choice",
+                difficulty: "easy", 
+                question: "What is my name?", 
+                correct_answer: "I don't know", 
+                incorrect_answers: ["Hunter", "Edwin", "Gwen", "Andrew"],
+                userId: "Example_Id",
+                questionId: "Example_Question_Id",
+                PK: "PK",
+                SK: "SK",
+                status: "pending",
+                createdAt: new Date().toISOString(),
+            }];
+        });
+
+        const result = await questionService.getQuestionsByCategory("PK", 100000);
+        
+        expect(result.error).toBe(`Number of questions requested is greater than questions stored. Currently, only 1 in the PK category exists.`);
+        expect(spyGetCategory).toHaveBeenCalledTimes(1);
     });
 
 });
