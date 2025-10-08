@@ -7,6 +7,7 @@ function Login() {
     // Initialize useState variables for username and password
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [register, setRegister] = useState<boolean>(false);
     // Initialize login from Authentification Hook
     const { login } = AuthentificationHook();
     // Initialize navigate
@@ -15,12 +16,23 @@ function Login() {
     // Function to handle login endpoint
     const handleLogin = async () => {
         try {
-            const url = "http://localhost:3000/users/login";
+            let url = "";
             const body = {
-                username: username,
-                password: password,
+                    username: username,
+                    password: password,
             }
 
+             // Added if-conditional to check if user is being registered or not
+            if (register){
+                url = "http://localhost:3000/users/register";
+
+            }
+            else {
+                // if not register, login
+                url = "http://localhost:3000/users/login";
+            }
+
+            // Login and register take the same body format, use same code, just change url depending on registering or not.
             await axios
                 .post(url, body)
                 .then((response) => {
@@ -28,7 +40,7 @@ function Login() {
                     login(token);
                     navigate("/home");
                 })
-                .catch(err => console.error(`Error on login request. ${err}`))
+                .catch(err => console.error(`Error on axios request. ${err}`))
             
         }
         catch (err){
@@ -47,6 +59,11 @@ function Login() {
                 <div className="mb-3">
                     <label className="form-label">Password</label>
                     <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                </div>
+                <div className="input-group mb-3">
+                    <div className="input-group-text">
+                        <input className="form-check-input mt-0" type="checkbox" onChange={(e) => setRegister(e.target.checked)} /> Register
+                    </div>
                 </div>
                 <button className="btn btn-primary" onClick={() => handleLogin()}>Submit</button>
             </div>

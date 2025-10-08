@@ -35,7 +35,8 @@ async function registerUser({ username, password }) {
   };
   
   const createdUser = await userDAO.createUser(userItem);
-  return { userId: createdUser.userId, username: createdUser.username };
+  const token = generateToken(createdUser);
+  return { token, userId: createdUser.userId, username: createdUser.username };
 }
 
 // login
