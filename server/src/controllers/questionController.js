@@ -90,9 +90,19 @@ async function getQuestionsByCategory(req, res){
     }
 
     try {
-        const { category, n } = req.query;
+        const { category, n, difficulty, type } = req.query;
+
+        if (!category){
+            return res.status(404).json({message:`Please enter a category`});
+        }
+        if (!type){
+            return res.status(404).json({message:`Please enter a type`});
+        }
+        if (!n){
+            return res.status(404).json({message:`Please enter a number`});
+        }
         
-        const data = await questionService.getQuestionsByCategory(category, n)
+        const data = await questionService.getQuestionsByCategory(category, n, difficulty, type)
 
         if (!data){
             logger.error(`Client requested number of questions greater than what is stored.`)
