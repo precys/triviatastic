@@ -11,6 +11,16 @@ function Navbar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav">
               <li className="nav-item">
+                <Link className="nav-link" to="/feed">
+                  Feed
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/profile">
+                  Profile
+                </Link>
+              </li>
+              <li className="nav-item">
                 <Link className="nav-link" to="/admin">
                   Admin
                 </Link>
