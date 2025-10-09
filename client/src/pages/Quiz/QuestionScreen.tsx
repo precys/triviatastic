@@ -1,6 +1,31 @@
-function QuestionScreen({changeScreen, game}: QuestionScreenProps) {
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import AuthentificationHook from "../../components/Context/AuthentificationHook";
+
+function QuestionScreen({changeScreen, game, setGame}: QuestionScreenProps) {
+    const {token, logout} = AuthentificationHook();
+    const {game_id} = useParams();
+
     function answerQuestion(selection: number) {
-        changeScreen();
+        const correct = true;
+
+        axios.post(`http://localhost:3000/games/${game_id}/answer`,
+            {
+                questionDifficulty: game.questionDifficulty,
+                correct
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}` 
+                }
+            })
+        .then((response) => {
+            setGame(response.data);
+            changeScreen();
+        })
+        .catch((error) => {
+
+        });
     }
     return (
     <>
@@ -18,7 +43,21 @@ function QuestionScreen({changeScreen, game}: QuestionScreenProps) {
 
 type QuestionScreenProps = {
   changeScreen: () => void;
-  game: object;
+  game: Game;
+  setGame: React.Dispatch<React.SetStateAction<Game>>;
 };
+
+type Game = {
+    PK: string;
+    SK: string;
+    gameId: string,
+    userId: string,
+    category: string
+    currentQuestion: number,
+    score: number,
+    finished: boolean,
+    createdAt: Date,
+    questionDifficulty: string
+}
 
 export default QuestionScreen;
