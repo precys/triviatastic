@@ -46,7 +46,7 @@ async function updateQuestionStatus(req, res){
             }
         }
         else {
-            return res.status(401).json({message: `Invalid question id, question is not pending, or invalid status to change.`})
+            return res.status(404).json({message: `Invalid question id, question is not pending, or invalid status to change.`})
         }
     }
     catch (err){
@@ -83,24 +83,36 @@ async function getQuestionsByStatus(req, res){
 }
 
 // route function to handle requests for custom questions
-// sample url: http://localhost:3000/questions/category?category=art&n=1
+// sample url: http://localhost:3000/questions/category?category=art&n=4&difficulty=medium&type=multiple
+// URL CAN NOW TAKE TYPE AND DIFFICULTY QUERY PARAMETERS, the only NECESSARY parameters the url needs is n, and category, and type.
+// no difficulty defined means that it will not filter for difficult i.e questions will be of all difficulties.
 async function getQuestionsByCategory(req, res){
     if ((await isAdmin(req.user.userId))){
         return res.status(403).json({message: "Forbidden access for user."});
     }
 
     try {
-        const { category, n } = req.query;
-        
-        const data = await questionService.getQuestionsByCategory(category, n)
+        const { category, n, difficulty, type } = req.query;
 
-        if (data.error){
+        if (!category){
+            return res.status(404).json({message:`Please enter a category`});
+        }
+        if (!type){
+            return res.status(404).json({message:`Please enter a type`});
+        }
+        if (!n){
+            return res.status(404).json({message:`Please enter a number`});
+        }
+        
+        const data = await questionService.getQuestionsByCategory(category, n, difficulty, type)
+
+        if (!data){
             logger.error(`Client requested number of questions greater than what is stored.`)
-            res.status(401).json(data)
+            res.status(404).json({message:`Please request a valid number of questions.`})
         }
         else {
             logger.info(`Success | getQuestionByCategory | ${JSON.stringify(data.Items)}`);
-            return res.status(201).json({message:`Custom questions in ${category}: `, questions: data})
+            return res.status(201).json({message:`Custom questions in ${category}:`, questions: data})
         }
 
     }
