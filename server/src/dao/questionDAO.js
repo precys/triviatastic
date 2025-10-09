@@ -180,15 +180,20 @@ async function getAllQuestionsByStatus(status){
     };
 }
 
-// function to get all questions by category
+// function to get all questions by category, that are approved
 // args: category
 // return: list of questions
 async function getAllQuestionsByCategory(category){
     const params = {
         TableName: TABLE_NAME,
         KeyConditionExpression: "PK = :PK",
+        FilterExpression: "#status = :status",
+        ExpressionAttributeNames: {
+            "#status": "status",
+        },
         ExpressionAttributeValues: {
-        ":PK": `CATEGORY#${category.toLowerCase()}`
+            ":PK": `CATEGORY#${category.toLowerCase()}`,
+            ":status": "approved"
         }
     };
     const command = new QueryCommand(params);
@@ -213,6 +218,43 @@ async function getAllQuestionsByCategory(category){
     };
 }
 
+// function that gets all questions
+// return: list of all questions that are approved
+async function getAllQuestions(){
+    const params = {
+        TableName: TABLE_NAME,
+        FilterExpression: "begins_with(PK, :PKPrefix) AND #status = :status",
+        ExpressionAttributeNames: {
+            "#status": "status",
+        },
+        ExpressionAttributeValues: {
+            ":PKPrefix": "CATEGORY#",
+            ":status": "approved",
+        },
+    };
+    const command = new ScanCommand(params)
+
+    try {
+        const data = await documentClient.send(command)
+
+        if (data){
+            logger.info(`Successful SCAN | getAllQuestions | ${JSON.stringify(data.Items)}`)
+            return data.Items;
+        }
+        else {
+            logger.error(`Failed SCAN | getAllQuestions`)
+            return null;
+        }
+        
+
+    }
+    catch (err){
+        logger.error(`Error in questionDAO | getAllQuestions | ${err}`);
+        return null;
+    }
+
+}
+
 module.exports = {
     createQuestion,
     getQuestionById,
@@ -220,4 +262,5 @@ module.exports = {
     deleteQuestion,
     getAllQuestionsByStatus,
     getAllQuestionsByCategory,
+    getAllQuestions,
 }
