@@ -142,6 +142,16 @@ async function getStats(userId) {
   };
 }
 
+async function getAllUsers (){
+  const users = await userDAO.getAllUsers();
+
+  return users.map(user => ({
+    userId: user.userId,
+    username:user.username
+  }));
+
+}
+
 // get user's friends
 async function getUsersFriends(user) {
     if (!user) {
@@ -191,6 +201,7 @@ async function sendFriendRequest(senderId, friendUsername){
     
     return {
         message: `Friend request to ${receiver.username} sent!`,
+        friendId: receiver.userId
     }
 
 }
@@ -339,6 +350,6 @@ async function removeFriend(userIdToRemoveFrom, friendId) {
 
 module.exports = {
   registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, removeFriend, updateAccount, addFriend, sendFriendRequest,
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers
 };
 

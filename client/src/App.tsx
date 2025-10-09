@@ -18,6 +18,7 @@ function App() {
         <Route path="/" element={<Home />}></Route>
         <Route path="/admin" element={<Admin />}></Route>
         <Route path="/users/:userId" element={<Profile />}></Route>
+        <Route path="/users/:userId/friends" element={<Profile />}></Route>
       </Routes>
     </>
   )

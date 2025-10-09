@@ -1,7 +1,7 @@
 const { logger } = require('../utils/logger');
 // aws sdk v3 imports
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand, QueryCommand, UpdateCommand } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand, QueryCommand, UpdateCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 
 // create document client
 const client = new DynamoDBClient({ region: "us-east-1" }); // change region as necessary.
@@ -106,6 +106,24 @@ async function getUserByUsername(username) {
   
   const { Items } = await documentClient.send(command);
   return Items?.[0];
+}
+
+//retrieves all users but no admins
+async function getAllUsers() { 
+  const command = new ScanCommand ({
+    TableName: TABLE_NAME,
+    FilterExpression: "#role = :role",
+    ExpressionAttributeNames: { "#role": "role" },
+    ExpressionAttributeValues: { ":role": "USER" }
+  });
+
+  try {
+      const data = await documentClient.send(command);
+      return data.Items;
+  } catch (error) {
+      logger.error(`Error fetching users`);
+      throw error;
+  }
 }
 
 // get user's friends list
@@ -245,6 +263,6 @@ async function deleteFriendRequest (userFriendId, requestId){
 
 module.exports = {
   createUser, deleteUserById, getUserByUsername, updateUser, findUserById, getUsersFriendsByUserId, updateFriendsList, sendFriendRequest, 
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers
 };
 

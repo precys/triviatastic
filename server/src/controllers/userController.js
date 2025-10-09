@@ -100,7 +100,21 @@ async function findUserById(req, res){
       username: user.username,
     });
   }
+}
 
+//retrieve all users no admins included
+async function getAllUsers (req, res){
+  const users = await userService.getAllUsers();
+
+  try{
+    if(!users){
+      return res.status(404).json({ message: "Users not found" });
+    }
+    res.status(200).json(users);
+
+  }catch(error){
+    res.status(404).json({ message: "Failed to retrieve users" });
+  }
 }
 
 // get user's friends
@@ -110,7 +124,7 @@ async function getUsersFriends(req, res) {
 
         const user = await userService.findUserById(userId);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+          return res.status(404).json({ message: "User not found" });
         }
 
         const friendData = await userService.getUsersFriends(user);
@@ -190,5 +204,5 @@ async function deleteFriendRequest (req, res){
 }
 
 module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, sendFriendRequest, 
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, findUserById };
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, findUserById, getAllUsers };
 
