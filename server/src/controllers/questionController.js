@@ -83,7 +83,9 @@ async function getQuestionsByStatus(req, res){
 }
 
 // route function to handle requests for custom questions
-// sample url: http://localhost:3000/questions/category?category=art&n=1
+// sample url: http://localhost:3000/questions/category?category=art&n=4&difficulty=medium&type=multiple
+// URL CAN NOW TAKE TYPE AND DIFFICULTY QUERY PARAMETERS, the only NECESSARY parameters the url needs is n, and category, and type.
+// no difficulty defined means that it will not filter for difficult i.e questions will be of all difficulties.
 async function getQuestionsByCategory(req, res){
     if ((await isAdmin(req.user.userId))){
         return res.status(403).json({message: "Forbidden access for user."});
