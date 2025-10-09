@@ -45,7 +45,7 @@ async function loginUser({ username, password }) {
   }
 
   const user = await userDAO.getUserByUsername(username);
-    console.log("HERE")
+
   if (!user) throw new Error("User not found");
 
   const match = await bcrypt.compare(password, user.passwordHash);
@@ -106,8 +106,8 @@ async function deleteUserById(userId) {
   if(!user) return false;
 
   const friends = user.friends;
-  for(let friendId of friends) {
-    await removeFriend(friendId, userId);
+  for(let friendUsername of friends) {
+    await removeFriend(friendUsername, user.username);
   }
 
   if(await userDAO.deleteUserById(userId)) {
@@ -327,9 +327,12 @@ async function deleteFriendRequest (userId, requestId) {
 
 }
 
-async function removeFriend(userIdToRemoveFrom, friendId) {
-  const userToUpdate = await userDAO.findUserById(userIdToRemoveFrom);
-  userToUpdate.friends = userToUpdate.friends.filter((element) => element != friendId);
+async function removeFriend(usernameToRemoveFrom, friendUsername) {
+  const userToUpdate = await userDAO.getUserByUsername(usernameToRemoveFrom);
+  if(!userToUpdate) {
+    throw new Error("User not found.");
+  }
+  userToUpdate.friends = userToUpdate.friends.filter((element) => element != friendUsername);
   if(!await userDAO.updateUser(userToUpdate)) {
     return false;
   }
