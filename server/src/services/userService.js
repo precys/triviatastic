@@ -53,7 +53,7 @@ async function loginUser({ username, password }) {
   if (!match) throw new Error("Invalid credentials");
 
   const token = generateToken(user);
-  return { token, userId: user.userId, username: user.username };
+  return { token, userId: user.userId, username: user.username, role: user.role };
 }
 
 // ADMINS: update user accounts

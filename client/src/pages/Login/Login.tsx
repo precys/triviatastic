@@ -9,7 +9,7 @@ function Login() {
     const [password, setPassword] = useState<string>("");
     const [register, setRegister] = useState<boolean>(false);
     // Initialize login from Authentification Hook
-    const { login } = AuthentificationHook();
+    const { login, setRole } = AuthentificationHook();
     // Initialize navigate
     const navigate = useNavigate();
 
@@ -37,7 +37,10 @@ function Login() {
                 .post(url, body)
                 .then((response) => {
                     const token = response.data.token;
+                    const userRole = response.data.role;
+
                     login(token);
+                    setRole(userRole)
                     navigate("/home");
                 })
                 .catch(err => console.error(`Error on axios request. ${err}`))
