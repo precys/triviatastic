@@ -101,10 +101,18 @@ async function updateQuestionStatus(questionId, status){
 // args: category, n (number of questions)
 // return: list of questions of n amount
 async function getQuestionsByCategory(category, n){
-    const questions = await questionDAO.getAllQuestionsByCategory(category);
+    let questions = [];
+
+    if (category == "any"){
+        questions = await questionDAO.getAllQuestions();
+    }
+    else {
+        questions = await questionDAO.getAllQuestionsByCategory(category);
+    }
+    
 
     if (n > questions.length){
-        return data = {error:`Number of questions requested is greater than questions stored. Currently, only ${questions.length} in the ${category} category exists.`}
+        return null;
     }
 
     // Fischer-Yates shuffle according to the internet

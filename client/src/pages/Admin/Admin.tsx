@@ -1,7 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import QuestionCard from "../components/QuestionCard/QuestionCard";
+import QuestionCard from "../../components/QuestionCard/QuestionCard";
+import AuthentificationHook from "../../components/Context/AuthentificationHook";
+import { useNavigate } from "react-router-dom";
 
+// Setting up TypeScript interface for question object made
 interface Question {
   questionId: string;
   question: string;
@@ -12,24 +15,40 @@ interface Question {
   incorrect_answers: [];
 }
 
+// Admin panel component
 function Admin() {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyNWNkNzVkNy1lOTI2LTQyYjctOTM0OS1lYmViNWEzYWJiNzAiLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3NTk3NTI3MDksImV4cCI6MTc1OTc5NTkwOX0.ap_Rp4gk0wIahMC3HtgOzNunUIMkSc9Sb7lTdlXZcqc";
+  // useState for arraylist of questions
   const [questions, setQuestions] = useState<Question[]>([]);
+  // Token is unpacked from AuthentificationHook
+  const { token, logout } = AuthentificationHook();
+  // navigate object to handle navigation after request, in this case if token is invalid go back to login
+  const navigate = useNavigate();
 
+  // useEffect to render on empty array list, page loading, to fill out questions
   useEffect(() => {
       axios
+        // Endpoint to change status
         .get("http://localhost:3000/questions/status?status=pending", {
           headers: {
             Authorization: `Bearer ${token}` 
           },
       })
-      .then((response) => {
-        setQuestions(response.data.questions); 
-      })
-        .catch((err) => console.error(err));
-  }, []);
+        // Parse through body for questions
+        .then((response) => {
+          setQuestions(response.data.questions); 
+        })
+        // Error handling
+        .catch((err) =>{
+          console.error(err)
+            // Since we return a 401 from our JWT in server, logout erases token and navigate back to login
+            if (err.response.status==401){
+              logout()
+              navigate("/")
+            }
+        } );
+  }, [token, navigate, logout]);
 
+  // statusUpdate function that sends request to statusUpdate endpoint for approval or denial
   const statusUpdate = async (questionId: string, newStatus: string) => {
     try {
       const url = `http://localhost:3000/questions/${questionId}?status=${newStatus}`
@@ -46,7 +65,7 @@ function Admin() {
         })
         .catch((err) => console.error(err))
 
-
+        // Filters current arraylist to not include question that was changed.
         setQuestions((prev) =>
           prev.filter((question) => question.questionId !== questionId)
         );

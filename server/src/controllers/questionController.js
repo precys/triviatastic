@@ -46,7 +46,7 @@ async function updateQuestionStatus(req, res){
             }
         }
         else {
-            return res.status(401).json({message: `Invalid question id, question is not pending, or invalid status to change.`})
+            return res.status(404).json({message: `Invalid question id, question is not pending, or invalid status to change.`})
         }
     }
     catch (err){
@@ -94,13 +94,13 @@ async function getQuestionsByCategory(req, res){
         
         const data = await questionService.getQuestionsByCategory(category, n)
 
-        if (data.error){
+        if (!data){
             logger.error(`Client requested number of questions greater than what is stored.`)
-            res.status(401).json(data)
+            res.status(404).json({message:`Please request a valid number of questions.`})
         }
         else {
             logger.info(`Success | getQuestionByCategory | ${JSON.stringify(data.Items)}`);
-            return res.status(201).json({message:`Custom questions in ${category}: `, questions: data})
+            return res.status(201).json({message:`Custom questions in ${category}:`, questions: data})
         }
 
     }
