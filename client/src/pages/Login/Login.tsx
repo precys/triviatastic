@@ -54,21 +54,23 @@ function Login() {
     // Very simple login page, taken from bootstrap
     return (
         <>
-            <div className="margin-auto">
-                <div className="mb-3">
-                    <label className="form-label">Username</label>
-                    <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)}/>
-                </div>
-                <div className="mb-3">
-                    <label className="form-label">Password</label>
-                    <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                </div>
-                <div className="input-group mb-3">
-                    <div className="input-group-text">
-                        <input className="form-check-input mt-0" type="checkbox" onChange={(e) => setRegister(e.target.checked)} /> Register
+            <div className="d-flex justify-content-center align-items-center vh-100">
+                <div className="p-2">
+                    <div className="mb-3">
+                        <label className="form-label">Username</label>
+                        <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)}/>
                     </div>
+                    <div className="mb-3">
+                        <label className="form-label">Password</label>
+                        <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    </div>
+                    <div className="input-group mb-3">
+                        <div className="input-group-text">
+                            <input className="form-check-input mt-0" type="checkbox" onChange={(e) => setRegister(e.target.checked)} /> <span className="ms-1"> Register </span>
+                        </div>
+                    </div>
+                    <button className="btn btn-primary" onClick={() => handleLogin()}>Submit</button>
                 </div>
-                <button className="btn btn-primary" onClick={() => handleLogin()}>Submit</button>
             </div>
         </>
     )
