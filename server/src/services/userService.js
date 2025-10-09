@@ -35,7 +35,8 @@ async function registerUser({ username, password }) {
   };
   
   const createdUser = await userDAO.createUser(userItem);
-  return { userId: createdUser.userId, username: createdUser.username };
+  const token = generateToken(createdUser);
+  return { token, userId: createdUser.userId, username: createdUser.username };
 }
 
 // login
@@ -52,7 +53,7 @@ async function loginUser({ username, password }) {
   if (!match) throw new Error("Invalid credentials");
 
   const token = generateToken(user);
-  return { token, userId: user.userId, username: user.username };
+  return { token, userId: user.userId, username: user.username, role: user.role };
 }
 
 // ADMINS: update user accounts
