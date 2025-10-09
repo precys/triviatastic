@@ -8,6 +8,7 @@ import AuthentificationHook from './components/Context/AuthentificationHook';
 import Login from './pages/Login/Login';
 import Home from "./pages/Home/Home";
 import Admin from "./pages/Admin/Admin";
+import Quiz from "./pages/Quiz/Quiz"
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import ProfilePage from "./pages/ProfilePage";
 import CommentsFeedPage from "./pages/CommentsFeedPage";
@@ -23,7 +24,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<ProtectedRoute> <Home /> </ProtectedRoute>}></Route>
         <Route path="/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>
-        <Route path="/create-game" element={<ProtectedRoute> <CreateQuiz /> </ProtectedRoute>} />
+        <Route path="/create-game" element={<ProtectedRoute> <CreateQuiz /> </ProtectedRoute>}></Route>
+        <Route path="/quiz/:game_id" element={<ProtectedRoute> <Quiz /> </ProtectedRoute>}></Route>
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/feed" element={<CommentsFeedPage />} />
       </Routes>
