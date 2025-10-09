@@ -19,7 +19,7 @@ import CommentsFeedPage from "./pages/CommentsFeedPage";
 import './App.css';
 
 function App() {
-  const { token } = AuthentificationHook();
+  const { token, userId: currentUserId } = AuthentificationHook();
   return (
     <>
       {token && <Navbar/>}
@@ -32,7 +32,16 @@ function App() {
         <Route path="/home" element={<ProtectedRoute> <Home /> </ProtectedRoute>}></Route>
         <Route path="/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>
         <Route path="/create-game" element={<ProtectedRoute> <CreateQuiz /> </ProtectedRoute>} />
-        <Route path="/profile" element={<ProfilePage />} />
+        {/* <Route path="/profile" element={<ProfilePage />} /> */}
+        <Route
+          path="/profile/:userId?"
+          element={
+            <ProtectedRoute>
+              {/* Pass logged-in user's ID as fallback */}
+              <ProfilePage currentUserId={currentUserId || ""} />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/feed" element={<CommentsFeedPage />} />
 
       </Routes>

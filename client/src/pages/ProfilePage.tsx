@@ -2,8 +2,21 @@ import { useState } from 'react';
 import CommentList from '../components/comments/CommentList';
 import CommentForm from '../components/comments/CommentForm';
 import { CommentData } from '@/types/comment';
+import { useParams } from 'react-router-dom';
+import FriendRequestButton from '@/components/FriendRequests/FriendRequestButton';
+import FriendsList from '@/components/Friends/FriendsList';
+import UserInfo from '@/components/UserProfile/UserInfo';
 
-export default function ProfilePage() {
+interface ProfilePageProps {
+  currentUserId: string; // logged-in user
+}
+
+export default function ProfilePage({ currentUserId }: ProfilePageProps) {
+  const { userId: paramUserId } = useParams<{ userId: string }>();
+  const userId = paramUserId || currentUserId; // fallback to logged-in user
+
+  if (!userId) return <p>User not found</p>;
+
   const [activeTab, setActiveTab] = useState<'profile' | 'feed'>('profile');
   const [profileComments, setProfileComments] = useState<CommentData[]>([]);
   const [feedComments, setFeedComments] = useState<CommentData[]>([]);
@@ -69,6 +82,9 @@ export default function ProfilePage() {
       <div className="mb-4 p-3 border rounded">
         <h2>Profile Info</h2>
         <p>Avatar, name, bio, stats, etc. will go here.</p>
+        <UserInfo userId={userId} />
+        <FriendsList userId={userId} />
+        {userId !== currentUserId && <FriendRequestButton senderId={currentUserId} receiverId={userId} />}
       </div>
 
       {/* tabs */}

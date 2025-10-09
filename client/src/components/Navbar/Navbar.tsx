@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import AuthentificationHook from "../Context/AuthentificationHook";
 
 function Navbar() {
+    const { userId, logout } = AuthentificationHook();
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -16,9 +18,10 @@ function Navbar() {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/profile">
+                {/* <Link className="nav-link" to="/profile"> */}
+                {userId && <Link to={`/profile/${userId}`}>
                   Profile
-                </Link>
+                </Link>}
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/admin">
