@@ -6,7 +6,7 @@ const SECRET_KEY = process.env.JWT_SECRET || 'supersecretkey';
 
 function generateToken(user) {
   return jwt.sign(
-    { userId: user.userId, role: user.role },
+    { userId: user.userId, role: user.role, username: user.username },
     SECRET_KEY,
     { expiresIn: '12h' }
   );
