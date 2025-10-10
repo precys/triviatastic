@@ -10,17 +10,20 @@ function Login() {
     const [register, setRegister] = useState<boolean>(false);
     const [loginError, setLoginError] = useState<boolean>(false);
     const [registerError, setRegisterError] = useState<boolean>(false);
-    // Initialize login from Authentification Hook
-    const { login, setRole } = AuthentificationHook();
+    // Unpack login, setrole, url from Authentification Hook
+    const { login, setRole, url } = AuthentificationHook();
     // Initialize navigate
     const navigate = useNavigate();
+    // initialize endpoints
+    const registerEndpoint = `/users/register`
+    const loginEndpoint = `/users/login`
 
     // Function to handle login endpoint
     const handleLogin = async () => {
         try {
             setRegisterError(false);
             setLoginError(false);
-            let url = "";
+            let endpointUrl = url;
             const body = {
                     username: username,
                     password: password,
@@ -28,17 +31,18 @@ function Login() {
 
              // Added if-conditional to check if user is being registered or not
             if (register){
-                url = "http://localhost:3000/users/register";
+                endpointUrl += registerEndpoint;
 
             }
             else {
                 // if not register, login
-                url = "http://localhost:3000/users/login";
+                endpointUrl += loginEndpoint;
             }
+            console.log(endpointUrl)
 
             // Login and register take the same body format, use same code, just change url depending on registering or not.
             await axios
-                .post(url, body)
+                .post(endpointUrl, body)
                 .then((response) => {
                     const token = response.data.token;
                     const userRole = response.data.role;

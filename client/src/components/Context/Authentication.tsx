@@ -4,6 +4,7 @@ import { AuthContext } from './AuthentificationContext';
 function Authentication({children}: { children: ReactNode }) {
     const [token, setToken] = useState<string | null>(null);
     const [userRole, setUserRole] = useState<string | null>(null);
+    const url = "http://localhost:3000"
 
     // Login page can use this function to set new token to local storage
     const login = (newToken: string) => {
@@ -24,7 +25,7 @@ function Authentication({children}: { children: ReactNode }) {
 
     // Set the Provider of the context to the values we want to get for the nested components
     return (
-        <AuthContext.Provider value = {{ token, login, logout, userRole, setRole }}>
+        <AuthContext.Provider value = {{ token, login, logout, userRole, setRole, url }}>
             {children}
         </AuthContext.Provider>
     )

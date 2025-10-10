@@ -3,7 +3,6 @@ import AuthentificationHook from "../Context/AuthentificationHook"
 
 function Navbar() {
   const { userRole } = AuthentificationHook();
-  console.log("ROLE:", userRole)
 
   return (
     <>
