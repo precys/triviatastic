@@ -13,12 +13,14 @@ interface Question {
   difficulty: string;
   correct_answer: string;
   incorrect_answers: [];
+  username: string;
 }
 
 // Admin panel component
 function Admin() {
   // useState for arraylist of questions
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [tab, setTab] = useState<string>("questions");
   // Token is unpacked from AuthentificationHook
   const { token, logout } = AuthentificationHook();
   // navigate object to handle navigation after request, in this case if token is invalid go back to login
@@ -77,28 +79,46 @@ function Admin() {
 
   return (
     <>
-      <div className="container margin-auto">
-          <div className="row">
-            <div className="col">
-              <h2 className="text-center"> Pending Questions </h2>
-              {questions.map((question) => (
-                <QuestionCard
-                  key={question.questionId}
-                  questionId={question.questionId}
-                  category={question.category}
-                  question={question.question}
-                  type={question.type}
-                  difficulty={question.difficulty}
-                  correct_answer={question.correct_answer}
-                  incorrect_answers={question.incorrect_answers}
-                  statusUpdate={statusUpdate}
-                />
-              ))}
+      <div className="container-fluid vh-100">
+        <div className="container margin-auto">
+        <div className="d-flex mt-4 gap-2">
+          <button
+            className={`btn ${tab === "questions" ? "btn-primary" : "btn-outline-primary"}`}
+            onClick={() => setTab("questions")}
+          >
+            Questions
+          </button>
+          <button
+            className={`btn ${tab === "users" ? "btn-primary" : "btn-outline-primary"}`}
+            onClick={() => setTab("users")}
+          >
+            Users
+          </button>
+        </div>
+          {tab == "questions" && 
+            <div className="container w-75  pt-5">
+              <h2 className="align-baseline"> Pending Questions: {questions.length} </h2>
+              <div className="d-flex just-content-center">
+                {questions.map((question) => (
+                  <QuestionCard
+                    key={question.questionId}
+                    questionId={question.questionId}
+                    category={question.category}
+                    question={question.question}
+                    type={question.type}
+                    difficulty={question.difficulty}
+                    correct_answer={question.correct_answer}
+                    incorrect_answers={question.incorrect_answers}
+                    statusUpdate={statusUpdate}
+                    username={question.username}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="col">
-              <h2 className="text-center"> Users </h2>
-            </div>
-          </div>
+          }
+          {/* {tab == "users" &&
+          } */}
+        </div>
       </div>
     </>
   );

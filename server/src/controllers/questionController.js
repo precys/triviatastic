@@ -71,8 +71,8 @@ async function getQuestionsByStatus(req, res){
         }
 
         if (data){
-            logger.info(`Success | getQuestionByStatus | ${JSON.stringify(data.Items)}`);
-            return res.status(201).json({message:`[${data.Items.length}] ${status} questions: `, questions: data.Items})
+            logger.info(`Success | getQuestionByStatus | ${JSON.stringify(data)}`);
+            return res.status(201).json({message:`[${data.length}] ${status} questions: `, questions: data})
         }
 
     }
