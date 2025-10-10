@@ -8,19 +8,19 @@ const {
 } = require('../controllers/postController');
 
 // Create & fetch posts
-router.post('/users/:userId/posts', authenticate, createNewPost);
-router.get('/users/:userId/posts', authenticate, getUserPosts);
+router.post('/:userId/posts', authenticate, createNewPost);
+router.get('/:userId/posts', authenticate, getUserPosts);
 
 // Single post operations
-router.get('/users/:userId/posts/:postId', authenticate, getSinglePost);
-router.patch('/users/:userId/posts/:postId', authenticate, updatePost);
-router.delete('/users/:userId/posts/:postId', authenticate, deletePost);
+router.get('/:userId/posts/:postId', authenticate, getSinglePost);
+router.patch('/:userId/posts/:postId', authenticate, updatePost);
+router.delete('/:userId/posts/:postId', authenticate, deletePost);
 
 // Extras
-router.post('/users/:userId/posts/:postId/like', authenticate, likePost);
-router.post('/users/:userId/posts/:postId/unlike', authenticate, unlikePost);
-router.post('/users/:userId/posts/:postId/comments', authenticate, addComment);
-router.get('/users/:userId/posts/:postId/comments', authenticate, getComments);
+router.post('/:userId/posts/:postId/like', authenticate, likePost);
+router.post('/:userId/posts/:postId/unlike', authenticate, unlikePost);
+router.post('/:userId/posts/:postId/comments', authenticate, addComment);
+router.get('/:userId/posts/:postId/comments', authenticate, getComments);
 
 // // Feed
 // router.get('/feed', authenticate, getFeedPosts);

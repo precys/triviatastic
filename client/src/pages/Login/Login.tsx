@@ -8,15 +8,22 @@ function Login() {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [register, setRegister] = useState<boolean>(false);
-    // Initialize login from Authentification Hook
-    const { login, setRole } = AuthentificationHook();
+    const [loginError, setLoginError] = useState<boolean>(false);
+    const [registerError, setRegisterError] = useState<boolean>(false);
+    // Unpack login, setrole, url from Authentification Hook
+    const { login, setRole, url } = AuthentificationHook();
     // Initialize navigate
     const navigate = useNavigate();
+    // initialize endpoints
+    const registerEndpoint = `/users/register`
+    const loginEndpoint = `/users/login`
 
     // Function to handle login endpoint
     const handleLogin = async () => {
         try {
-            let url = "";
+            setRegisterError(false);
+            setLoginError(false);
+            let endpointUrl = url;
             const body = {
                     username: username,
                     password: password,
@@ -24,26 +31,40 @@ function Login() {
 
              // Added if-conditional to check if user is being registered or not
             if (register){
-                url = "http://localhost:3000/users/register";
+                endpointUrl += registerEndpoint;
 
             }
             else {
                 // if not register, login
-                url = "http://localhost:3000/users/login";
+                endpointUrl += loginEndpoint;
             }
+            console.log(endpointUrl)
 
             // Login and register take the same body format, use same code, just change url depending on registering or not.
             await axios
-                .post(url, body)
+                .post(endpointUrl, body)
                 .then((response) => {
                     const token = response.data.token;
                     const userRole = response.data.role;
 
-                    login(token);
-                    setRole(userRole)
-                    navigate("/home");
+                    if (response.status == 201){
+                        login(token);
+                        setRole(userRole);
+                        setLoginError(false);
+                        navigate("/home");
+                    }
+
+
                 })
-                .catch(err => console.error(`Error on axios request. ${err}`))
+                .catch(err => {
+                    if (register){
+                        setRegisterError(true);
+                    }
+                    else {
+                        setLoginError(true);
+                    }
+                    console.error(`Error on axios request. ${err}`)
+                })
             
         }
         catch (err){
@@ -55,7 +76,17 @@ function Login() {
     return (
         <>
             <div className="d-flex justify-content-center align-items-center vh-100">
-                <div className="p-2">
+                <div className="p-5 border border-secondary bg-light">
+                    {loginError && 
+                        <div className="fs-6 text-danger">
+                            Invalid username or password. 
+                        </div>
+                    }
+                    {registerError && 
+                        <div className="fs-6 text-danger">
+                            Username already taken. 
+                        </div>
+                    }
                     <div className="mb-3">
                         <label className="form-label">Username</label>
                         <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)}/>
