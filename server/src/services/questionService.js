@@ -113,6 +113,7 @@ async function getQuestionsByCategory(category, n, difficulty, type){
         customQuestions = await questionDAO.getAllQuestionsByCategory(category, difficulty, type);
     }
 
+    logger.info(apiQuestions);
     const allQuestions = [...customQuestions, ...apiQuestions];
     const allQuestionsLen = allQuestions.length
 
