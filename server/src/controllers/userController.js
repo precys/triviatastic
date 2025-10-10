@@ -20,7 +20,7 @@ async function loginUser(req, res) {
     const { username, password } = req.body;
     const result = await userService.loginUser({ username, password });
     logger.info(`User logged in: ${username}`, { service: 'userController' });
-    res.json(result);
+    res.status(201).json(result);
   } catch (err) {
     logger.error(`Login error: ${err.message}`, { service: 'userController' });
     res.status(500).json({ message: 'Error logging in' });

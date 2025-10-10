@@ -8,7 +8,8 @@ async function registerUser({ username, password }) {
   // check if username already exists
   const existingUser = await userDAO.getUserByUsername(username);
   if (existingUser) {
-    throw new Error("Username already taken");
+    return res.status(409).json({message:`Username has already been taken.`})
+    // throw new Error("Username already taken");
   }
   
   // create user
