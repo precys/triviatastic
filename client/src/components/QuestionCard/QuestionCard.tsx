@@ -1,12 +1,6 @@
-interface Question {
-  questionId: string;
-  question: string;
-  category: string;
-  type: string;
-  difficulty: string;
-  correct_answer: string;
-  incorrect_answers: [];
-  username: string;
+import { Question } from "../../types/question"
+
+interface QuestionProps extends Question {
   statusUpdate: (questionId: string, status: string) => void;
 }
 
@@ -20,7 +14,7 @@ function QuestionCard({
     incorrect_answers,
     statusUpdate,
     username
-}: Question) {
+}: QuestionProps) {
     
   return (
     <div className="card w-100">

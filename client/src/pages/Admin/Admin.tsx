@@ -1,25 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import QuestionCard from "../../components/QuestionCard/QuestionCard";
+import UserCard from "../../components/UserCard/UserCard"
 import AuthentificationHook from "../../components/Context/AuthentificationHook";
 import { useNavigate } from "react-router-dom";
-
-// Setting up TypeScript interface for question object made
-interface Question {
-  questionId: string;
-  question: string;
-  category: string;
-  type: string;
-  difficulty: string;
-  correct_answer: string;
-  incorrect_answers: [];
-  username: string;
-}
+import { Question } from "../../types/question";
+import { User } from  "../../types/user";
 
 // Admin panel component
 function Admin() {
   // useState for arraylist of questions
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [tab, setTab] = useState<string>("questions");
   // Token is unpacked from AuthentificationHook
   const { token, logout } = AuthentificationHook();
@@ -50,6 +42,31 @@ function Admin() {
         } );
   }, [token, navigate, logout]);
 
+  // useEffefct to render on page load, filling up users with their stats
+    useEffect(() => {
+      axios
+        // Endpoint to change status
+        .get("http://localhost:3000/users/stats", {
+          headers: {
+            Authorization: `Bearer ${token}` 
+          },
+      })
+        // Parse through body for questions
+        .then((response) => {
+          setUsers(response.data); 
+        })
+        // Error handling
+        .catch((err) =>{
+          console.error(err)
+            // Since we return a 401 from our JWT in server, logout erases token and navigate back to login
+            if (err.response.status==401){
+              logout()
+              navigate("/")
+            }
+        } );
+  }, [token, navigate, logout]);
+
+
   // statusUpdate function that sends request to statusUpdate endpoint for approval or denial
   const statusUpdate = async (questionId: string, newStatus: string) => {
     try {
@@ -77,6 +94,28 @@ function Admin() {
     }
   }
 
+  // deleteUser function to delete user given an user Id
+  const deleteUser = async (userId: string) => {
+    try {
+      const url = `http://localhost:3000/users/${userId}`
+      await axios
+        .delete(url,
+          {
+          headers: {
+            Authorization: `Bearer ${token}` 
+          },
+        })
+        .catch((err) => console.error(err))
+        
+        setUsers((prev) =>
+          prev.filter((user) => user.userId !== userId)
+        );
+    }
+    catch (err) {
+      console.error(`Error deleting user. Error: ${err}`)
+    }
+  }
+
   return (
     <>
       <div className="container-fluid vh-100">
@@ -95,29 +134,52 @@ function Admin() {
             Users
           </button>
         </div>
-          {tab == "questions" && 
-            <div className="container w-75  pt-5">
-              <h2 className="align-baseline"> Pending Questions: {questions.length} </h2>
-              <div className="d-flex just-content-center">
-                {questions.map((question) => (
-                  <QuestionCard
-                    key={question.questionId}
-                    questionId={question.questionId}
-                    category={question.category}
-                    question={question.question}
-                    type={question.type}
-                    difficulty={question.difficulty}
-                    correct_answer={question.correct_answer}
-                    incorrect_answers={question.incorrect_answers}
-                    statusUpdate={statusUpdate}
-                    username={question.username}
-                  />
-                ))}
-              </div>
-            </div>
-          }
-          {/* {tab == "users" &&
-          } */}
+        <div className="container w-75 pt-5">
+            {tab == "questions" && 
+                <div>
+                  <h2 className="align-baseline"> Pending Questions: {questions.length} </h2>
+                  <div className="d-flex flex-column gap-2 just-content-center">
+                    {questions.map((question) => (
+                      <QuestionCard
+                        key={question.questionId}
+                        questionId={question.questionId}
+                        category={question.category}
+                        question={question.question}
+                        type={question.type}
+                        difficulty={question.difficulty}
+                        correct_answer={question.correct_answer}
+                        incorrect_answers={question.incorrect_answers}
+                        statusUpdate={statusUpdate}
+                        username={question.username || "banned user"}
+                      />
+                    ))}
+                  </div>
+                </div>
+            }
+            {tab == "users" && 
+                <div>
+                  <h2 className="align-baseline"> Users </h2>
+                  <div className="d-flex flex-column gap-2 just-content-center">
+                    {users.map((user) => (
+                      <UserCard
+                        key={user.userId}
+                        username={user.username}
+                        userId={user.userId}
+                        game_count={user.game_count}
+                        streak={user.streak}
+                        category_counts={user.category_counts}
+                        category_scores={user.category_scores}
+                        hi_score={user.hi_score}
+                        easy_count={user.easy_count}
+                        med_count={user.med_count}
+                        hard_count={user.hard_count}
+                        deleteUser={deleteUser}
+                      />
+                    ))}
+                  </div>
+                </div>
+            }
+          </div>
         </div>
       </div>
     </>

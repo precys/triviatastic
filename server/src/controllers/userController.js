@@ -38,6 +38,17 @@ async function getStats(req, res) {
   }
 }
 
+// get all users stats
+async function getUsersStats(req, res) {
+  try {
+    const stats = await userService.getUsersStats();
+    res.status(201).json(stats);
+  } catch (err) {
+    logger.error(`Get users stats error: ${err.message}`, { service: 'userController' });
+    res.status(500).json({ message: 'Error fetching stats' });
+  }
+}
+
 // update user profile
 async function updateProfile(req, res) {
   const authUser = req.user; // from JWT
@@ -224,5 +235,6 @@ async function deleteFriend (req, res){
 }
 
 module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, sendFriendRequest, 
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, getAllUsers, getUsersScoreByCategory };
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, getAllUsers, getUsersScoreByCategory,
+  getUsersStats };
 

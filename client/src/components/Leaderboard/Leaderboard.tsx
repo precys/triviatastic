@@ -66,7 +66,7 @@ function Leaderboard() {
                     </thead>
                     <tbody>
                         {usersScore.map((user, index) => (
-                            <tr>
+                            <tr key={index + 1}>
                                 <th scope="row"> {index + 1} </th>
                                 <td> {user.username} </td>
                                 <td> {user.category_score} </td>
