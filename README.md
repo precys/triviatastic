@@ -13,14 +13,23 @@ Node.js
 
 ## Packages
 
+### Server
+
 @aws-sdk/client-dynamodb (^3.896.0)  
-@aws-sdk/lib-dynamodb: ^3.896.0  
+@aws-sdk/lib-dynamodb (^3.896.0)  
 bcrypt (^6.0.0)  
 bcryptjs (^3.0.2)  
 express (^5.1.0)  
 jsonwebtoken (^9.0.2)  
 uuid (^13.0.0)  
-winston "(3.17.0)  
+winston (^3.17.0)  
+
+### Client
+
+Built on Vite + React w/ TypeScript
+react-router-dom
+react-dom
+axios
 
 ## Environmental Variables
 
@@ -31,9 +40,14 @@ region in DAO layer, respository directory, for AWS database communication, plea
 ## Installation
 
 Create a copy of the repository via "git clone" inside a local directory via the terminal  
-Use "npm i" or "npm install" to install all packages in package.json  
+Cd in the terminal to server directory and use "npm i" or "npm install" to install all packages in package.json  
+Cd in the terminal to the client directory and use "npm i" or "npm install" to install all packages in package.json
 Then setup AWS DynamoDB database and change the region in respository DAO files to desired region  
-Use an front-end client such as Postman to use endpoints  
+
+## Getting Started
+
+1. Launch the back-end: cd into the server directory and run "npm start"
+2. Launch the front-end: cd into the client directory and run "npm run dev"
 
 ## API Endpoints
 
@@ -41,9 +55,10 @@ Use an front-end client such as Postman to use endpoints
 
 - `POST /users/register` - Creates a new User given an unique username and any password  
 - `POST /users/login` - Logins User given valid username and password  
+- `GET /users` - Gets all USER statused Users
 - `DELETE /users/:userId` - Deletes User given userId  
 - `GET /users/:userId/stats` - Gets all User's stats  
-- `PATCH /users/:userId/profle` - Updates User's information  
+- `PATCH /users/:userId/profile` - Updates User's information  
 - `GET /users/:userId/friends` - Gets all User's friends  
 
 ### QUESTIONS
@@ -51,6 +66,7 @@ Use an front-end client such as Postman to use endpoints
 - `POST /questions/` - Creates a new custom question  
 - `PATCH /questions/:question_id` - Updates question's status  
 - `GET /questions/` - Gets question's by status  
+- `GET /questions/category` - Gets questions filtered by category, url accepts query params that are needed: category, type, n (amount of questions), and optional: difficulty. 
 
 ### GAMES
 
@@ -66,6 +82,10 @@ Use an front-end client such as Postman to use endpoints
 - `GET /posts/users/:userId/posts/:postId` - Gets post by postId  
 - `PATCH /posts/users/:userId/posts/:postId` - Updates post by postId  
 - `DELETE /posts/users/:userId/posts/:postId` - Deletes post by postId  
+- `POST /posts/users/:userId/posts/:postId/like` - Like a post
+- `POST /posts/users/:userId/posts/:postId/unlike` - Unlike a post
+- `POST /posts/users/:userId/posts/:postId/comments` - Adds a comment to a post
+- `GET /posts/users/:userId/posts/:postId/comments` - Gets all comments of post
 
 ## License
 
