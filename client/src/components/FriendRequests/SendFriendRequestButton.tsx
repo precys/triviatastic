@@ -42,7 +42,7 @@ export default function SendFriendRequestButton( { senderId, receiverId, receive
     <button
       disabled={reqStatus === 'sending'}
       className={`px-3 py-1 rounded ${
-        reqStatus === 'sending' ? 'bg-gray-400 text-white cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'
+        reqStatus === 'sending' ? 'bg-gray-400 text-black cursor-not-allowed' : 'bg-blue-600 text-black hover:bg-blue-700'
       }`}
       onClick={sendRequest}
     >

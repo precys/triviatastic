@@ -11,9 +11,10 @@ interface FriendRequestsListProps {
     error?: string;
     activeStatus: "pending" | "accepted" | "denied";
     onResponse?: (requestId: string, status: "accepted" | "denied") => void;
+    onFriendAdded?: () => void; //callback to refresh FriendsList
 }
 
-export default function FriendRequestsList({ currentUserId, sent, requests, loading, error="", activeStatus, onResponse, }: FriendRequestsListProps) {
+export default function FriendRequestsList({ currentUserId, sent, requests, loading, error="", activeStatus, onResponse, onFriendAdded, }: FriendRequestsListProps) {
     const [localRequests, setLocalRequests] = useState<FriendRequest[]>(requests);
     
     useEffect(() => {
@@ -25,6 +26,7 @@ export default function FriendRequestsList({ currentUserId, sent, requests, load
             prev.map((r) => (r.requestId === requestId ? { ...r, status } : r))
         );
         if (onResponse) onResponse(requestId, status);
+        if (status === "accepted" && onFriendAdded) onFriendAdded(); // refresh friends list
     };
 
     if (loading) return <p className="text-gray-500">Loading requests...</p>;
