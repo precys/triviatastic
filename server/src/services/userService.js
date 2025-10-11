@@ -197,7 +197,8 @@ async function sendFriendRequest(senderId, friendUsername){
         createdAt: new Date().toISOString()
     };
 
-    await userDAO.sendFriendRequest(requestItem);
+    const success = await userDAO.sendFriendRequest(requestItem);
+    if (!success) throw new Error("Failed to save friend request in database");
     
     return {
         message: `Friend request to ${receiver.username} sent!`,
@@ -260,17 +261,21 @@ async function denyRequest (userId, friendId){
 }
 
 //get a list of friend requests by status ("pending", "accepted", "denied" )
-async function getFriendRequestsByStatus (userId, status){
+async function getFriendRequestsByStatus (userId, status = "pending", sent = false){
     let validStatuses = ["pending", "accepted", "denied"];
     if (!validStatuses.includes(status)){
         throw new Error ("Invalid Status");
     }
 
-    const requestData = await userDAO.getFriendRequestsByStatus(userId, status);
+    const requestData = await userDAO.getFriendRequestsByStatus(userId, status, sent);
 
     const requestsToDisplay = requestData.map(r => ({
-        username: r.senderUsername,
-        status: r.status
+      requestId: r.requestId,
+      userId: r.userId, // sender
+      userFriendId: r.userFriendId, // receiver
+      senderUsername: r.senderUsername,
+      receiverUsername: r.receiverUsername,
+      status: r.status
     }))
 
     return {

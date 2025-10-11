@@ -4,7 +4,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import UserInfo from '../components/UserProfile/UserInfo';
 import FriendsList from '../components/Friends/FriendsList';
-import FriendRequestButton from '../components/FriendRequests/FriendRequestButton';
+import FriendRequestButton from '../components/FriendRequests/SendFriendRequestButton';
 
 interface ProfileProps {
   currentUserId: string; // logged-in user ID

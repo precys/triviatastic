@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CommentList from '../components/comments/CommentList';
 import CommentForm from '../components/comments/CommentForm';
 import { CommentData } from '@/types/comment';
 import { useParams } from 'react-router-dom';
-import FriendRequestButton from '@/components/FriendRequests/FriendRequestButton';
 import FriendsList from '@/components/Friends/FriendsList';
 import UserInfo from '@/components/UserProfile/UserInfo';
+import { User } from "@/hooks/useUser";
+import { useAllUsers } from "@/hooks/useAllUsers";
+import axios from 'axios';
+import UsersList from '@/components/Friends/UsersList';
+import FriendRequestDropdown from '@/components/FriendRequests/FriendRequestDropdown';
+import FriendRequestsList from '@/components/FriendRequests/FriendRequestsList';
+import SendFriendRequestButton from '@/components/FriendRequests/SendFriendRequestButton';
+import RespondFriendRequestButton from '@/components/FriendRequests/RespondFriendRequestButton';
+import { useFriendRequests } from '@/hooks/useFriendRequests';
 
 interface ProfilePageProps {
   currentUserId: string; // logged-in user
@@ -20,6 +28,29 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
   const [activeTab, setActiveTab] = useState<'profile' | 'feed'>('profile');
   const [profileComments, setProfileComments] = useState<CommentData[]>([]);
   const [feedComments, setFeedComments] = useState<CommentData[]>([]);
+
+  const { users, loading } = useAllUsers();
+  const [selectedUserId, setSelectedUserId] = useState<string>("");
+
+  //tabs for friend requests
+  const [activeRequestTab, setActiveRequestTab] = useState<'received' | 'sent'>('received');
+  const [activeStatus, setActiveStatus] = useState<"pending" | "accepted" | "denied">("pending");
+
+   // friend request data
+  const {
+    requests: receivedRequests,
+    loading: loadingReceived,
+    error: errorReceived,
+  } = useFriendRequests(currentUserId, activeStatus, false);
+
+  const {
+    requests: sentRequests,
+    loading: loadingSent,
+    error: errorSent,
+  } = useFriendRequests(currentUserId, activeStatus, true);
+
+
+  if (loading) return <p>Loading users...</p>;
 
   // add new comment to the correct list
   const handleAddComment = (text: string, type: 'profile' | 'feed') => {
@@ -84,7 +115,91 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
         <p>Avatar, name, bio, stats, etc. will go here.</p>
         <UserInfo userId={userId} />
         <FriendsList userId={userId} />
-        {userId !== currentUserId && <FriendRequestButton senderId={currentUserId} receiverId={userId} />}
+        {/* {userId !== currentUserId && <FriendRequestButton senderId={currentUserId} receiverId={userId} />} */}
+        {/* {userId === currentUserId && <UserList userId={currentUserId} />} */}
+        <FriendRequestDropdown
+            senderId={currentUserId}
+            users={users}
+            selectedUserId={selectedUserId}
+            setSelectedUserId={setSelectedUserId}
+          />
+          {userId !== currentUserId && selectedUserId && users.find(u => u.userId === selectedUserId)?.username && (
+            <SendFriendRequestButton
+              senderId={currentUserId}
+              receiverId={selectedUserId}
+              receiverUsername={users.find(u => u.userId === selectedUserId)?.username}
+              // onSuccess={() => refreshSent()}
+            />
+          )}
+      </div>
+
+       {/* Friend Requests */}
+      <div className="mb-4 p-3 border rounded bg-white shadow">
+        <h3 className="text-lg font-semibold mb-3">Friend Requests</h3>
+
+        {/* Received / Sent tabs */}
+        <div className="flex space-x-2 mb-2">
+          {(["received", "sent"] as const).map((tab) => (
+            <button
+              key={tab}
+              className={`px-3 py-1 rounded ${
+                activeRequestTab === tab
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+              onClick={() => setActiveRequestTab(tab)}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* Status Tabs */}
+        <div className="flex mb-2 space-x-2 justify-center">
+          {(["pending", "accepted", "denied"] as const).map((status) => (
+            <button
+              key={status}
+              className={`px-3 py-1 rounded ${
+                activeStatus === status
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              }`}
+              onClick={() => setActiveStatus(status)}
+            >
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* Status Description */}
+        <p className="text-sm text-gray-500 mb-4">
+          {activeRequestTab === "received"
+            ? activeStatus === "pending"
+              ? "Pending requests to respond to"
+              : activeStatus === "accepted"
+              ? "Friend requests you have accepted"
+              : "Friend requests you have denied"
+            : activeStatus === "pending"
+            ? "Users that have not responded to your friend requests yet"
+            : activeStatus === "accepted"
+            ? "Users that accepted your friend requests"
+            : "Users that denied your friend requests"}
+        </p>
+
+        {/* FriendRequestsList */}
+        <FriendRequestsList
+          currentUserId={currentUserId}
+          sent={activeRequestTab === "sent"}
+          requests={activeRequestTab === "received" ? receivedRequests : sentRequests}
+          loading={activeRequestTab === "received" ? loadingReceived : loadingSent}
+          error={activeRequestTab === "received" ? errorReceived ?? "" : errorSent ?? ""}
+          activeStatus={activeStatus}
+          onResponse={(id, status) =>
+            console.log(
+              `${activeRequestTab === "received" ? "Received" : "Sent"} request ${id} marked as ${status}`
+            )
+          }
+        />
       </div>
 
       {/* tabs */}

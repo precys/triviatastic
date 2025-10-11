@@ -163,15 +163,20 @@ async function sendFriendRequest (req, res){
 //get a list of friend requests by status ("pending", "accepted", "denied" )
 async function getFriendRequestsByStatus (req, res){
   const { userId } = req.params;
-  const { status } = req.query;
+  const { status = "pending", sent } = req.query;
   //console.log("REQ QUERY STATUS:", req.query.status);
+  const sentFlag = sent === "true";
+  
+  if (!userId) {
+    return res.status(400).json({ message: "Missing userId" });
+  }
 
-  const result = await userService.getFriendRequestsByStatus(userId, status);
+  const result = await userService.getFriendRequestsByStatus(userId, status, sentFlag);
 
   if (!result){
     res.status(400).json({ message: "Unable to retrive friend requests"});
   }else{
-    res.status(200).json(result);
+    res.status(200).json(result.requests);
   }
 }
 
