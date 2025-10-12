@@ -11,7 +11,7 @@ export default function LikeButton({ likes, liked, onToggle }: Props) {
       className={`btn btn-sm ${liked ? 'btn-primary' : 'btn-outline-primary'}`}
       onClick={onToggle}
     >
-      {liked ? 'Unlike' : 'Like'} ({likes})
+      {liked ? 'unlike' : 'like'} ({likes})
     </button>
   );
 }
