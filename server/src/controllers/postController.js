@@ -90,8 +90,8 @@ async function unlikePost(req, res) {
 async function addComment(req, res) {
   try {
     const { userId, postId } = req.params;
-    const { text } = req.body;
-    const comment = await postService.addComment(userId, postId, text);
+    const { content } = req.body;
+    const comment = await postService.addComment(userId, postId, content);
     res.status(201).json(comment);
   } catch (err) {
     res.status(400).json({ error: err.message });

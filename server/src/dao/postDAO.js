@@ -13,37 +13,85 @@ const TABLE_NAME = "Trivia_Table";
 // create post
 async function createPost(userId, data) {
   const postId = crypto.randomUUID();
+
+  // determine the profileId (where the post is being made)
+  const profileId = data.profileId || userId; // fallback to userId if posting on own profile
+
+  // fetch username of the creator
+  const profileResult = await documentClient.send(
+    new GetCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        PK: `USER#${userId}`,
+        SK: "PROFILE",
+      },
+    })
+  );
+
+  const username = profileResult.Item?.username || "Unknown";
+
   const item = {
-    PK: `USER#${userId}`,
+    PK: `USER#${profileId}`,
     SK: `POST#${postId}`,
     postId,
     userId,
+    profileId,
+    username,
     content: data.content,
     createdAt: new Date().toISOString(),
   };
 
-  await documentClient.send(new PutCommand({
-    TableName: TABLE_NAME,
-    Item: item,
-  }));
+  await documentClient.send(
+    new PutCommand({
+      TableName: TABLE_NAME,
+      Item: item,
+    })
+  );
 
   return item;
 }
 
+
+
 // get user posts
 async function getUserPosts(userId) {
-  const result = await documentClient.send(new QueryCommand({
-    TableName: TABLE_NAME,
-    KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
-    ExpressionAttributeValues: {
-      ':pk': `USER#${userId}`,
-      ':sk': 'POST#',
-    },
-    ScanIndexForward: false, // newest first
-  }));
+  const result = await documentClient.send(
+    new QueryCommand({
+      TableName: TABLE_NAME,
+      KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+      ExpressionAttributeValues: {
+        ':pk': `USER#${userId}`,
+        ':sk': 'POST#',
+      },
+      ScanIndexForward: false, // newest first
+    })
+  );
 
-  return result.Items || [];
+  const posts = result.Items || [];
+
+  // likes count and liked flag
+  for (const post of posts) {
+    const likeQuery = await documentClient.send(
+      new QueryCommand({
+        TableName: TABLE_NAME,
+        KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
+        ExpressionAttributeValues: {
+          ':pk': `POST#${post.postId}`,
+          ':sk': 'LIKE#',
+        },
+      })
+    );
+
+    const likeCount = likeQuery.Items?.length || 0;
+    const liked = !!likeQuery.Items?.find((i) => i.SK === `LIKE#${userId}`);
+
+    post.likes = likeCount;
+    post.liked = liked;
+  }
+
+  return posts;
 }
+
 
 // get post by id
 async function getPostById(userId, postId) {
@@ -182,15 +230,15 @@ async function hasUserUnliked(userId, postId) {
 }
 
 // comment
-async function addComment(userId, postId, text) {
-  const commentId = uuidv4();
+async function addComment(userId, postId, content) {
+  const commentId = crypto.randomUUID();
   const item = {
     PK: `POST#${postId}`,
     SK: `COMMENT#${commentId}`,
     commentId,
     userId,
     postId,
-    text,
+    content,
     createdAt: new Date().toISOString(),
   };
 
