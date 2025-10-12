@@ -1,13 +1,13 @@
 import axiosClient from "./axiosClient";
 
 // fetch user's own posts
-async function getComments(userId: string) {
+async function getPosts(userId: string) {
   const res = await axiosClient.get(`/posts/${userId}/posts`);
   return res.data;
 }
 
 // fetch friends' posts (if applicable later)
-async function getFriendsComments(userId: string) {
+async function getFriendsPosts(userId: string) {
   const res = await axiosClient.get(`/posts/${userId}/friends/posts`);
   return res.data;
 }
@@ -25,8 +25,8 @@ async function addPost(userId: string, content: string) {
 }
 
 // add new comment to a post
-async function addComment(userId: string, postId: string, text: string) {
-  const res = await axiosClient.post(`/posts/${userId}/posts/${postId}/comments`, { text });
+async function addComment(userId: string, postId: string, content: string) {
+  const res = await axiosClient.post(`/posts/${userId}/posts/${postId}/comments`, { content });
   return res.data;
 }
 
@@ -37,8 +37,8 @@ async function toggleLike(userId: string, postId: string) {
 }
 
 export default {
-  getComments,
-  getFriendsComments,
+  getPosts,
+  getFriendsPosts,
   getRecentPosts,
   addComment,
   toggleLike,

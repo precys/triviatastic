@@ -14,12 +14,12 @@ router.patch('/:userId/profile', authenticate, updateProfile);
 
 // for testing purposes
  // add authentication later 
-router.get('/:userId/friends', getUsersFriends); // get a user's friend list
-router.delete('/:userId/friends/:userFriendId', deleteFriend); //delete friend
-router.post('/:userId/friend-requests', sendFriendRequest); //send a friend request
-router.delete('/:userId/friends-requests/:requestId', deleteFriendRequest);//delete a friend request
-router.put('/:userFriendId/friend-requests/:requestId', respondToFriendRequest); //responding to a friend request PUT
-router.get('/:userId/friend-requests', getFriendRequestsByStatus); //view status of friend requests GET ex: pending, accepted, denied
+router.get('/:userId/friends', authenticate, getUsersFriends); // get a user's friend list
+router.delete('/:userId/friends/:userFriendId', authenticate, deleteFriend); //delete friend
+router.post('/:userId/friend-requests', authenticate, sendFriendRequest); //send a friend request
+router.delete('/:userId/friends-requests/:requestId', authenticate, deleteFriendRequest);//delete a friend request
+router.put('/:userFriendId/friend-requests/:requestId', authenticate, respondToFriendRequest); //responding to a friend request PUT
+router.get('/:userId/friend-requests', authenticate, getFriendRequestsByStatus); //view status of friend requests GET ex: pending, accepted, denied
 
 
 module.exports = router;

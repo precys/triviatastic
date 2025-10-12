@@ -127,7 +127,7 @@ async function findUserById(userId) {
 
 // get user stats
 async function getStats(userId) {
-  const user = await userDAO.getUserById(userId);
+  const user = await userDAO.findUserById(userId);
   if (!user) throw new Error("User not found");
 
   return {
