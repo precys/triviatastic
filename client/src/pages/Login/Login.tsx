@@ -7,28 +7,64 @@ function Login() {
     // Initialize useState variables for username and password
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    // Initialize login from Authentification Hook
-    const { login } = AuthentificationHook();
+    const [register, setRegister] = useState<boolean>(false);
+    const [loginError, setLoginError] = useState<boolean>(false);
+    const [registerError, setRegisterError] = useState<boolean>(false);
+    // Unpack login, setrole, url from Authentification Hook
+    const { login, setRole, url } = AuthentificationHook();
     // Initialize navigate
     const navigate = useNavigate();
+    // initialize endpoints
+    const registerEndpoint = `/users/register`
+    const loginEndpoint = `/users/login`
 
     // Function to handle login endpoint
     const handleLogin = async () => {
         try {
-            const url = "http://localhost:3000/users/login";
+            setRegisterError(false);
+            setLoginError(false);
+            let endpointUrl = url;
             const body = {
-                username: username,
-                password: password,
+                    username: username,
+                    password: password,
             }
 
+             // Added if-conditional to check if user is being registered or not
+            if (register){
+                endpointUrl += registerEndpoint;
+
+            }
+            else {
+                // if not register, login
+                endpointUrl += loginEndpoint;
+            }
+            console.log(endpointUrl)
+
+            // Login and register take the same body format, use same code, just change url depending on registering or not.
             await axios
-                .post(url, body)
+                .post(endpointUrl, body)
                 .then((response) => {
                     const token = response.data.token;
-                    login(token);
-                    navigate("/home");
+                    const userRole = response.data.role;
+
+                    if (response.status == 201){
+                        login(token);
+                        setRole(userRole);
+                        setLoginError(false);
+                        navigate("/home");
+                    }
+
+
                 })
-                .catch(err => console.error(`Error on login request. ${err}`))
+                .catch(err => {
+                    if (register){
+                        setRegisterError(true);
+                    }
+                    else {
+                        setLoginError(true);
+                    }
+                    console.error(`Error on axios request. ${err}`)
+                })
             
         }
         catch (err){
@@ -39,16 +75,33 @@ function Login() {
     // Very simple login page, taken from bootstrap
     return (
         <>
-            <div className="margin-auto">
-                <div className="mb-3">
-                    <label className="form-label">Username</label>
-                    <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)}/>
+            <div className="d-flex justify-content-center align-items-center vh-100">
+                <div className="p-5 border border-secondary bg-light">
+                    {loginError && 
+                        <div className="fs-6 text-danger">
+                            Invalid username or password. 
+                        </div>
+                    }
+                    {registerError && 
+                        <div className="fs-6 text-danger">
+                            Username already taken. 
+                        </div>
+                    }
+                    <div className="mb-3">
+                        <label className="form-label">Username</label>
+                        <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)}/>
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Password</label>
+                        <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    </div>
+                    <div className="input-group mb-3">
+                        <div className="input-group-text">
+                            <input className="form-check-input mt-0" type="checkbox" onChange={(e) => setRegister(e.target.checked)} /> <span className="ms-1"> Register </span>
+                        </div>
+                    </div>
+                    <button className="btn btn-primary" onClick={() => handleLogin()}>Submit</button>
                 </div>
-                <div className="mb-3">
-                    <label className="form-label">Password</label>
-                    <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                </div>
-                <button className="btn btn-primary" onClick={() => handleLogin()}>Submit</button>
             </div>
         </>
     )

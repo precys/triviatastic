@@ -3,4 +3,5 @@
 /server/src/logs
 /server/coverage
 /client/coverage
+/logs
 node_modules

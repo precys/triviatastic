@@ -1,29 +1,38 @@
-import { Route, Routes } from "react-router-dom";
+// Package imports
+import { Route, Routes, useLocation } from 'react-router-dom';
+// Components imports
 import Navbar from "./components/Navbar/Navbar";
 import CreateQuiz from "./components/CreateQuiz/CreateQuiz";
 import AuthentificationHook from "./components/Context/AuthentificationHook";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import Admin from "./pages/Admin/Admin";
-import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
-import ProfilePage from "./pages/Comments/ProfilePage";
-import CommentsFeedPage from "./pages/Comments/CommentsFeedPage";
-
-import "./App.css";
+import Quiz from "./pages/Quiz/Quiz"
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import ProfilePage from "./pages/ProfilePage";
+import CommentsFeedPage from "./pages/CommentsFeedPage";
+// CSS imports
+import './App.css';
 
 function App() {
-  const { token } = AuthentificationHook();
+  const { token, userRole } = AuthentificationHook();
+  const location = useLocation();
+
 
   return (
     <>
-      <Navbar /> {/* always render navbar */}
+      {token && location.pathname !== "/" && <Navbar/>}
       <Routes>
+        {/* Login */}
         <Route path="/" element={<Login />} />
-        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-        <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-        <Route path="/create-game" element={<ProtectedRoute><CreateQuiz /></ProtectedRoute>} />
-        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-        <Route path="/feed" element={<ProtectedRoute><CommentsFeedPage /></ProtectedRoute>} />
+        {/* Protected */}
+        <Route path="/home" element={<ProtectedRoute> <Home /> </ProtectedRoute>}></Route>
+        <Route path="/create-game" element={<ProtectedRoute> <CreateQuiz /> </ProtectedRoute>}></Route>
+        <Route path="/quiz/:game_id" element={<ProtectedRoute> <Quiz /> </ProtectedRoute>}></Route>
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/feed" element={<CommentsFeedPage />} />
+        {/* Admin Only */}
+        {userRole == "ADMIN" && <Route path="/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>}
       </Routes>
     </>
   );
