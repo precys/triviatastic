@@ -3,9 +3,8 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 // Components imports
 import Navbar from "./components/Navbar/Navbar";
 import CreateQuiz from "./components/CreateQuiz/CreateQuiz";
-import AuthentificationHook from './components/Context/AuthentificationHook';
-// Page imports
-import Login from './pages/Login/Login';
+import AuthentificationHook from "./components/Context/AuthentificationHook";
+import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import Admin from "./pages/Admin/Admin";
 import Quiz from "./pages/Quiz/Quiz"

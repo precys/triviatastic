@@ -1,5 +1,5 @@
 import Comment from './Comment';
-import { CommentData } from '@/types/comment';
+import { CommentData } from '@/types/commentModel';
 
 interface Props {
   replies: CommentData[];
@@ -12,7 +12,7 @@ export default function ReplyList({ replies, onReply, onLike }: Props) {
     <div className="ms-4">
       {replies.map((reply) => (
         <Comment
-          key={reply.id}
+          key={reply.commentId}
           comment={reply}
           onReply={onReply}
           onLike={onLike}
