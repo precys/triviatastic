@@ -138,38 +138,41 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
         <h3 className="text-lg font-semibold mb-3">Friend Requests</h3>
 
         {/* Received / Sent tabs */}
-        <div className="flex space-x-2 mb-2">
+        <ul className="nav nav-tabs mb-3">
           {(["received", "sent"] as const).map((tab) => (
-            <button
-              key={tab}
-              className={`px-3 py-1 rounded ${
-                activeRequestTab === tab
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
-              onClick={() => setActiveRequestTab(tab)}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
+            <li className="nav-item" key={tab}>
+              <button
+                className={`nav-link ${activeRequestTab === tab ? "active" : ""}`}
+                onClick={() => setActiveRequestTab(tab)}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
 
         {/* Status Tabs */}
-        <div className="flex mb-2 space-x-2 justify-center">
+        <div className="flex justify-center gap-2 mb-4">
           {(["pending", "accepted", "denied"] as const).map((status) => (
             <button
               key={status}
-              className={`px-3 py-1 rounded ${
-                activeStatus === status
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
               onClick={() => setActiveStatus(status)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                activeStatus === status
+                  ? status === "pending"
+                    ? "bg-yellow-500 text-white"
+                    : status === "accepted"
+                    ? "bg-green-500 text-white"
+                    : "bg-red-500 text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
             >
               {status.charAt(0).toUpperCase() + status.slice(1)}
             </button>
           ))}
         </div>
+
+
 
         {/* Status Description */}
         <p className="text-sm text-gray-500 mb-4">
