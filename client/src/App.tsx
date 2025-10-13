@@ -33,7 +33,7 @@ function App() {
         <Route path="/quiz/:game_id" element={<ProtectedRoute> <Quiz /> </ProtectedRoute>}></Route>
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/feed" element={<CommentsFeedPage />} />
-        <Route path="/submit-question" element={<SubmitQuestion />} />
+        <Route path="/submit-question" element={<ProtectedRoute> <SubmitQuestion /> </ProtectedRoute>} />
         {/* Admin Only */}
         {userRole == "ADMIN" && <Route path="/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>}
       </Routes>

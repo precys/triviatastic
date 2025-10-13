@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import submitquestionService from '@/utils/submitquestionService';
+import { useState } from 'react'
 import { QuestionInterface } from '@/types/question'
 
 function SubmitQuestion() {
@@ -12,10 +13,19 @@ function SubmitQuestion() {
         incorrect_answers: [],
     });
     const [incorrectAnswers, setIncorrectAnswers] = useState<string[]>(["", "", ""])
-    const [questionType, setQuestionType] = useState<string>("multiple");
+    const [sucesss, setSuccess] = useState<boolean>(false);
 
     
-    const handleQuestionForm = async () => {
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const res = await submitquestionService.createQuestion(question);
+            console.log(res)
+        }
+        catch (err){
+            console.error(`Error creating question. ${err}`)
+        }
 
     }
 
@@ -95,6 +105,7 @@ function SubmitQuestion() {
                                     </div>
                                 </div>
                             }
+                            <button className="btn btn-primary w-100 mt-3" onClick={() => handleSubmit()}>Submit</button>
                         </form>
                     </div>
                 </div>

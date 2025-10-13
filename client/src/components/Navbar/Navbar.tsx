@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 import AuthentificationHook from "../Context/AuthentificationHook"
 
 function Navbar() {
-  const { userRole } = AuthentificationHook();
+  const { userRole, logout } = AuthentificationHook();
+
+  const handleLogout = () => {
+    logout();
+  }
 
   return (
     <>
@@ -33,6 +37,7 @@ function Navbar() {
                   Submit Question
                 </Link>
               </li>
+
               {userRole == "ADMIN" &&               
                 <li className="nav-item">
                   <Link className="nav-link" to="/admin">
@@ -40,6 +45,13 @@ function Navbar() {
                   </Link>
                 </li>
               }
+            </ul>
+            <ul className="navbar-nav ms-auto">
+              <li className="nav-item ms-auto">
+                <Link className="nav-link" to="#" onClick={() => handleLogout()}>
+                  Logout
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
