@@ -107,10 +107,20 @@ async function getQuestionsByCategory(category, n, difficulty, type){
 
     // If any, get all questions from all categories, dp
     if (category == "any"){
-        customQuestions = await questionDAO.getAllQuestions(difficulty, type);
+        if(type == "any") {
+            customQuestions = await questionDAO.getAllQuestionsNoType(difficulty);
+        }
+        else {
+            customQuestions = await questionDAO.getAllQuestions(difficulty, type);
+        }
     }
     else {
-        customQuestions = await questionDAO.getAllQuestionsByCategory(category, difficulty, type);
+        if(type == "any"){
+            customQuestions = await questionDAO.getAllQuestionsByCategoryNoType(category, difficulty);
+        }
+        else {
+            customQuestions = await questionDAO.getAllQuestionsByCategory(category, difficulty, type);
+        }
     }
 
     logger.info(apiQuestions);
@@ -178,7 +188,9 @@ async function getAPIQuestions(category, n, difficulty, type){
     if (difficulty){
         url += `&difficulty=${difficulty}`
     }
-    url += `&type=${type}`
+    if(type !== "any") {
+        url += `&type=${type}`
+    }
 
     try {
         // fetch

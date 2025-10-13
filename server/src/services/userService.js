@@ -110,6 +110,8 @@ async function deleteUserById(userId) {
     await removeFriend(friendUsername, user.username);
   }
 
+  
+
   if(await userDAO.deleteUserById(userId)) {
     return true;
   }

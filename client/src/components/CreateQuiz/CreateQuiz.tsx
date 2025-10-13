@@ -4,7 +4,7 @@ import AuthentificationHook from "../../components/Context/AuthentificationHook"
 import axios from "axios";
 
 function CreateQuiz() {
-    const [settings, setSettings] = useState({category: "any", questionDifficulty: "easy", number: 10});
+    const [settings, setSettings] = useState<Settings>({category: "any", questionDifficulty: "easy", number: 10});
     const navigate = useNavigate();
     const {token, logout} = AuthentificationHook();
 
@@ -33,7 +33,7 @@ function CreateQuiz() {
     }
 
     function getQuestions(settings: Settings, game: Game) {
-        axios.get(`http://localhost:3000/questions/category?category=${settings.category}&n=${settings.number}&difficulty=${settings.questionDifficulty}&type=multiple`,
+        axios.get(`http://localhost:3000/questions/category?category=${settings.category}&n=${settings.number}&difficulty=${settings.questionDifficulty}&type=any`,
             {
                 headers: {
                     'Authorization': `Bearer ${token}` 
@@ -55,7 +55,7 @@ function CreateQuiz() {
                             }
                         }
                     );
-                    
+
                     alert("Not enough questions");
                 }
             });

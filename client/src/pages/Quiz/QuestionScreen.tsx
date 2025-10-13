@@ -35,8 +35,8 @@ function QuestionScreen({changeScreen, setGame, question}: QuestionScreenProps) 
     randomShuffle(answers);
     return (
     <>
-        <h1>Question: </h1>
-        <p>{question.question}</p>
+        <h1 className="text-center m-3">Question: </h1>
+        <p className="text-center m-3">{question.question}</p>
         <MultipleChoice answers={answers} answerQuestion={answerQuestion}/>
     </>
     );
@@ -47,14 +47,14 @@ function randomShuffle(array: string[]) {
         array.reverse();
     }
     
-    const shift = Math.floor(Math.random() * 3);
+    const shift = Math.floor(Math.random() * (array.length - 1));
     let i = 0;
     while(i < shift) {
         array.push(array.shift() as string);
         i++;
     }
 
-    if(Math.random() > 0.25) {
+    if(Math.random() > 0.25 && array.length > 2) {
         const temp: string = array[array.length-2];
         array[array.length-2] = array[array.length-3];
         array[array.length-3] = temp;
