@@ -28,6 +28,11 @@ function Navbar() {
                   Create Game
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/submit-question">
+                  Submit Question
+                </Link>
+              </li>
               {userRole == "ADMIN" &&               
                 <li className="nav-item">
                   <Link className="nav-link" to="/admin">

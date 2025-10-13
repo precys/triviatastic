@@ -9,6 +9,7 @@ import { User } from  "../../types/user";
 
 interface Question extends QuestionInterface {
   username: string,
+  questionId: string,
 }
 
 // Admin panel component

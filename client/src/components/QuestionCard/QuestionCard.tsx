@@ -3,6 +3,7 @@ import { QuestionInterface } from "../../types/question"
 interface QuestionProps extends QuestionInterface {
   statusUpdate: (questionId: string, status: string) => void,
   username: string,
+  questionId: string,
 }
 
 function QuestionCard({

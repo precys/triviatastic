@@ -12,6 +12,7 @@ import Quiz from "./pages/Quiz/Quiz"
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import ProfilePage from "./pages/Comments/ProfilePage";
 import CommentsFeedPage from "./pages/Comments/CommentsFeedPage";
+import SubmitQuestion from './pages/SubmitQuestion/SubmitQuestion';
 // CSS imports
 import './App.css';
 
@@ -32,7 +33,7 @@ function App() {
         <Route path="/quiz/:game_id" element={<ProtectedRoute> <Quiz /> </ProtectedRoute>}></Route>
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/feed" element={<CommentsFeedPage />} />
-
+        <Route path="/submit-question" element={<SubmitQuestion />} />
         {/* Admin Only */}
         {userRole == "ADMIN" && <Route path="/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>}
       </Routes>
