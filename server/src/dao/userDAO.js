@@ -203,7 +203,7 @@ async function getFriendRequestsByStatus (userId, status, sent = false){
     // SENT requests, using GSI
     command = new QueryCommand({
       TableName: TABLE_NAME,
-      IndexName: "SenderIndex", // your GSI name
+      IndexName: "sender-index", // GSI 
       KeyConditionExpression: "userId = :senderId",
       FilterExpression: filterExpression,
       ExpressionAttributeNames: expressionAttributeNames,
