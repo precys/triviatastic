@@ -166,6 +166,16 @@ async function getAllApprovedQuestions(){
     return await questionDAO.getAllQuestionsByStatus("approved");
 }
 
+// function that handles request to get all questions made by user
+async function getAllUsersQuestions(userId){
+    const data = await questionDAO.getAllUsersQuestions(userId)
+    
+    if (data)
+        return data;
+    else
+        return null;
+}
+
 // handler function to get category id from API
 async function getAPICategoryId(category){
     // Apparently category needs to be an id from there database
@@ -234,4 +244,5 @@ module.exports = {
     updateQuestionStatus,
     getAllPendingQuestions,
     getQuestionsByCategory,
+    getAllUsersQuestions,
 }

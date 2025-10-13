@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../utils/jwt');
-const { createQuestion, updateQuestionStatus, getQuestionsByStatus, getQuestionsByCategory } = require('../controllers/questionController');
+const { createQuestion, updateQuestionStatus, getQuestionsByStatus, getQuestionsByCategory, getAllUsersQuestions } = require('../controllers/questionController');
 
 
 // Route middleware for every request to URLs past this point
@@ -14,5 +14,7 @@ router.patch(`/:question_id`, updateQuestionStatus);
 router.get(`/status`, getQuestionsByStatus)
 // Route to get questions by category
 router.get('/category', getQuestionsByCategory)
+// Route to get all questions made by user
+router.get(`/:userId`, getAllUsersQuestions)
 
 module.exports = router;

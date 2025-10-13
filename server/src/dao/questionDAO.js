@@ -371,6 +371,41 @@ async function getAllQuestionsNoType(difficulty){
 
 }
 
+// function that returns all questions made by a user
+// return: list of questions
+async function getAllUsersQuestions(userId){
+    const params = {
+        TableName: TABLE_NAME,
+        FilterExpression: `begins_with(PK, :PKPrefix) AND begins_with(SK, :SKPrefix) AND #userId = :userId`,
+        ExpressionAttributeNames: {
+            "#userId": "userId",
+        },
+        ExpressionAttributeValues: {
+            ":PKPrefix": "CATEGORY#",
+            ":SKPrefix": "QUESTION#",
+            ":userId": userId,
+        }
+    };
+    const command = new ScanCommand(params)
+
+    try {
+        const data = await documentClient.send(command)
+
+        if (data){
+            logger.info(`Successful GET | getAllUsersQuestions`)
+            return data.Items
+        }
+        else {
+            logger.error(`Failed GET | getAllUsersQuestions`)
+            return null
+        }
+    }
+    catch (err){
+        logger.error(`Error questionDAO | getAllUsersQuestions | ${err}`)
+        return null
+    }
+}
+
 module.exports = {
     createQuestion,
     getQuestionById,
@@ -381,4 +416,5 @@ module.exports = {
     getAllQuestionsByCategoryNoType,
     getAllQuestions,
     getAllQuestionsNoType,
+    getAllUsersQuestions,
 }

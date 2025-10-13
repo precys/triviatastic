@@ -6,6 +6,12 @@ async function createQuestion(question: QuestionInterface){
     return res.status;
 }
 
+async function getUserQuestions(userId: string){
+    const res = await axiosClient.get(`/questions/${userId}`)
+    return res.data
+}
+
 export default {
     createQuestion,
+    getUserQuestions,
 }
