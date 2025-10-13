@@ -11,12 +11,12 @@ async function getUsersStats() {
 }
 
 async function updateQuestionStatus(questionId: string, status: string){
-    const res = await axiosClient.get(`/questions/${questionId}?status=${status}`);
+    const res = await axiosClient.patch(`/questions/${questionId}?status=${status}`);
     return res.data;
 }
 
 async function deleteUser(userId: string){
-    const res = await axiosClient.get(`/users/${userId}`);
+    const res = await axiosClient.delete(`/users/${userId}`);
     return res.data;
 }
 

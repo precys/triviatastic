@@ -13,15 +13,28 @@ function SubmitQuestion() {
         incorrect_answers: [],
     });
     const [incorrectAnswers, setIncorrectAnswers] = useState<string[]>(["", "", ""])
-    const [sucesss, setSuccess] = useState<boolean>(false);
+    const [success, setSuccess] = useState<boolean>(false);
+    const [visible, setVisible] = useState<boolean>();
 
+    const handleVisible = async () => {
+        setVisible(false);
+    }
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
             const res = await submitquestionService.createQuestion(question);
-            console.log(res)
+            if (res == 201){
+                setSuccess(true);
+            }
+            else {
+                setSuccess(false);
+            }
+
+            setVisible(true)
+            console.log(visible)
+            
         }
         catch (err){
             console.error(`Error creating question. ${err}`)
@@ -105,9 +118,25 @@ function SubmitQuestion() {
                                     </div>
                                 </div>
                             }
-                            <button className="btn btn-primary w-100 mt-3" onClick={() => handleSubmit()}>Submit</button>
+                            <button className="btn btn-primary w-100 mt-3" onClick={(e) => handleSubmit(e)}>Submit</button>
+                            
                         </form>
                     </div>
+                    {visible && 
+                        <div className="modal d-block" tabIndex={-1}>
+                            <div className="modal-dialog">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title">{success ? "Success!" : "Failed"}</h5>
+                                        <button type="button" className="btn-close" onClick={() => handleVisible()}></button>
+                                    </div>
+                                    <div className="modal-body">
+                                        <p>{success ? "Question was created!" : "Something went wrong."}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </>

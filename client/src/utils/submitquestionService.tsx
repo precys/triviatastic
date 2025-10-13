@@ -3,7 +3,7 @@ import { QuestionInterface } from "@/types/question";
 
 async function createQuestion(question: QuestionInterface){
     const res = await axiosClient.post(`/questions/`, question)
-    return res.data;
+    return res.status;
 }
 
 export default {

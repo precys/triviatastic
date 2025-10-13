@@ -21,7 +21,7 @@ function QuestionCard({
   return (
     <div className="card w-100">
         <div className="card-body">
-            <h5 className="card-title">  {question} </h5>
+            <h5 className="card-title">  {question} </h5> <span className="fs-6"> ID: </span>  <span className="fs-6 fw-light"> {questionId} </span>
             <p className="card-text"> 
               <span className="fs-6"> Correct Answer: {correct_answer} </span>
               <br/>
