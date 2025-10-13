@@ -231,6 +231,51 @@ async function getAllQuestionsByCategory(category, difficulty, type){
     };
 }
 
+async function getAllQuestionsByCategoryNoType(category, difficulty){
+    let filterExpression = "#status = :status";
+    let expressionAttributeNames = {
+        "#status": "status",
+    };
+    let expressionAttributeValues = {
+        ":PK": `CATEGORY#${category.toLowerCase()}`,
+        ":status": "approved"
+    };
+
+    if (difficulty){
+        filterExpression += " AND #difficulty = :difficulty";
+        expressionAttributeNames["#difficulty"] = "difficulty";
+        expressionAttributeValues[":difficulty"] = difficulty;
+    }
+
+    const params = {
+        TableName: TABLE_NAME,
+        KeyConditionExpression: "PK = :PK",
+        FilterExpression: filterExpression,
+        ExpressionAttributeNames: expressionAttributeNames,
+        ExpressionAttributeValues: expressionAttributeValues
+    };
+    const command = new QueryCommand(params);
+
+    
+    try{
+        const data = await documentClient.send(command);
+
+        if (data){
+            logger.info(`Successful QUERY | getAllQuestionsByCategory | ${JSON.stringify(data.Items)}`);
+            return data.Items;
+        }
+        else {
+            logger.error(`Failed QUERY | getAllQuestionsByCategory | ${data}`);
+            return null;
+        };
+
+    }
+    catch (err) {
+        logger.error(`Error in questionDAO | getQuestionsByStatus | ${err} `);
+        return null;
+    };
+}
+
 // function that gets all questions
 // return: list of all questions that are approved
 async function getAllQuestions(difficulty, type){
@@ -243,6 +288,52 @@ async function getAllQuestions(difficulty, type){
         ":PKPrefix": "CATEGORY#",
         ":status": "approved",
         ":type": type,
+    };
+
+    if (difficulty){
+        filterExpression += " AND #difficulty = :difficulty";
+        expressionAttributeNames["#difficulty"] = "difficulty";
+        expressionAttributeValues[":difficulty"] = difficulty;
+    }
+
+    const params = {
+        TableName: TABLE_NAME,
+        FilterExpression: filterExpression,
+        ExpressionAttributeNames: expressionAttributeNames,
+        ExpressionAttributeValues: expressionAttributeValues,
+    };
+    const command = new ScanCommand(params)
+
+    try {
+        const data = await documentClient.send(command)
+
+        if (data){
+            logger.info(`Successful SCAN | getAllQuestions | ${JSON.stringify(data.Items)}`)
+            return data.Items;
+        }
+        else {
+            logger.error(`Failed SCAN | getAllQuestions`)
+            return null;
+        }
+        
+
+    }
+    catch (err){
+        logger.error(`Error in questionDAO | getAllQuestions | ${err}`);
+        return null;
+    }
+
+}
+
+
+async function getAllQuestionsNoType(difficulty){
+    let filterExpression = "begins_with(PK, :PKPrefix) AND #status = :status";
+    let expressionAttributeNames = {
+        "#status": "status"
+    };
+    let expressionAttributeValues = {
+        ":PKPrefix": "CATEGORY#",
+        ":status": "approved"
     };
 
     if (difficulty){
@@ -322,6 +413,8 @@ module.exports = {
     deleteQuestion,
     getAllQuestionsByStatus,
     getAllQuestionsByCategory,
+    getAllQuestionsByCategoryNoType,
     getAllQuestions,
+    getAllQuestionsNoType,
     getAllUsersQuestions,
 }
