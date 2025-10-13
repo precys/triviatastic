@@ -95,7 +95,7 @@ async function getQuestionById(questionId){
 
     try {
         const data = await documentClient.send(command);
-        console.log(data);
+
         
         if (data.Items[0]){
             logger.info(`Success GET command | getQuestionById | ${JSON.stringify(data.Items[0])}`);

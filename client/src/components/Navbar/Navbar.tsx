@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthentificationHook from "../Context/AuthentificationHook"
 import { userFromToken } from "@/utils/userFromToken";
 
 function Navbar() {
   const { userRole, logout, users } = AuthentificationHook();
+  const [selectedUser, setSelectedUser] = useState("");
+
   const currentUser = userFromToken()
   const filteredUsers = users.filter((user) => user.userId !== currentUser.userId)
   const navigate = useNavigate();
@@ -12,9 +15,10 @@ function Navbar() {
     logout();
   }
 
-  const handleUserLookup = (userId: string) => {
-    if (userId) {
-      navigate(`/profile/${userId}`)
+  const handleUserLookup = (username: string) => {
+    if (username) {
+      setSelectedUser("");
+      navigate(`/profile/${username}`)
     }
   }
 
@@ -57,10 +61,10 @@ function Navbar() {
               }
 
               <form className="d-flex" role="search">
-                <select className="form-select" onChange={(e) => handleUserLookup(e.target.value)} defaultValue="">
-                  <option value="">Search users</option>
+                <select className="form-select" onChange={(e) => {setSelectedUser(e.target.value); handleUserLookup(e.target.value);}} value={selectedUser}>
+                  <option value="">Search Users</option>
                   {filteredUsers.map((user) => (
-                    <option key={user.userId} value={user.userId}> {user.username} </option>
+                    <option key={user.username} value={user.username}> {user.username} </option>
                   ))}
                 </select>
               </form>
