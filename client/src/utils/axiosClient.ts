@@ -19,4 +19,19 @@ axiosClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Handles JWT token error, status code 401
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      console.error("Unauthorized — logging out.");
+      localStorage.removeItem("token");
+      window.location.href = "/"; 
+    } else {
+      console.error(error);
+    }
+    return Promise.reject(error); 
+  }
+);
+
 export default axiosClient;

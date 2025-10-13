@@ -2,12 +2,14 @@ const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../utils/jwt');
 const { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends,
-     addFriend, sendFriendRequest, getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, getAllUsers , getUsersScoreByCategory} = require('../controllers/userController');
+     addFriend, sendFriendRequest, getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, getAllUsers , getUsersScoreByCategory,
+     getUsersStats} = require('../controllers/userController');
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.get('/', getAllUsers);
+router.get('/', authenticate, getAllUsers);
 router.delete('/:userId', authenticate, deleteAccount);
+router.get(`/stats`, authenticate, getUsersStats)
 router.get('/:userId/stats', authenticate, getStats);
 router.patch('/:userId/profile', authenticate, updateProfile);
 router.get(`/leaderboard`, authenticate, getUsersScoreByCategory)

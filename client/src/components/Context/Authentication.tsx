@@ -1,10 +1,18 @@
-import { useState, ReactNode } from 'react'
-import { AuthContext } from './AuthentificationContext';
+import { useState, useEffect, ReactNode } from 'react'
+import { AuthContext, User } from './AuthentificationContext';
 
 function Authentication({children}: { children: ReactNode }) {
     const [token, setToken] = useState<string | null>(null);
     const [userRole, setUserRole] = useState<string | null>(null);
-    const url = "http://localhost:3000"
+    const [users, setUsers] = useState<User[]>([])
+
+    // Saves token and role information so that you don't have to relogin on page refresh as long as token is not null.
+    useEffect(() => {
+        const savedToken = localStorage.getItem('token');
+        const savedRole = localStorage.getItem('userRole');
+        if (savedToken) setToken(savedToken);
+        if (savedRole) setUserRole(savedRole);
+    }, []);
 
     // Login page can use this function to set new token to local storage
     const login = (newToken: string) => {
@@ -25,7 +33,7 @@ function Authentication({children}: { children: ReactNode }) {
 
     // Set the Provider of the context to the values we want to get for the nested components
     return (
-        <AuthContext.Provider value = {{ token, login, logout, userRole, setRole, url }}>
+        <AuthContext.Provider value={{ token, login, logout, userRole, setRole, users, setUsers}}>
             {children}
         </AuthContext.Provider>
     )

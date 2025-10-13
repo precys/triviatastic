@@ -19,8 +19,9 @@ async function getRecentPosts() {
 }
 
 // add a post
-async function addPost(userId: string, content: string) {
-  const res = await axiosClient.post(`/posts/${userId}/posts`, { content });
+// async function addPost(userId: string, content: string) {
+async function addPost(userId: string, body: {content: string, profileId?: string}) {
+  const res = await axiosClient.post(`/posts/${userId}/posts`, body);
   return res.data;
 }
 

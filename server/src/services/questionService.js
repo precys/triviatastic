@@ -2,6 +2,7 @@
 // Util imports
 const { logger } = require("../utils/logger");
 const questionDAO = require("../dao/questionDAO");
+const userDAO = require("../dao/userDAO")
 
 // function that parses through the request.body as questionItem
 // args: questionItem (resp.body), userId
@@ -132,7 +133,20 @@ async function getQuestionsByCategory(category, n, difficulty, type){
 // function that handles request for all pending questions
 // returns: all pending questions
 async function getAllPendingQuestions(){
-    return await questionDAO.getAllQuestionsByStatus("pending");
+    const questions = await questionDAO.getAllQuestionsByStatus("pending")
+
+    // Run all user lookups concurrently
+    const enrichedQuestions = await Promise.all(
+        questions.Items.map(async (q) => {
+        const user = await userDAO.findUserById(q.userId);
+        return {
+            ...q,
+            username: user?.username || "Unknown",
+        };
+        })
+    );
+
+    return enrichedQuestions;
 }
 
 // function that handles request for all approved questions

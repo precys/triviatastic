@@ -1,4 +1,4 @@
-import axios from 'axios';
+import leaderboardService from '@/utils/leaderboardService';
 import { useEffect, useState} from 'react'
 import AuthentificationHook from '../Context/AuthentificationHook';
 
@@ -15,25 +15,16 @@ function Leaderboard() {
     const [usersScore, setUsersScore] = useState<usersScore[]>([]);
     const [category, setCategory] = useState<string>("any");
     // unpack token, base url from context
-    const { token, url } = AuthentificationHook();
+    const { token } = AuthentificationHook();
     // initialize endpoints leaderboard needs
     const endpoint = `/users/leaderboard?category=${category}`
 
     // useEffect to grab/update usersScore
     useEffect(() => {
-        const endpointUrl = url + endpoint;
         const getLeaderboard = async () => {
             try {
-                await axios
-                .get(endpointUrl, {
-                    headers: {
-                        Authorization: `Bearer ${token}` 
-                    },
-                }
-                )
-                .then((response) => {
-                    setUsersScore(response.data.users_score)
-                })
+                const res = await leaderboardService.getLeaderboard(category)
+                setUsersScore(res.users_score)
             }
             catch (err){
                 console.error(`Error: ${err}`)
@@ -41,7 +32,7 @@ function Leaderboard() {
         }
 
         getLeaderboard();
-    }, [category, token, endpoint, url])
+    }, [category, token, endpoint])
 
 
     return (
@@ -66,7 +57,7 @@ function Leaderboard() {
                     </thead>
                     <tbody>
                         {usersScore.map((user, index) => (
-                            <tr>
+                            <tr key={index + 1}>
                                 <th scope="row"> {index + 1} </th>
                                 <td> {user.username} </td>
                                 <td> {user.category_score} </td>

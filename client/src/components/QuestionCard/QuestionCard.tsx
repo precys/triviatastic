@@ -1,12 +1,9 @@
-interface Question {
-  questionId: string;
-  question: string;
-  category: string;
-  type: string;
-  difficulty: string;
-  correct_answer: string;
-  incorrect_answers: [];
-  statusUpdate: (questionId: string, status: string) => void;
+import { QuestionInterface } from "../../types/question"
+
+interface QuestionProps extends QuestionInterface {
+  statusUpdate: (questionId: string, status: string) => void,
+  username: string,
+  questionId: string,
 }
 
 function QuestionCard({
@@ -18,25 +15,32 @@ function QuestionCard({
     correct_answer,
     incorrect_answers,
     statusUpdate,
-}: Question) {
+    username
+}: QuestionProps) {
     
   return (
-    <div className="card">
+    <div className="card w-100">
         <div className="card-body">
-            <h5 className="card-title"> {category} | {type} | {difficulty} </h5>
+            <h5 className="card-title">  {question} </h5> <span className="fs-6"> ID: </span>  <span className="fs-6 fw-light"> {questionId} </span>
             <p className="card-text"> 
-            <span> Question: {question} </span> 
-            <br/>
-            <span> Correct Answer: {correct_answer} </span>
-            <br/>
-            <span> Incorrect Answers: {incorrect_answers.join(", ")} </span>
+              <span className="fs-6"> Correct Answer: {correct_answer} </span>
+              <br/>
+              <span className="fs-6"> Incorrect Answers: {incorrect_answers.join(", ")} </span>
             </p>
-            <button className="btn btn-primary" onClick={() => statusUpdate(questionId, "denied")}> 
-            Deny 
-            </button>
-            <button className="btn btn-primary" onClick={() => statusUpdate(questionId, "approved")}> 
-            Approve 
-            </button>
+            <div className="w-100 d-flex gap-4">
+              <span className="fs-6"> by <span className="fs-6 fw-bold"> {username} </span></span>
+              <span> {category} </span>
+              <span> {type} </span>
+              <span> {difficulty} </span>
+            </div>
+            <div className="w-100 d-flex gap-2">
+              <button className="btn btn-danger w-50" onClick={() => statusUpdate(questionId, "denied")}> 
+              Deny 
+              </button>
+              <button className="btn btn-success w-50" onClick={() => statusUpdate(questionId, "approved")}> 
+              Approve 
+              </button>
+            </div>
         </div>
     </div>
   )

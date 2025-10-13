@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useState } from "react";
 import AuthentificationHook from "../../components/Context/AuthentificationHook";
 import { useNavigate  } from "react-router-dom";
+import loginService from "@/utils/loginService";
 
 function Login() {
     // Initialize useState variables for username and password
@@ -11,61 +11,46 @@ function Login() {
     const [loginError, setLoginError] = useState<boolean>(false);
     const [registerError, setRegisterError] = useState<boolean>(false);
     // Unpack login, setrole, url from Authentification Hook
-    const { login, setRole, url } = AuthentificationHook();
+    const { login, setRole, setUsers } = AuthentificationHook();
     // Initialize navigate
     const navigate = useNavigate();
     // initialize endpoints
-    const registerEndpoint = `/users/register`
-    const loginEndpoint = `/users/login`
 
     // Function to handle login endpoint
     const handleLogin = async () => {
         try {
             setRegisterError(false);
             setLoginError(false);
-            let endpointUrl = url;
-            const body = {
-                    username: username,
-                    password: password,
-            }
+            let res;
 
              // Added if-conditional to check if user is being registered or not
             if (register){
-                endpointUrl += registerEndpoint;
+                res = await loginService.register(username, password);
 
             }
             else {
                 // if not register, login
-                endpointUrl += loginEndpoint;
+                res = await loginService.login(username, password);
             }
-            console.log(endpointUrl)
 
             // Login and register take the same body format, use same code, just change url depending on registering or not.
-            await axios
-                .post(endpointUrl, body)
-                .then((response) => {
-                    const token = response.data.token;
-                    const userRole = response.data.role;
+            if (res){
+                login(res.token);
+                setRole(res.role);
+                const users = await loginService.getUsers()
+                setUsers(users)
+                setLoginError(false);
+                navigate("/home");
+            }
+            else {
+                if (register){
+                    setRegisterError(true);
+                }
+                else {
+                    setLoginError(true);
+                }
+            }
 
-                    if (response.status == 201){
-                        login(token);
-                        setRole(userRole);
-                        setLoginError(false);
-                        navigate("/home");
-                    }
-
-
-                })
-                .catch(err => {
-                    if (register){
-                        setRegisterError(true);
-                    }
-                    else {
-                        setLoginError(true);
-                    }
-                    console.error(`Error on axios request. ${err}`)
-                })
-            
         }
         catch (err){
             console.error(`Login error. Error: ${err}`);

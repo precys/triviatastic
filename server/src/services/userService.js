@@ -144,6 +144,24 @@ async function getStats(userId) {
   };
 }
 
+// returns all Users with their stats
+async function getUsersStats (){
+  const users = await userDAO.getAllUsers();
+
+  return users.map(user => ({
+    username: user.username,
+    userId: user.userId,
+    game_count: user.game_count,
+    streak: user.streak,
+    category_counts: user.category_counts,
+    category_scores: user.category_scores,
+    hi_score: user.hi_score,
+    easy_count: user.easy_count,
+    med_count: user.med_count,
+    hard_count: user.hard_count,
+  }));
+}
+
 // function that gets all users and there associated category scores
 async function getUsersCategoryScores() {
   
@@ -169,6 +187,8 @@ async function getUsersScoreByCategory(category){
   return usersScoresByCategory.sort((a, b) => b.category_score - a.category_score);
 }
 
+
+
 // get all User status users
 async function getAllUsers (){
   const users = await userDAO.getAllUsers();
@@ -179,6 +199,7 @@ async function getAllUsers (){
   }));
 
 }
+
 
 // get user's friends
 async function getUsersFriends(user) {
@@ -380,6 +401,6 @@ async function removeFriend(usernameToRemoveFrom, friendUsername) {
 
 module.exports = {
   registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, removeFriend, updateAccount, addFriend, sendFriendRequest,
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers, getUsersScoreByCategory
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers, getUsersScoreByCategory, getUsersStats
 };
 

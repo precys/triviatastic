@@ -5,12 +5,37 @@ import { PostData } from "@/types/postModel";
 import commentService from "@/utils/commentService";
 import { getUserStats } from "@/utils/userService";
 import { userFromToken } from "@/utils/userFromToken";
+import { useParams } from "react-router-dom";
+import AuthentificationHook from "@/components/Context/AuthentificationHook";
 import UserList from "@/components/FriendRequests/UserList";
 import FriendsList from "@/components/Friends/FriendsList";
 import "./ProfilePage.css";
 
 export default function ProfilePage() {
-  const { userId, username } = userFromToken();
+  // Andrew comments for clarifications
+  // Field initialized for userId, username: changes depending on if look at own profile or another user's profile
+  let userId;
+  let username;
+  // Gonna have to use some fields from currently logged in user. Initialize. Might need a name change for dev sake.
+  const currentUser = userFromToken();
+  // Deconstruct authentificationhook for users arraylist
+  const { users } = AuthentificationHook();
+  // Try to get value from username path parameter
+  const { username: paramUsername } = useParams<{ username: string }>();
+
+  // Simple if-conditional, if pathUsername is undefined, meaning no :username path param, access page for /profile
+  if (paramUsername){
+    // If paramUsername does have value, meaning /path/:username, do below logic
+    const user = users.find(user => user.username === paramUsername)
+    userId = user?.userId;
+    username = user?.username;
+  }
+  else{
+    // else handle normally.
+    userId = currentUser.userId;
+    username = currentUser.username;
+  }
+
 
   const [activeTab, setActiveTab] = useState<"myPosts" | "friendsFeed">("myPosts");
   const [userPosts, setUserPosts] = useState<PostData[]>([]);
@@ -64,7 +89,21 @@ export default function ProfilePage() {
   const handleAddPost = async (content: string, type: "myPosts" | "friendsFeed") => {
     if (!currentUserId || !content.trim()) return;
     try {
-      await commentService.addPost(currentUserId, content);
+      // Construct the body depending on own profile, or visiting another user's profile.
+      if (paramUsername){
+        const body = {
+          content,
+          profileId: currentUserId,
+        }
+        await commentService.addPost(currentUser.userId || "", body);
+      }
+      else{
+        const body = {
+          content,
+        }
+        await commentService.addPost(currentUserId, body);
+      }
+      
       if (type === "myPosts") await loadUserPosts();
       else await loadFriendsPosts();
     } catch (err) {
