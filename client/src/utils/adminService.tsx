@@ -10,7 +10,19 @@ async function getUsersStats() {
     return res.data;
 }
 
+async function updateQuestionStatus(questionId: string, status: string){
+    const res = await axiosClient.get(`/questions/${questionId}?status=${status}`);
+    return res.data;
+}
+
+async function deleteUser(userId: string){
+    const res = await axiosClient.get(`/users/${userId}`);
+    return res.data;
+}
+
 export default {
     getPendingQuestions,
     getUsersStats,
+    updateQuestionStatus,
+    deleteUser
 }

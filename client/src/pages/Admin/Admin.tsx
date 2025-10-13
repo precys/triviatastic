@@ -1,4 +1,3 @@
-import axios from "axios";
 import adminService from "../../utils/adminService";
 import { useEffect, useState } from "react";
 import QuestionCard from "../../components/QuestionCard/QuestionCard";
@@ -57,22 +56,10 @@ function Admin() {
   // statusUpdate function that sends request to statusUpdate endpoint for approval or denial
   const statusUpdate = async (questionId: string, newStatus: string) => {
     try {
-      const url = `http://localhost:3000/questions/${questionId}?status=${newStatus}`
-      await axios
-        .patch(url,
-          {},
-          {
-          headers: {
-            Authorization: `Bearer ${token}` 
-          },
-        })
-        .then((response) => {
-          console.log(response)
-        })
-        .catch((err) => console.error(err))
-
-        // Filters current arraylist to not include question that was changed.
-        setQuestions((prev) =>
+      const res = await adminService.updateQuestionStatus(questionId, newStatus)
+      console.log(res)
+      
+      setQuestions((prev) =>
           prev.filter((question) => question.questionId !== questionId)
         );
     }
@@ -84,19 +71,12 @@ function Admin() {
   // deleteUser function to delete user given an user Id
   const deleteUser = async (userId: string) => {
     try {
-      const url = `http://localhost:3000/users/${userId}`
-      await axios
-        .delete(url,
-          {
-          headers: {
-            Authorization: `Bearer ${token}` 
-          },
-        })
-        .catch((err) => console.error(err))
-        
-        setUsers((prev) =>
-          prev.filter((user) => user.userId !== userId)
-        );
+      const res = await adminService.deleteUser(userId)
+      console.log(res);
+
+      setUsers((prev) =>
+        prev.filter((user) => user.userId !== userId)
+      );
     }
     catch (err) {
       console.error(`Error deleting user. Error: ${err}`)
