@@ -1,7 +1,8 @@
 import { QuestionInterface } from "../../types/question"
 
 interface QuestionProps extends QuestionInterface {
-  statusUpdate: (questionId: string, status: string) => void,
+  statusUpdate?: (questionId: string, status: string) => void,
+  status?: string,
   username: string,
   questionId: string,
 }
@@ -15,13 +16,15 @@ function QuestionCard({
     correct_answer,
     incorrect_answers,
     statusUpdate,
+    status,
     username
 }: QuestionProps) {
     
   return (
     <div className="card w-100">
         <div className="card-body">
-            <h5 className="card-title">  {question} </h5> <span className="fs-6"> ID: </span>  <span className="fs-6 fw-light"> {questionId} </span>
+            <h5 className="card-title">  {question} <span className="fs-6 fw-light">{status}</span> </h5> 
+            <span className="fs-6"> ID: </span>  <span className="fs-6 fw-light"> {questionId} </span>
             <p className="card-text"> 
               <span className="fs-6"> Correct Answer: {correct_answer} </span>
               <br/>
@@ -33,14 +36,16 @@ function QuestionCard({
               <span> {type} </span>
               <span> {difficulty} </span>
             </div>
-            <div className="w-100 d-flex gap-2">
-              <button className="btn btn-danger w-50" onClick={() => statusUpdate(questionId, "denied")}> 
-              Deny 
-              </button>
-              <button className="btn btn-success w-50" onClick={() => statusUpdate(questionId, "approved")}> 
-              Approve 
-              </button>
-            </div>
+            {statusUpdate && (
+              <div className="w-100 d-flex gap-2">
+                <button className="btn btn-danger w-50" onClick={() => statusUpdate(questionId, "denied")}> 
+                Deny 
+                </button>
+                <button className="btn btn-success w-50" onClick={() => statusUpdate(questionId, "approved")}> 
+                Approve 
+                </button>
+              </div>
+            )}
         </div>
     </div>
   )

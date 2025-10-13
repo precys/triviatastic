@@ -1,6 +1,14 @@
 import submitquestionService from '@/utils/submitquestionService';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { QuestionInterface } from '@/types/question'
+import QuestionCard from '@/components/QuestionCard/QuestionCard';
+import { userFromToken } from '@/utils/userFromToken';
+
+interface Question extends QuestionInterface {
+  username: string,
+  questionId: string,
+  status: string,
+}
 
 function SubmitQuestion() {
     // initialize useStates
@@ -15,6 +23,24 @@ function SubmitQuestion() {
     const [incorrectAnswers, setIncorrectAnswers] = useState<string[]>(["", "", ""])
     const [success, setSuccess] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>();
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const user = userFromToken();
+    const username = user.username || ""
+    const userId = user.userId || ""
+
+    useEffect(() => {
+        const getUserQuestions = async () => {
+        try{
+            const data = await submitquestionService.getUserQuestions(userId);
+            setQuestions(data.questions);
+        }
+        catch (err) {
+            console.error(`Failed to get pending questions. ${err}`)
+        }
+        }
+        
+        getUserQuestions();
+    }, []);
 
     const handleVisible = async () => {
         setVisible(false);
@@ -154,6 +180,26 @@ function SubmitQuestion() {
                             
                         </form>
                     </div>
+                    
+                    <div className="container w-75 mt-3 d-flex flex-column gap-1">
+                        {questions.map((question) => (
+                        <QuestionCard
+                            key={question.questionId}
+                            questionId={question.questionId}
+                            category={question.category}
+                            question={question.question}
+                            type={question.type}
+                            difficulty={question.difficulty}
+                            correct_answer={question.correct_answer}
+                            incorrect_answers={question.incorrect_answers}
+                            status={question.status}
+                            username={username}
+                        />
+                        ))}
+                    </div>
+
+
+
                     {visible && 
                         <div className="modal d-block" tabIndex={-1}>
                             <div className="modal-dialog">

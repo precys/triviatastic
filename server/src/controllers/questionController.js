@@ -122,6 +122,28 @@ async function getQuestionsByCategory(req, res){
     }
 }
 
+// route function to handle get requests for all questions made by user
+async function getAllUsersQuestions(req, res){
+    const { userId } = req.params
+    if (!userId) return res.status(405).json({message:`Invalid userId`})
+    
+    try {
+        const data = await questionService.getAllUsersQuestions(userId)
+
+        if (data){
+            return res.status(201).json({message:`User's Questions ${data.length}: `, questions: data})
+        }
+        else {
+            return res.status(405).json({message:`Request failed.`})
+        }
+    }
+    catch (err){
+        logger.error(`Error questionController | getAllUsersQuestions | ${err}`)
+        return res.status(404).json({message:`Server-side error.`})
+    }
+
+}
+
 // handler function to check to user currently logged is of ADMIN role
 // args: userId
 // return: boolean
@@ -136,4 +158,5 @@ module.exports = {
     updateQuestionStatus,
     getQuestionsByStatus,
     getQuestionsByCategory,
+    getAllUsersQuestions,
 }
