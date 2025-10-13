@@ -23,6 +23,11 @@ function SubmitQuestion() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!isQuestionValid()){
+            alert("Please fill out all fields before submitting!");
+            return;
+        }
+
         try {
             const res = await submitquestionService.createQuestion(question);
             if (res == 201){
@@ -41,6 +46,23 @@ function SubmitQuestion() {
         }
 
     }
+
+    const isQuestionValid = () => {
+        const requiredFields = [
+            question.type,
+            question.difficulty,
+            question.category,
+            question.question,
+            question.correct_answer
+        ];
+
+        const stringsValid = requiredFields.every(field => field.trim() !== "");
+
+        const incorrectValid = question.incorrect_answers.length > 0 &&
+            question.incorrect_answers.every(ans => ans.trim() !== "");
+
+        return stringsValid && incorrectValid;
+    };
 
     const handleIncorrectAnswers = async (i: number, incorrectAnswer: string) => {
         setIncorrectAnswers((prev) => {
@@ -74,18 +96,28 @@ function SubmitQuestion() {
                     </div>
                     <div className="container w-75 mt-3">
                         <form className="row border p-3">
-                            <div className="col-md-10">
+                            <div className="col-md-12">
                                 <label className="form-label">Question: </label>
                                 <input type="text" className="form-control" value={question.question} 
                                 onChange={(e) => setQuestion({ ...question, question: e.target.value})} />
                             </div>
-                            <div className="col-md-2">
+                            <div className="col-md-6">
                                 <label className="form-label">Category: </label>
                                 <select className="form-control" value={question.category} onChange={(e) => setQuestion({...question, category: e.target.value})}>
+                                    <option value="" disabled>Select an option</option>
                                     <option value="art">Art</option>
                                     <option value="history">History</option>
                                     <option value="mythology">Mythology</option>
                                     <option value="sports">Sports</option>
+                                </select>
+                            </div>
+                            <div className="col-md-6">
+                                <label className="form-label">Difficulty: </label>
+                                <select className="form-control" value={question.difficulty} onChange={(e) => setQuestion({...question, difficulty: e.target.value})}>
+                                    <option value="" disabled>Select an option</option>
+                                    <option value="easy">Easy</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="hard">Hard</option>
                                 </select>
                             </div>
                             {question.type == "multiple" &&

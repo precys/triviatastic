@@ -32,6 +32,7 @@ function App() {
         <Route path="/create-game" element={<ProtectedRoute> <CreateQuiz /> </ProtectedRoute>}></Route>
         <Route path="/quiz/:game_id" element={<ProtectedRoute> <Quiz /> </ProtectedRoute>}></Route>
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/:userId" element={<ProfilePage />} />
         <Route path="/feed" element={<CommentsFeedPage />} />
         <Route path="/submit-question" element={<ProtectedRoute> <SubmitQuestion /> </ProtectedRoute>} />
         {/* Admin Only */}

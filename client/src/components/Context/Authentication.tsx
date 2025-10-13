@@ -1,9 +1,10 @@
 import { useState, useEffect, ReactNode } from 'react'
-import { AuthContext } from './AuthentificationContext';
+import { AuthContext, User } from './AuthentificationContext';
 
 function Authentication({children}: { children: ReactNode }) {
     const [token, setToken] = useState<string | null>(null);
     const [userRole, setUserRole] = useState<string | null>(null);
+    const [users, setUsers] = useState<User[]>([])
 
     // Saves token and role information so that you don't have to relogin on page refresh as long as token is not null.
     useEffect(() => {
@@ -32,7 +33,7 @@ function Authentication({children}: { children: ReactNode }) {
 
     // Set the Provider of the context to the values we want to get for the nested components
     return (
-        <AuthContext.Provider value = {{ token, login, logout, userRole, setRole}}>
+        <AuthContext.Provider value={{ token, login, logout, userRole, setRole, users, setUsers}}>
             {children}
         </AuthContext.Provider>
     )

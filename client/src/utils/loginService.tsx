@@ -29,7 +29,13 @@ async function register(username: string, password: string) {
     }
 }
 
+async function getUsers(){
+    const res = await axiosClient.get(`/users/`);
+    return res.data
+}
+
 export default {
     login,
     register,
+    getUsers,
 }

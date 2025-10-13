@@ -5,12 +5,30 @@ import { PostData } from "@/types/postModel";
 import commentService from "@/utils/commentService";
 import { getUserStats } from "@/utils/userService";
 import { userFromToken } from "@/utils/userFromToken";
+import { useParams } from "react-router-dom";
+import AuthentificationHook from "@/components/Context/AuthentificationHook";
 import UserList from "@/components/FriendRequests/UserList";
 import FriendsList from "@/components/Friends/FriendsList";
 import "./ProfilePage.css";
 
 export default function ProfilePage() {
-  const { userId, username } = userFromToken();
+  let userId;
+  let username;
+
+  const { users } = AuthentificationHook();
+  const { userId: paramUserId } = useParams<{ userId: string }>();
+  if (paramUserId){
+    const user = users.find(user => user.userId === paramUserId)
+    userId = paramUserId;
+    username = user?.username;
+  }
+  else{
+    const user = userFromToken();
+    console.log(user)
+    userId = user.userId;
+    username = user.username;
+  }
+
 
   const [activeTab, setActiveTab] = useState<"myPosts" | "friendsFeed">("myPosts");
   const [userPosts, setUserPosts] = useState<PostData[]>([]);

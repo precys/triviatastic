@@ -11,7 +11,7 @@ function Login() {
     const [loginError, setLoginError] = useState<boolean>(false);
     const [registerError, setRegisterError] = useState<boolean>(false);
     // Unpack login, setrole, url from Authentification Hook
-    const { login, setRole } = AuthentificationHook();
+    const { login, setRole, setUsers } = AuthentificationHook();
     // Initialize navigate
     const navigate = useNavigate();
     // initialize endpoints
@@ -37,6 +37,8 @@ function Login() {
             if (res){
                 login(res.token);
                 setRole(res.role);
+                const users = await loginService.getUsers()
+                setUsers(users)
                 setLoginError(false);
                 navigate("/home");
             }
