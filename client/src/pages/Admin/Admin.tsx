@@ -1,11 +1,16 @@
 import axios from "axios";
+import adminService from "../../utils/adminService";
 import { useEffect, useState } from "react";
 import QuestionCard from "../../components/QuestionCard/QuestionCard";
 import UserCard from "../../components/UserCard/UserCard"
 import AuthentificationHook from "../../components/Context/AuthentificationHook";
 import { useNavigate } from "react-router-dom";
-import { Question } from "../../types/question";
+import { QuestionInterface } from "../../types/question";
 import { User } from  "../../types/user";
+
+interface Question extends QuestionInterface {
+  username: string,
+}
 
 // Admin panel component
 function Admin() {
@@ -20,50 +25,32 @@ function Admin() {
 
   // useEffect to render on empty array list, page loading, to fill out questions
   useEffect(() => {
-      axios
-        // Endpoint to change status
-        .get("http://localhost:3000/questions/status?status=pending", {
-          headers: {
-            Authorization: `Bearer ${token}` 
-          },
-      })
-        // Parse through body for questions
-        .then((response) => {
-          setQuestions(response.data.questions); 
-        })
-        // Error handling
-        .catch((err) =>{
-          console.error(err)
-            // Since we return a 401 from our JWT in server, logout erases token and navigate back to login
-            if (err.response.status==401){
-              logout()
-              navigate("/")
-            }
-        } );
+      const getPendingQuestions = async () => {
+        try{
+          const data = await adminService.getPendingQuestions()
+          setQuestions(data.questions);
+        }
+        catch (err) {
+          console.error(`Failed to get pending questions. ${err}`)
+        }
+      }
+      
+      getPendingQuestions();
   }, [token, navigate, logout]);
 
   // useEffefct to render on page load, filling up users with their stats
     useEffect(() => {
-      axios
-        // Endpoint to change status
-        .get("http://localhost:3000/users/stats", {
-          headers: {
-            Authorization: `Bearer ${token}` 
-          },
-      })
-        // Parse through body for questions
-        .then((response) => {
-          setUsers(response.data); 
-        })
-        // Error handling
-        .catch((err) =>{
-          console.error(err)
-            // Since we return a 401 from our JWT in server, logout erases token and navigate back to login
-            if (err.response.status==401){
-              logout()
-              navigate("/")
-            }
-        } );
+      const getUsersStats = async () => {
+        try {
+          const data = await adminService.getUsersStats();
+          setUsers(data);
+        }
+        catch (err) {
+          console.error(`Failed to get users states. ${err}`)
+        }
+      }
+
+      getUsersStats();
   }, [token, navigate, logout]);
 
 

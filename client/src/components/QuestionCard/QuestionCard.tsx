@@ -1,7 +1,8 @@
-import { Question } from "../../types/question"
+import { QuestionInterface } from "../../types/question"
 
-interface QuestionProps extends Question {
-  statusUpdate: (questionId: string, status: string) => void;
+interface QuestionProps extends QuestionInterface {
+  statusUpdate: (questionId: string, status: string) => void,
+  username: string,
 }
 
 function QuestionCard({

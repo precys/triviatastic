@@ -1,4 +1,4 @@
-export interface Question {
+export interface QuestionInterface {
   questionId: string;
   question: string;
   category: string;
@@ -6,5 +6,4 @@ export interface Question {
   difficulty: string;
   correct_answer: string;
   incorrect_answers: [];
-  username: string;
 }
