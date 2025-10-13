@@ -1,26 +1,31 @@
-import {useState, useEffect} from "react";
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import {useState} from "react";
+import {useLocation} from 'react-router-dom';
+
 import QuestionScreen from "./QuestionScreen";
 import ControlScreen from "./ControlScreen";
 
 function Quiz() {
-    const {state} = useLocation();
-    const [questionLoaded, setQuestionLoaded] = useState(false);
-    const [game, setGame] = useState(state.game);
-
-    const {game_id} = useParams();
-
-    function changeScreen() {
-        console.log(questionLoaded);
-        setQuestionLoaded(!questionLoaded);
+    function changeScreen(newState?: string) {
+        if (newState) {
+            setQuestionState(newState);
+        }
+        else {
+            setQuestionState("Loaded");
+        }
     }
+
+    const {state} = useLocation();
+
+    const [questionState, setQuestionState] = useState<string>("Welcome!");
+    const [game, setGame] = useState<Game>(state.game);
+    
+    const questions = state.questions;
 
     return (
     <div>
-        <p>{game_id}</p>
-        {questionLoaded 
-        ? <QuestionScreen changeScreen={changeScreen} game={game} setGame={setGame}/> 
-        : <ControlScreen changeScreen={changeScreen} game={game} setGame={setGame}/>}
+        {questionState === "Loaded" 
+        ? <QuestionScreen changeScreen={changeScreen} setGame={setGame} question={questions[game.currentQuestion]}/> 
+        : <ControlScreen changeScreen={changeScreen} game={game} questionState={questionState}/>}
     </div>
     );
 }
@@ -37,5 +42,6 @@ type Game = {
     createdAt: Date;
     questionDifficulty: string;
 }
+
 
 export default Quiz;
