@@ -10,7 +10,13 @@ async function getFriendRequests(userId: string, status: "pending" | "accepted" 
     return res.data;
 }
 
+async function sendFriendReq (senderId: string, receiverUsername: string){
+    const res = await axiosClient.post(`http://localhost:3000/users/${senderId}/friend-requests`, { friendUsername: receiverUsername});
+    return res.data;
+}
+
 export default {
     getFriends,
-    getFriendRequests
+    getFriendRequests,
+    sendFriendReq
 }

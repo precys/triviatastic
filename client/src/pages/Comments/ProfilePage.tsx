@@ -12,6 +12,7 @@ import FriendsList from "@/components/Friends/FriendsList";
 import "./ProfilePage.css";
 import FriendRequestsList from "@/components/FriendRequests/FriendRequestsList";
 import { useFriendRequests } from "@/hooks/useFriendRequests";
+import SendFriendRequestButton from "@/components/FriendRequests/SendFriendRequestButton";
 
 export default function ProfilePage() {
   // Andrew comments for clarifications
@@ -37,6 +38,8 @@ export default function ProfilePage() {
     userId = currentUser.userId;
     username = currentUser.username;
   }
+  // checks if the user looking at their own profile
+  const isOwnProfile = currentUser.username === username;
 
   const [activeTab, setActiveTab] = useState<"myPosts" | "friendsFeed">("myPosts");
   const [userPosts, setUserPosts] = useState<PostData[]>([]);
@@ -166,6 +169,18 @@ export default function ProfilePage() {
               <span className="badge bg-info text-dark">Friends: {stats?.friend_count ?? 0}</span>
             </div>
           </div>
+          {/*  Send Friend Request only if not own profile */}
+            {!isOwnProfile && username && (
+              <div className="ms-auto"> {/* margin-left auto pushes it to the right */}
+                <SendFriendRequestButton
+                  senderId={currentUser?.userId ?? ""}
+                  receiverUsername={username}
+                  onRequestSent={() =>
+                    console.log("Friend request sent successfully")
+                  }
+                />
+              </div>
+            )}
         </div>
       </div>
 

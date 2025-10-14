@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios';
-import { useUser } from '@/hooks/useUser';
+// import axios from 'axios';
+// import { useUser } from '@/hooks/useUser';
+import friendsService from '@/utils/friendsService';
 
 
 interface SendFriendReqButtonProps{
     senderId: string; //sender
-    receiverId: string; //receiver
+    // receiverId: string; //receiver
     receiverUsername?: string;
-    onSuccess?: () => void; // callback checking if request was sent successfully 
+    onRequestSent?: () => void; // callback checking if request was sent successfully 
 }
 
-export default function SendFriendRequestButton( { senderId, receiverId, receiverUsername, onSuccess, }: SendFriendReqButtonProps) {
+export default function SendFriendRequestButton( { senderId, receiverUsername, onRequestSent }: SendFriendReqButtonProps) {
   console.log('Sending friend request:', { senderId, receiverUsername });
     const [reqStatus, setReqStatus ] = useState<string>("Not sent")
 
@@ -22,10 +23,15 @@ export default function SendFriendRequestButton( { senderId, receiverId, receive
         }
         try{
             setReqStatus("sending")
-            const response = await axios.post(`http://localhost:3000/users/${senderId}/friend-requests`, { friendUsername: receiverUsername});
-            console.log('Friend request response:', response.data);
-            setReqStatus("sent")
-            if (onSuccess) onSuccess();
+            // const response = await axios.post(`http://localhost:3000/users/${senderId}/friend-requests`, { friendUsername: receiverUsername});
+            // console.log('Friend request response:', response.data);
+            const sendFriendReq = async () =>{
+              const data = await friendsService.sendFriendReq(senderId, receiverUsername);
+              console.log("friend req data", data);
+              setReqStatus("sent");
+            }
+            sendFriendReq();
+            if (onRequestSent) onRequestSent();
         }catch(error : any){
             if (error.response) {
               console.error('Response data:', error.response.data);
