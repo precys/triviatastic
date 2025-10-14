@@ -20,7 +20,7 @@ async function loginUser(req, res) {
     const { username, password } = req.body;
     const result = await userService.loginUser({ username, password });
     logger.info(`User logged in: ${username}`, { service: 'userController' });
-    res.json(result);
+    res.status(201).json(result);
   } catch (err) {
     logger.error(`Login error: ${err.message}`, { service: 'userController' });
     res.status(500).json({ message: 'Error logging in' });
@@ -34,6 +34,17 @@ async function getStats(req, res) {
     res.json(stats);
   } catch (err) {
     logger.error(`Get stats error: ${err.message}`, { service: 'userController' });
+    res.status(500).json({ message: 'Error fetching stats' });
+  }
+}
+
+// get all users stats
+async function getUsersStats(req, res) {
+  try {
+    const stats = await userService.getUsersStats();
+    res.status(201).json(stats);
+  } catch (err) {
+    logger.error(`Get users stats error: ${err.message}`, { service: 'userController' });
     res.status(500).json({ message: 'Error fetching stats' });
   }
 }
@@ -114,6 +125,28 @@ async function getAllUsers (req, res){
 
   }catch(error){
     res.status(404).json({ message: "Failed to retrieve users" });
+  }
+}
+
+// route function to get all Users score for a category
+async function getUsersScoreByCategory(req, res){
+  try {
+    const { category } = req.query
+    const usersScore = await userService.getUsersScoreByCategory(category)
+
+    if (usersScore){
+      logger.info(`Successful GET | getUsersScoreByCategory`)
+      return res.status(201).json({message:`All users top score in ${category}: `, users_score: usersScore})
+    }
+    else {
+      logger.error(`Failed GET | getUsersScoreByCategory`)
+      return res.status(501).json({message:`Server failed to handle request.`})
+    }
+
+  }
+  catch (err){
+    logger.error(`Error in userController | getUsersScoreByCategory | ${err}`)
+    return res.status(501).json({message:`Server error: ${err}`})
   }
 }
 
@@ -225,5 +258,6 @@ async function deleteFriend (req, res){
 }
 
 module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, sendFriendRequest, 
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, findUserById, getAllUsers };
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, findUserById, getAllUsers, getUsersScoreByCategory,
+  getUsersStats };
 

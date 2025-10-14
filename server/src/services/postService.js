@@ -72,11 +72,11 @@ async function toggleUnlike(userId, postId) {
 }
 
 // comment
-async function addComment(userId, postId, text) {
-  if (!text || text.trim() === '') {
+async function addComment(userId, postId, content) {
+  if (!content || content.trim() === '') {
     throw new Error('Comment cannot be empty');
   }
-  return await postDAO.addComment(userId, postId, text);
+  return await postDAO.addComment(userId, postId, content);
 }
 
 //get comments for a post

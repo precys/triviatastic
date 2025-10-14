@@ -71,8 +71,8 @@ async function getQuestionsByStatus(req, res){
         }
 
         if (data){
-            logger.info(`Success | getQuestionByStatus | ${JSON.stringify(data.Items)}`);
-            return res.status(201).json({message:`[${data.Items.length}] ${status} questions: `, questions: data.Items})
+            logger.info(`Success | getQuestionByStatus | ${JSON.stringify(data)}`);
+            return res.status(201).json({message:`[${data.length}] ${status} questions: `, questions: data})
         }
 
     }
@@ -83,16 +83,28 @@ async function getQuestionsByStatus(req, res){
 }
 
 // route function to handle requests for custom questions
-// sample url: http://localhost:3000/questions/category?category=art&n=1
+// sample url: http://localhost:3000/questions/category?category=art&n=4&difficulty=medium&type=multiple
+// URL CAN NOW TAKE TYPE AND DIFFICULTY QUERY PARAMETERS, the only NECESSARY parameters the url needs is n, and category, and type.
+// no difficulty defined means that it will not filter for difficult i.e questions will be of all difficulties.
 async function getQuestionsByCategory(req, res){
     if ((await isAdmin(req.user.userId))){
         return res.status(403).json({message: "Forbidden access for user."});
     }
 
     try {
-        const { category, n } = req.query;
+        const { category, n, difficulty, type } = req.query;
+
+        if (!category){
+            return res.status(404).json({message:`Please enter a category`});
+        }
+        if (!type){
+            return res.status(404).json({message:`Please enter a type`});
+        }
+        if (!n){
+            return res.status(404).json({message:`Please enter a number`});
+        }
         
-        const data = await questionService.getQuestionsByCategory(category, n)
+        const data = await questionService.getQuestionsByCategory(category, n, difficulty, type)
 
         if (!data){
             logger.error(`Client requested number of questions greater than what is stored.`)
@@ -110,6 +122,28 @@ async function getQuestionsByCategory(req, res){
     }
 }
 
+// route function to handle get requests for all questions made by user
+async function getAllUsersQuestions(req, res){
+    const { userId } = req.params
+    if (!userId) return res.status(405).json({message:`Invalid userId`})
+    
+    try {
+        const data = await questionService.getAllUsersQuestions(userId)
+
+        if (data){
+            return res.status(201).json({message:`User's Questions ${data.length}: `, questions: data})
+        }
+        else {
+            return res.status(405).json({message:`Request failed.`})
+        }
+    }
+    catch (err){
+        logger.error(`Error questionController | getAllUsersQuestions | ${err}`)
+        return res.status(404).json({message:`Server-side error.`})
+    }
+
+}
+
 // handler function to check to user currently logged is of ADMIN role
 // args: userId
 // return: boolean
@@ -124,4 +158,5 @@ module.exports = {
     updateQuestionStatus,
     getQuestionsByStatus,
     getQuestionsByCategory,
+    getAllUsersQuestions,
 }

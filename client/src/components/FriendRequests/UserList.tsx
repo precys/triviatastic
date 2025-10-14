@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { User } from "../../hooks/useUser";
 import axios from 'axios';
-import FriendRequestButton from './SendFriendRequestButton';
+import FriendRequestButton from './FriendRequestButton';
 
 
 interface userListProps {

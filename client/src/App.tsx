@@ -1,5 +1,5 @@
 // Package imports
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 // Components imports
 import Navbar from "./components/Navbar/Navbar";
 import CreateQuiz from "./components/CreateQuiz/CreateQuiz";
@@ -11,39 +11,35 @@ import Profile from './pages/Profile'; // Gwen's Profile Page, will condense int
 import Login from './pages/Login/Login';
 import Home from "./pages/Home/Home";
 import Admin from "./pages/Admin/Admin";
+import Quiz from "./pages/Quiz/Quiz"
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-import ProfilePage from "./pages/ProfilePage";
-import CommentsFeedPage from "./pages/CommentsFeedPage";
-
+import ProfilePage from "./pages/Comments/ProfilePage";
+import CommentsFeedPage from "./pages/Comments/CommentsFeedPage";
+import SubmitQuestion from './pages/SubmitQuestion/SubmitQuestion';
 // CSS imports
 import './App.css';
 
 function App() {
-  const { token, userId: currentUserId } = AuthentificationHook();
+  const { token, userRole } = AuthentificationHook();
+  const location = useLocation();
+
+
   return (
     <>
-      {token && <Navbar/>}
+      {token && location.pathname !== "/" && <Navbar/>}
       <Routes>
-
-        {/* <Route path="/users/:userId" element={<Profile />}></Route>
-        <Route path="/users/:userId/friends" element={<Profile />}></Route> */} //Gwen's Profile Routes
-
+        {/* Login */}
         <Route path="/" element={<Login />} />
+        {/* Protected */}
         <Route path="/home" element={<ProtectedRoute> <Home /> </ProtectedRoute>}></Route>
-        <Route path="/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>
-        <Route path="/create-game" element={<ProtectedRoute> <CreateQuiz /> </ProtectedRoute>} />
-        {/* <Route path="/profile" element={<ProfilePage />} /> */}
-        <Route
-          path="/profile/:userId?"
-          element={
-            <ProtectedRoute>
-              {/* Pass logged-in user's ID as fallback */}
-              <ProfilePage currentUserId={currentUserId || ""} />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/create-game" element={<ProtectedRoute> <CreateQuiz /> </ProtectedRoute>}></Route>
+        <Route path="/quiz/:game_id" element={<ProtectedRoute> <Quiz /> </ProtectedRoute>}></Route>
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/:username" element={<ProfilePage />} />
         <Route path="/feed" element={<CommentsFeedPage />} />
-
+        <Route path="/submit-question" element={<ProtectedRoute> <SubmitQuestion /> </ProtectedRoute>} />
+        {/* Admin Only */}
+        {userRole == "ADMIN" && <Route path="/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>}
       </Routes>
     </>
   );

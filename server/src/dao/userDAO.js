@@ -96,9 +96,9 @@ async function getUserByUsername(username) {
   const command = new QueryCommand({
     TableName: TABLE_NAME,
     IndexName: USERNAME_INDEX, // gsi name for username lookup
-    //username-index
-    KeyConditionExpression: "username = :u",
+    KeyConditionExpression: "username = :u AND SK = :s",
     ExpressionAttributeValues: {
+      ":s": "PROFILE",
       ":u": username
     },
     Limit: 1
@@ -117,7 +117,7 @@ async function getAllUsers() {
     ExpressionAttributeNames: { "#role": "role" },
     ExpressionAttributeValues: { ":role": "USER" }
   });
-
+  
   try {
       const data = await documentClient.send(command);
       return data.Items;
