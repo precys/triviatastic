@@ -206,10 +206,10 @@ async function getAPICategoryId(category){
 async function getAPIQuestions(category, n, difficulty, type){
     // Build the url, given the variables
     let url = `https://opentdb.com/api.php?amount=${n}`;
-    if (category != "any"){
+    if (category !== "any"){
         url += `&category=${await getAPICategoryId(category)}`
     }
-    if (difficulty){
+    if (difficulty !== "any"){
         url += `&difficulty=${difficulty}`
     }
     if(type !== "any") {

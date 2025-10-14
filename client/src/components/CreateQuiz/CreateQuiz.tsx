@@ -63,10 +63,10 @@ function CreateQuiz() {
     
 
     return (
-        <>
-            <h1>Create Game</h1>
-            <div>
-                <label htmlFor="number">Category: </label>
+        <div className="bg-light card mb-2 m-3">
+            <h1 className="m-3 p-3">Create Game</h1>
+            <div className="center m-3 justify-content-center">
+                <label className="m-3" htmlFor="number">Number of Questions: </label>
                 <select value = {settings.number} id = "number" onChange={(e) => {setSettings({...settings, number: parseInt(e.target.value)})}}>
                     <option value = {10}>10</option>
                     <option value = {20}>20</option>
@@ -75,7 +75,7 @@ function CreateQuiz() {
                     <option value = {50}>50</option>
                 </select>
 
-                <label htmlFor="category">Category: </label>
+                <label className="m-3" htmlFor="category">Category: </label>
                 <select value = {settings.category} id = "category" onChange={(e) => {setSettings({...settings, category: e.target.value})}}>
                     <option value = "any">Any</option>
                     <option value = "art">Art</option>
@@ -84,20 +84,20 @@ function CreateQuiz() {
                     <option value = "sports">Sports</option>
                 </select>
 
-                <label htmlFor="difficulty">Difficulty: </label>
+                <label className="m-3" htmlFor="difficulty">Difficulty: </label>
                 <select value = {settings.questionDifficulty} id = "difficulty" onChange={(e) => {setSettings({...settings, questionDifficulty: e.target.value})}}>
-                    <option value = "random">Random</option>
+                    <option value = "any">Random</option>
                     <option value = "easy">Easy</option>
                     <option value = "medium">Medium</option>
                     <option value = "hard">Hard</option>
                 </select>
 
 
-                <button onClick={newGame}>Start Game</button>
+                <button className="btn btn-success m-3 float-end" onClick={newGame}>Start Game</button>
 
             </div>
         
-        </>
+        </div>
     );
 }
 type Game = {
