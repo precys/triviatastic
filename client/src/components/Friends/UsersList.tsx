@@ -23,7 +23,6 @@ export default function UsersList({ currentUserId, users } : UserListProps) {
             </option>
           ))}
       </select>
-      {/* Optional: Add friend request button when selected */}
     </div>
   )
 }

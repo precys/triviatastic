@@ -11,7 +11,7 @@ interface FriendRequestsListProps {
     loading: boolean;
     error?: string;
     activeStatus: "pending" | "accepted" | "denied";
-    onResponse?: (requestId: string, status: "accepted" | "denied") => void;
+    onResponse?: (requestId: string, status: "accepted" | "denied") => void; //callback to check if a request was responded to
     onFriendAdded?: () => void; //callback to refresh FriendsList
 }
 

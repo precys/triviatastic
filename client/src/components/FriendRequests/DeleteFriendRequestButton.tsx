@@ -4,7 +4,7 @@ import { useState } from "react";
 interface DeleteFriendRequestButtonProps {
   userId: string;
   requestId: string;
-  onDeleted?: () => void; // callback to update parent state
+  onDeleted?: () => void; // callback to update parent state FriendRequestsList
 }
 
 export default function DeleteFriendRequestButton({ userId, requestId, onDeleted }: DeleteFriendRequestButtonProps) {

@@ -13,7 +13,7 @@ interface FriendRequestProps {
   selectedUserId: string;
   setSelectedUserId: (id: string) => void;
   friendsList: string []; // list of current friends usernames
-  onFriendRemoved?: (username: string) => void; // optional callback when removed
+  onFriendRemoved?: (username: string) => void; // callback when a friend is removed
 }
 
 export default function FriendRequestDropdown({ currentUser, users, selectedUserId, setSelectedUserId, friendsList = [], onFriendRemoved}: FriendRequestProps) {
@@ -22,7 +22,7 @@ export default function FriendRequestDropdown({ currentUser, users, selectedUser
     // check if selected user is already a friend
     const isFriend = selectedUser ? friendsList.includes(selectedUser.username) : false;
 
-    // Sort users alphabetically by username
+    // Sorts users alphabetically by username
     const sortedUsers = users
       .filter((u) => u.userId !== currentUser.userId)
       .sort((a, b) => a.username.localeCompare(b.username));
@@ -71,5 +71,3 @@ export default function FriendRequestDropdown({ currentUser, users, selectedUser
     </div>
   )
 }
-
-// export default FriendRequestSearch

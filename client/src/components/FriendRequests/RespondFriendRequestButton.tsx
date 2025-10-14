@@ -5,7 +5,7 @@ interface RespondFriendRequestButtonProps {
   senderId: string;
   receiverId: string;
   requestId: string;
-  onResponse?: (status: 'accepted' | 'denied') => void; //callback to parent FriendRequestsList
+  onResponse?: (status: 'accepted' | 'denied') => void; //callback to parent FriendRequestsList if request was responded to
 }
 
 export default function RespondFriendRequestButton({ senderId, receiverId, requestId, onResponse } : RespondFriendRequestButtonProps) {

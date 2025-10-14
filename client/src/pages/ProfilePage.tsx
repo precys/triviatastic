@@ -126,7 +126,7 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
         {/* Friend Request Dropdown */}
         {userId === currentUserId && !loadingCurrent && currentUser && (
         <FriendRequestDropdown
-          currentUser={currentUser} // now guaranteed not null
+          currentUser={currentUser}
           users={users || []}
           selectedUserId={selectedUserId}
           setSelectedUserId={setSelectedUserId}

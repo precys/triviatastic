@@ -7,7 +7,7 @@ interface SendFriendReqButtonProps{
     senderId: string; //sender
     receiverId: string; //receiver
     receiverUsername?: string;
-    onSuccess?: () => void;
+    onSuccess?: () => void; // callback checking if request was sent successfully 
 }
 
 export default function SendFriendRequestButton( { senderId, receiverId, receiverUsername, onSuccess, }: SendFriendReqButtonProps) {
@@ -54,5 +54,3 @@ export default function SendFriendRequestButton( { senderId, receiverId, receive
     </button>
   );
 }
-
-//export default FriendRequestButton

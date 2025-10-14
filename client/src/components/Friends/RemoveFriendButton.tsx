@@ -4,7 +4,7 @@ import axios from "axios";
 interface RemoveFriendButtonProps {
     username: string; // current logged-in userId
     friendUsername: string; // friend to remove
-    onRemoved?: () => void; // optional callback
+    onRemoved?: () => void; // callback checking if friend was removed
 }
 
 export default function RemoveFriendButton({ username, friendUsername, onRemoved }: RemoveFriendButtonProps) {
