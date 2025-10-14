@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import AuthentificationHook from "../../components/Context/AuthentificationHook";
 
 interface RemoveFriendButtonProps {
     username: string; // current logged-in userId
@@ -8,6 +9,7 @@ interface RemoveFriendButtonProps {
 }
 
 export default function RemoveFriendButton({ username, friendUsername, onRemoved }: RemoveFriendButtonProps) {
+  const { token } = AuthentificationHook();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [removed, setRemoved] = useState(false);
@@ -17,7 +19,11 @@ export default function RemoveFriendButton({ username, friendUsername, onRemoved
     setError(null);
     try {
       await axios.delete(
-        `http://localhost:3000/users/${username}/friends/${friendUsername}`
+        `http://localhost:3000/users/${username}/friends/${friendUsername}`, {
+          headers: {
+            Authorization: `Bearer ${token}` 
+          },
+        }
       );
       setRemoved(true);
       if (onRemoved) onRemoved();

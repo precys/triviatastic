@@ -11,7 +11,7 @@ interface SendFriendReqButtonProps{
 }
 
 export default function SendFriendRequestButton( { senderId, receiverId, receiverUsername, onSuccess, }: SendFriendReqButtonProps) {
-    console.log('Sending friend request:', { senderId, receiverUsername });
+  console.log('Sending friend request:', { senderId, receiverUsername });
     const [reqStatus, setReqStatus ] = useState<string>("Not sent")
 
     const sendRequest = async () => {

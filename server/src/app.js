@@ -15,14 +15,13 @@ app.use(cors({
 // middleware logging every incoming request
 app.use(loggerMiddleware);
 
-//uncomment later
-// app.use((req, res, next) => {
-//   console.log("----- DEBUG REQUEST BODY -----");
-//   console.log("Headers:", req.headers["content-type"]);
-//   console.log("Raw Body:", req.body);
-//   console.log("-------------------------------");
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log("----- DEBUG REQUEST BODY -----");
+  console.log("Headers:", req.headers["content-type"]);
+  console.log("Raw Body:", req.body);
+  console.log("-------------------------------");
+  next();
+});
 
 
 // Base get request
