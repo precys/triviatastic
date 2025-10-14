@@ -17,7 +17,7 @@ router.patch('/:userId/profile', authenticate, updateProfile);
  // add authentication later 
 router.get('/:userId', findUserById);
 router.get('/:userId/friends', getUsersFriends); // get a user's friend list
-router.delete('/:userId/friends/:userFriendId', deleteFriend); //delete friend
+router.delete('/:username/friends/:friendUsername', deleteFriend); //delete friend
 router.post('/:userId/friend-requests', sendFriendRequest); //send a friend request
 router.delete('/:userId/friends-requests/:requestId', deleteFriendRequest);//delete a friend request
 router.put('/:userFriendId/friend-requests/:requestId', respondToFriendRequest); //responding to a friend request PUT

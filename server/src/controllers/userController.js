@@ -209,14 +209,17 @@ async function deleteFriendRequest (req, res){
 }
 
 async function deleteFriend (req, res){
-  const { userId, friendId } = req.params;
+  const { username, friendUsername } = req.params;
+  console.log("DELETE FRIEND:", { username, friendUsername });
 
-  const result = await userService.removeFriend(userId, friendId);
+  const result = await userService.removeFriend(username, friendUsername);
 
    if(!result){
+    console.error("Error in deleteFriend:", error.message);
     res.status(400).json({ message: "Unable to remove friend"})
   } else{
-    res.status(200).json(result)
+    // res.status(200).json(result)
+    res.status(200).json({ message: `${friendUsername} removed from ${username}'s friends list.` });
   }
 }
 

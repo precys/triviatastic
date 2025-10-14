@@ -5,7 +5,7 @@ import { CommentData } from '@/types/comment';
 import { useParams } from 'react-router-dom';
 import FriendsList from '@/components/Friends/FriendsList';
 import UserInfo from '@/components/UserProfile/UserInfo';
-import { User } from "@/hooks/useUser";
+import { User, useUser } from "@/hooks/useUser";
 import { useAllUsers } from "@/hooks/useAllUsers";
 import axios from 'axios';
 import UsersList from '@/components/Friends/UsersList';
@@ -21,7 +21,9 @@ interface ProfilePageProps {
 
 export default function ProfilePage({ currentUserId }: ProfilePageProps) {
   const { userId: paramUserId } = useParams<{ userId: string }>();
-  const userId = paramUserId || currentUserId; // fallback to logged-in user
+  const userId = paramUserId || currentUserId;
+
+  const { user: currentUser, loading: loadingCurrent } = useUser(currentUserId);
 
   if (!userId) return <p>User not found</p>;
 
@@ -29,12 +31,14 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
   const [profileComments, setProfileComments] = useState<CommentData[]>([]);
   const [feedComments, setFeedComments] = useState<CommentData[]>([]);
 
-  const { users, loading } = useAllUsers();
+  const { users, loading: loadingUsers } = useAllUsers();
   const [selectedUserId, setSelectedUserId] = useState<string>("");
 
   //tabs for friend requests
   const [activeRequestTab, setActiveRequestTab] = useState<'received' | 'sent'>('received');
   const [activeStatus, setActiveStatus] = useState<"pending" | "accepted" | "denied">("pending");
+
+  const [friendsList, setFriendsList] = useState<string[]>([]);
 
    // friend request data
   const {
@@ -50,7 +54,7 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
   } = useFriendRequests(currentUserId, activeStatus, true);
 
 
-  if (loading) return <p>Loading users...</p>;
+  if (!currentUser) return <p>Loading user...</p>;
 
   // add new comment to the correct list
   const handleAddComment = (text: string, type: 'profile' | 'feed') => {
@@ -109,28 +113,29 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
 
   return (
     <div className="container mt-4">
-      {/* top third: profile info */}
       <div className="mb-4 p-3 border rounded">
-        <h2>Profile Info</h2>
-        <p>Avatar, name, bio, stats, etc. will go here.</p>
-        <UserInfo userId={userId} />
-        <FriendsList userId={userId} />
-        {/* {userId !== currentUserId && <FriendRequestButton senderId={currentUserId} receiverId={userId} />} */}
-        {/* {userId === currentUserId && <UserList userId={currentUserId} />} */}
+        <h2>{currentUser?.username}'s Profile</h2>
+        <p>Avatar, bio, stats, etc.</p>
+
+        {/* Friends list */}
+        <FriendsList
+          userId={userId}
+          onFriendsLoaded={(friends) => setFriendsList(friends)}
+        />
+
+        {/* Friend Request Dropdown */}
+        {userId === currentUserId && !loadingCurrent && currentUser && (
         <FriendRequestDropdown
-            senderId={currentUserId}
-            users={users}
-            selectedUserId={selectedUserId}
-            setSelectedUserId={setSelectedUserId}
-          />
-          {userId !== currentUserId && selectedUserId && users.find(u => u.userId === selectedUserId)?.username && (
-            <SendFriendRequestButton
-              senderId={currentUserId}
-              receiverId={selectedUserId}
-              receiverUsername={users.find(u => u.userId === selectedUserId)?.username}
-              // onSuccess={() => refreshSent()}
-            />
-          )}
+          currentUser={currentUser} // now guaranteed not null
+          users={users || []}
+          selectedUserId={selectedUserId}
+          setSelectedUserId={setSelectedUserId}
+          friendsList={friendsList}
+          onFriendRemoved={(removedUsername) =>
+            setFriendsList((prev) => prev.filter((name) => name !== removedUsername))
+          }
+        />
+        )}
       </div>
 
        {/* Friend Requests */}
@@ -171,7 +176,6 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
             </button>
           ))}
         </div>
-
 
 
         {/* Status Description */}

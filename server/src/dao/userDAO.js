@@ -96,6 +96,7 @@ async function getUserByUsername(username) {
   const command = new QueryCommand({
     TableName: TABLE_NAME,
     IndexName: USERNAME_INDEX, // gsi name for username lookup
+    //username-index
     KeyConditionExpression: "username = :u",
     ExpressionAttributeValues: {
       ":u": username

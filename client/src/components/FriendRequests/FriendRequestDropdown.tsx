@@ -4,28 +4,35 @@ import axios from "axios";
 import { useUser, User } from "@/hooks/useUser";
 import FriendRequestButton from "@/components/FriendRequests/SendFriendRequestButton";
 import UsersList from '../Friends/UsersList';
+import RemoveFriendButton from '../Friends/RemoveFriendButton';
 // import { User } from "/@hooks/useAllUsers";
 
 interface FriendRequestProps {
-  senderId: string;
+  currentUser: User;
   users: User[];
   selectedUserId: string;
   setSelectedUserId: (id: string) => void;
+  friendsList: string []; // list of current friends usernames
+  onFriendRemoved?: (username: string) => void; // optional callback when removed
 }
 
-export default function FriendRequestDropdown({ senderId, users, selectedUserId, setSelectedUserId, }: FriendRequestProps) {
+export default function FriendRequestDropdown({ currentUser, users, selectedUserId, setSelectedUserId, friendsList = [], onFriendRemoved}: FriendRequestProps) {
     const { user: selectedUser } = useUser(selectedUserId || "");
+
+    // check if selected user is already a friend
+    const isFriend = selectedUser ? friendsList.includes(selectedUser.username) : false;
 
     // Sort users alphabetically by username
     const sortedUsers = users
-      .filter((u) => u.userId !== senderId)
+      .filter((u) => u.userId !== currentUser.userId)
       .sort((a, b) => a.username.localeCompare(b.username));
 
   return (
-     <div className="p-3 border rounded mb-3">
+    <div className="p-3 border rounded mb-3">
       <label htmlFor="friendSelect" className="block mb-2 font-semibold">
-        Select a User to Send Friend Request
+        Select a User
       </label>
+
       <select
         id="friendSelect"
         className="border p-2 rounded w-full"
@@ -43,7 +50,22 @@ export default function FriendRequestDropdown({ senderId, users, selectedUserId,
       {selectedUser && (
         <div className="mt-2 flex justify-between items-center p-2 border rounded bg-gray-50">
           <span>{selectedUser.username}</span>
-          <FriendRequestButton senderId={senderId} receiverId={selectedUser.userId} receiverUsername={selectedUser.username}/>
+
+          {isFriend ? (
+            <RemoveFriendButton
+              username={currentUser.username}
+              friendUsername={selectedUser.username}
+              onRemoved={() => {
+                if (onFriendRemoved) onFriendRemoved(selectedUser.username);
+              }}
+            />
+          ) : (
+            <FriendRequestButton
+              senderId={currentUser.userId}
+              receiverId={selectedUser.userId}
+              receiverUsername={selectedUser.username}
+            />
+          )}
         </div>
       )}
     </div>

@@ -343,16 +343,31 @@ async function deleteFriendRequest (userId, requestId) {
 
 }
 
-async function removeFriend(usernameToRemoveFrom, friendUsername) {
-  const userToUpdate = await userDAO.getUserByUsername(usernameToRemoveFrom);
-  if(!userToUpdate) {
-    throw new Error("User not found.");
+async function removeFriend(username, friendUsername) {
+  const user = await userDAO.getUserByUsername(username);
+  const friend = await userDAO.getUserByUsername(friendUsername);
+
+  if(!user ||!friend ) {
+    throw new Error("User or friend not found.");
   }
-  userToUpdate.friends = userToUpdate.friends.filter((element) => element != friendUsername);
-  if(!await userDAO.updateUser(userToUpdate)) {
+  console.log("User Friends:", user.friends)
+  console.log("UserFriend Friends:", friend.friends)
+  const updatedUserFriends = (user.friends || []).filter((name) => name !== friend.username);
+  const updatedFriendFriends = (friend.friends || []).filter((name) => name !== user.username);
+
+  const updatedUser = await userDAO.updateFriendsList(user.userId, updatedUserFriends);
+  const updatedFriend = await userDAO.updateFriendsList(friend.userId, updatedFriendFriends);
+
+  console.log("UPDATED User Friends:", updatedUser)
+  console.log("UPDATED UserFriend Friends:", updatedFriend)
+
+   
+  if (!updatedUser || !updatedFriend) {
     return false;
   }
+
   return true;
+
 }
 
 
