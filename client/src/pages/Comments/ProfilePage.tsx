@@ -7,9 +7,11 @@ import { getUserStats } from "@/utils/userService";
 import { userFromToken } from "@/utils/userFromToken";
 import { useParams } from "react-router-dom";
 import AuthentificationHook from "@/components/Context/AuthentificationHook";
-import UserList from "@/components/FriendRequests/UserList";
+// import UserList from "@/components/FriendRequests/UserList";
 import FriendsList from "@/components/Friends/FriendsList";
 import "./ProfilePage.css";
+import FriendRequestsList from "@/components/FriendRequests/FriendRequestsList";
+import { useFriendRequests } from "@/hooks/useFriendRequests";
 
 export default function ProfilePage() {
   // Andrew comments for clarifications
@@ -36,12 +38,28 @@ export default function ProfilePage() {
     username = currentUser.username;
   }
 
-
   const [activeTab, setActiveTab] = useState<"myPosts" | "friendsFeed">("myPosts");
   const [userPosts, setUserPosts] = useState<PostData[]>([]);
   const [friendsPosts, setFriendsPosts] = useState<PostData[]>([]);
   const [stats, setStats] = useState<any>(null);
   const currentUserId = userId || "";
+
+  // tabs for friend requests
+  const [activeRequestTab, setActiveRequestTab] = useState<'received' | 'sent'>('received');
+  const [activeStatus, setActiveStatus] = useState<"pending" | "accepted" | "denied">("pending");
+
+  // Load friend request data
+  const {
+    requests: receivedRequests,
+    loading: loadingReceived,
+    error: errorReceived,
+  } = useFriendRequests(currentUserId, activeStatus, false);
+
+  const {
+    requests: sentRequests,
+    loading: loadingSent,
+    error: errorSent,
+  } = useFriendRequests(currentUserId, activeStatus, true);
 
   // sort helper - newest first
   const sortPostsNewestFirst = (posts: PostData[]) =>
@@ -183,12 +201,77 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* friends area */}
+      {/* friends + friend requests */}
       <div className="mb-4">
         {/* <h3>Friends</h3> */}
         <FriendsList userId={currentUserId} />
-        <h4>Add new friends</h4>
-        <UserList userId={currentUserId} />
+        {/* <h4>Add new friends</h4>
+        <UserList userId={currentUserId} /> */}
+        
+        <h4>Manage Friend Requests</h4>
+        {/* Received / Sent Tabs */}
+        <ul className="nav nav-tabs mb-3">
+          {(["received", "sent"] as const).map((tab) => (
+            <li className="nav-item" key={tab}>
+              <button
+                className={`nav-link ${activeRequestTab === tab ? "active" : ""}`}
+                onClick={() => setActiveRequestTab(tab)}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        {/* Status Filter */}
+        <div className="d-flex justify-content-center gap-2 mb-3">
+          {(["pending", "accepted", "denied"] as const).map((status) => (
+            <button
+              key={status}
+              onClick={() => setActiveStatus(status)}
+              className={`btn btn-sm ${
+                activeStatus === status
+                  ? status === "pending"
+                    ? "btn-warning text-white"
+                    : status === "accepted"
+                    ? "btn-success text-white"
+                    : "btn-danger text-white"
+                  : "btn-outline-secondary"
+              }`}
+            >
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        {/* Status Description */}
+        <p className="text-muted small mb-3 text-center">
+          {activeRequestTab === "received"
+            ? activeStatus === "pending"
+              ? "Pending requests you need to respond to."
+              : activeStatus === "accepted"
+              ? "Requests you've accepted."
+              : "Requests you've denied."
+            : activeStatus === "pending"
+            ? "Users that have not responded yet."
+            : activeStatus === "accepted"
+            ? "Users who accepted your requests."
+            : "Users who denied your requests."}
+        </p>
+
+        {/* FriendRequestsList */}
+        <FriendRequestsList
+          currentUserId={currentUserId}
+          sent={activeRequestTab === "sent"}
+          requests={activeRequestTab === "received" ? receivedRequests : sentRequests}
+          loading={activeRequestTab === "received" ? loadingReceived : loadingSent}
+          error={activeRequestTab === "received" ? errorReceived ?? "" : errorSent ?? ""}
+          activeStatus={activeStatus}
+          onResponse={(id, status) =>
+            console.log(`Request ${id} updated to ${status}`)
+          }
+        />
+          
       </div>
 
       {/* tabs */}

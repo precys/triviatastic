@@ -54,7 +54,7 @@ function FriendsList({ userId, onFriendsLoaded  } : FriendsListProps) {
   return (
       <div>
         <h3>
-            Friends List ({friendsList.length} {friendsList.length === 1 ? "friend" : "friends"})
+            Friends ({friendsList.length} {friendsList.length === 1 ? "friend" : "friends"})
         </h3>
         {friendsList.length === 0 ? (
             <p>No friends yet.</p>
