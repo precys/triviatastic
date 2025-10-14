@@ -185,7 +185,7 @@ export default function ProfilePage() {
 
       {/* friends area */}
       <div className="mb-4">
-        <h3>Friends</h3>
+        {/* <h3>Friends</h3> */}
         <FriendsList userId={currentUserId} />
         <h4>Add new friends</h4>
         <UserList userId={currentUserId} />

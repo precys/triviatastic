@@ -20,12 +20,16 @@ function Authentication({children}: { children: ReactNode }) {
         setToken(newToken);
     }
 
+    const setRole = (role: string) => {
+        localStorage.setItem("userRole", role);
+        setUserRole(role)
+    }
+
     // Logout functionality
     const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         setToken(null);
-        setUserId(null);
     }
 
     // Set the Provider of the context to the values we want to get for the nested components

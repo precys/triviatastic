@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../utils/jwt');
 const { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, sendFriendRequest, getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, getAllUsers , getUsersScoreByCategory,
-     getUsersStats, findUserById, getAllUsers } = require('../controllers/userController');
+     getUsersStats, findUserById} = require('../controllers/userController');
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
