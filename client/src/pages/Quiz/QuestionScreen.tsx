@@ -35,8 +35,10 @@ function QuestionScreen({changeScreen, setGame, question}: QuestionScreenProps) 
     randomShuffle(answers);
     return (
     <>
-        <h1 className="text-center m-3">Question: </h1>
-        <p className="text-center m-3">{question.question}</p>
+        <div className = "bg-light card m-3">
+            <h1 className="text-center m-3">Question: </h1>
+            <p className="text-center m-3">{question.question}</p>
+        </div>
         <MultipleChoice answers={answers} answerQuestion={answerQuestion}/>
     </>
     );

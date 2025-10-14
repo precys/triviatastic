@@ -38,8 +38,10 @@ function ControlScreen({changeScreen, questionState, game}: ControlScreenProps) 
 
     return (
     <>
-        <h1 className="text-center m-3">{questionState}</h1>
-        <h2 className="text-center m-3">Score: {game.score}</h2>
+            <div className = "bg-light card m-3">
+            <h1 className="text-center m-3 p-3">{questionState}</h1>
+            <h2 className="text-center m-3 p-3">Score: {game.score}</h2>
+        </div>
         <div className="container-fluid p-4">
             {
                 !isGameOver && (
