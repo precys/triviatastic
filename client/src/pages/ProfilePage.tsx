@@ -23,7 +23,13 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
   const { userId: paramUserId } = useParams<{ userId: string }>();
   const userId = paramUserId || currentUserId;
 
-  const { user: currentUser, loading: loadingCurrent } = useUser(currentUserId);
+  // const { user: currentUser, loading: loadingCurrent } = useUser(userId);
+  const { user: fetchedUser } = useUser(paramUserId || currentUserId);
+
+const currentUser = fetchedUser 
+  ? { ...fetchedUser, userId: paramUserId || currentUserId }
+  : { userId: paramUserId || currentUserId, username: "" };
+
 
   if (!userId) return <p>User not found</p>;
 
@@ -111,6 +117,9 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
     else setFeedComments(toggleLike(feedComments));
   };
 
+  console.log("CURRENT USER in profile page: ", currentUser)
+  console.log("CURRENT USER ID in profile page: ",  currentUser.userId)
+
   return (
     <div className="container mt-4">
       <div className="mb-4 p-3 border rounded">
@@ -124,7 +133,6 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
         />
 
         {/* Friend Request Dropdown */}
-        {userId === currentUserId && !loadingCurrent && currentUser && (
         <FriendRequestDropdown
           currentUser={currentUser}
           users={users || []}
@@ -135,7 +143,6 @@ export default function ProfilePage({ currentUserId }: ProfilePageProps) {
             setFriendsList((prev) => prev.filter((name) => name !== removedUsername))
           }
         />
-        )}
       </div>
 
        {/* Friend Requests */}

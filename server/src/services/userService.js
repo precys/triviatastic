@@ -202,7 +202,8 @@ async function sendFriendRequest(senderId, friendUsername){
     
     return {
         message: `Friend request to ${receiver.username} sent!`,
-        friendId: receiver.userId
+        friendId: receiver.userId,
+        friendUsername: receiver.username
     }
 
 }

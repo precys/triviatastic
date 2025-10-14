@@ -17,7 +17,8 @@ interface FriendRequestProps {
 }
 
 export default function FriendRequestDropdown({ currentUser, users, selectedUserId, setSelectedUserId, friendsList = [], onFriendRemoved}: FriendRequestProps) {
-    const { user: selectedUser } = useUser(selectedUserId || "");
+  
+  const { user: selectedUser } = useUser(selectedUserId || "");
 
     // check if selected user is already a friend
     const isFriend = selectedUser ? friendsList.includes(selectedUser.username) : false;
@@ -26,6 +27,8 @@ export default function FriendRequestDropdown({ currentUser, users, selectedUser
     const sortedUsers = users
       .filter((u) => u.userId !== currentUser.userId)
       .sort((a, b) => a.username.localeCompare(b.username));
+
+      console.log("CURRENTUSER: ", currentUser.userId);
 
   return (
     <div className="p-3 border rounded mb-3">
@@ -64,6 +67,7 @@ export default function FriendRequestDropdown({ currentUser, users, selectedUser
               senderId={currentUser.userId}
               receiverId={selectedUser.userId}
               receiverUsername={selectedUser.username}
+              onSuccess={() => console.log(`Request sent to ${selectedUser.username}`)}
             />
           )}
         </div>

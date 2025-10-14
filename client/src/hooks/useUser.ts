@@ -35,5 +35,3 @@ export function useUser( userId: string ) {
   return {user, loading, error};
   
 }
-
-//export default useUser

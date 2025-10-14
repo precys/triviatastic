@@ -150,6 +150,7 @@ async function getUsersFriends(req, res) {
 async function sendFriendRequest (req, res){
   const { userId } = req.params;
   const { friendUsername } = req.body;
+  console.log(' Controller received:', { userId: req.params.userId, friendUsername: req.body.friendUsername });
 
   const result = await userService.sendFriendRequest(userId, friendUsername);
   
