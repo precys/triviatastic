@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { authenticate } = require('../utils/jwt');
-const { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends,
-     addFriend, sendFriendRequest, getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, getAllUsers , getUsersScoreByCategory,
-     getUsersStats} = require('../controllers/userController');
+const { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, sendFriendRequest, getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, getAllUsers , getUsersScoreByCategory,
+     getUsersStats, findUserById} = require('../controllers/userController');
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
@@ -18,8 +17,9 @@ router.get(`/leaderboard`, authenticate, getUsersScoreByCategory)
 
 // for testing purposes
  // add authentication later 
+router.get('/:userId', authenticate, findUserById);
 router.get('/:userId/friends', authenticate, getUsersFriends); // get a user's friend list
-router.delete('/:userId/friends/:userFriendId', authenticate, deleteFriend); //delete friend
+router.delete('/:username/friends/:friendUsername', authenticate, deleteFriend); //delete friend
 router.post('/:userId/friend-requests', authenticate, sendFriendRequest); //send a friend request
 router.delete('/:userId/friends-requests/:requestId', authenticate, deleteFriendRequest);//delete a friend request
 router.put('/:userFriendId/friend-requests/:requestId', authenticate, respondToFriendRequest); //responding to a friend request PUT

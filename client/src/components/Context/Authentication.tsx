@@ -28,6 +28,7 @@ function Authentication({children}: { children: ReactNode }) {
     // Logout functionality
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("userId");
         setToken(null);
     }
 

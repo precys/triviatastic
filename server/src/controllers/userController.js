@@ -99,6 +99,20 @@ async function deleteAccount(req, res) {
     res.status(200).json({message: "Account deleted successfully."});
 }
 
+//get a user by id
+async function findUserById(req, res){
+  const userId = req.params.userId;
+  const user = await userService.findUserById(userId);
+
+  if (!user){
+    res.status(404).json({message: "User Not Found"});
+  } else{
+    res.status(200).json({
+      username: user.username,
+    });
+  }
+}
+
 //retrieve all users no admins included
 async function getAllUsers (req, res){
   const users = await userService.getAllUsers();
@@ -143,7 +157,7 @@ async function getUsersFriends(req, res) {
 
         const user = await userService.findUserById(userId);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+          return res.status(404).json({ message: "User not found" });
         }
 
         const friendData = await userService.getUsersFriends(user);
@@ -169,6 +183,7 @@ async function getUsersFriends(req, res) {
 async function sendFriendRequest (req, res){
   const { userId } = req.params;
   const { friendUsername } = req.body;
+  console.log(' Controller received:', { userId: req.params.userId, friendUsername: req.body.friendUsername });
 
   const result = await userService.sendFriendRequest(userId, friendUsername);
   
@@ -182,15 +197,20 @@ async function sendFriendRequest (req, res){
 //get a list of friend requests by status ("pending", "accepted", "denied" )
 async function getFriendRequestsByStatus (req, res){
   const { userId } = req.params;
-  const { status } = req.query;
+  const { status = "pending", sent } = req.query;
   //console.log("REQ QUERY STATUS:", req.query.status);
+  const sentFlag = sent === "true";
+  
+  if (!userId) {
+    return res.status(400).json({ message: "Missing userId" });
+  }
 
-  const result = await userService.getFriendRequestsByStatus(userId, status);
+  const result = await userService.getFriendRequestsByStatus(userId, status, sentFlag);
 
   if (!result){
     res.status(400).json({ message: "Unable to retrive friend requests"});
   }else{
-    res.status(200).json(result);
+    res.status(200).json(result.requests);
   }
 }
 
@@ -223,18 +243,21 @@ async function deleteFriendRequest (req, res){
 }
 
 async function deleteFriend (req, res){
-  const { userId, friendId } = req.params;
+  const { username, friendUsername } = req.params;
+  console.log("DELETE FRIEND:", { username, friendUsername });
 
-  const result = await userService.removeFriend(userId, friendId);
+  const result = await userService.removeFriend(username, friendUsername);
 
    if(!result){
+    console.error("Error in deleteFriend:", error.message);
     res.status(400).json({ message: "Unable to remove friend"})
   } else{
-    res.status(200).json(result)
+    // res.status(200).json(result)
+    res.status(200).json({ message: `${friendUsername} removed from ${username}'s friends list.` });
   }
 }
 
 module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, sendFriendRequest, 
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, getAllUsers, getUsersScoreByCategory,
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, findUserById, getAllUsers, getUsersScoreByCategory,
   getUsersStats };
 

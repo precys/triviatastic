@@ -154,9 +154,9 @@ async function sendFriendRequest (request){
     })
 
     try{
-        const data = await documentClient.send(command);
-        logger.info(`PUT command complete | userDAO | sendFriendReq | data: ${JSON.stringify(data)}`);
-        return data.item;
+        await documentClient.send(command);
+        logger.info(`PUT command complete | userDAO | sendFriendReq |  requestId: ${request.requestId}`);
+        return true;
 
     }catch(err){
         logger.error(err.message);
@@ -190,27 +190,46 @@ async function updateFriendsList (userId, friendsList){ //formerly called addFri
 }
 
 //get a list of friend requests by status ("pending", "accepted", "denied" )
-async function getFriendRequestsByStatus (userId, status){
-    const command = new QueryCommand ({
-        TableName: TABLE_NAME,
-        KeyConditionExpression: "PK = :pk",
-        FilterExpression: "#status = :status", 
-        ExpressionAttributeNames: { "#status": "status" },
-        ExpressionAttributeValues: {
-            ":pk": `FRIENDREQ#${userId}`,
-            ":status": status
-        }
+async function getFriendRequestsByStatus (userId, status, sent = false){
+  let command;
+
+  // base filter
+  const filterExpression = "#status = :status";
+  const expressionAttributeNames = { "#status": "status" };
+  const expressionAttributeValues = sent
+    ? { ":senderId": userId, ":status": status }
+    : { ":pk": `FRIENDREQ#${userId}`, ":status": status };
+
+  if (sent) {
+    // SENT requests, using GSI
+    command = new QueryCommand({
+      TableName: TABLE_NAME,
+      IndexName: "sender-index", // GSI 
+      KeyConditionExpression: "userId = :senderId",
+      FilterExpression: filterExpression,
+      ExpressionAttributeNames: expressionAttributeNames,
+      ExpressionAttributeValues: expressionAttributeValues,
     });
+  } else {
+    // RECEIVED requests, using PK
+    command = new QueryCommand({
+      TableName: TABLE_NAME,
+      KeyConditionExpression: "PK = :pk",
+      FilterExpression: filterExpression,
+      ExpressionAttributeNames: expressionAttributeNames,
+      ExpressionAttributeValues: expressionAttributeValues,
+    });
+  }
 
-    try{
-        const data = await documentClient.send(command);
-        logger.info(`Query command complete | userDAO | getFriendRequestsByStatus | data: ${JSON.stringify(data)}`);
-        return data.Items || []
+  try{
+      const data = await documentClient.send(command);
+      logger.info(`Query command complete | userDAO | getFriendRequestsByStatus | data: ${JSON.stringify(data.Items)}`);
+      return data.Items;
 
-    }catch(err){
-        logger.error(err.message);
-        return null;
-    }
+  }catch(err){
+      logger.error(err.message);
+      return [];
+  }
 
 }
 

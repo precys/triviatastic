@@ -5,6 +5,9 @@ import Navbar from "./components/Navbar/Navbar";
 import CreateQuiz from "./components/CreateQuiz/CreateQuiz";
 import AuthentificationHook from './components/Context/AuthentificationHook';
 // Page imports
+
+import Profile from './pages/Profile'; // Gwen's Profile Page, will condense into 1 profile page later
+
 import Login from './pages/Login/Login';
 import Home from "./pages/Home/Home";
 import Admin from "./pages/Admin/Admin";
