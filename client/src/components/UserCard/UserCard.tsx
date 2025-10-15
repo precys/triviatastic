@@ -1,7 +1,7 @@
 import { User } from "../../types/user";
 
 interface UserProps extends User {
-    deleteUser: (userId: string) => void ;
+    handleModal: (bool: boolean, userId: string) => void ;
 }
 
 function UserCard({
@@ -15,7 +15,7 @@ function UserCard({
   easy_count,
   med_count,
   hard_count,
-  deleteUser,
+  handleModal,
 }: UserProps) {
 
   return (
@@ -52,7 +52,7 @@ function UserCard({
                 
             </span>
             <span className="w-100 d-flex justify-content-end">
-              <button className="btn btn-danger w-25" onClick={() => deleteUser(userId)}> 
+              <button className="btn btn-danger w-25" onClick={() => handleModal(true, userId)}> 
                 Ban
               </button>
             </span>

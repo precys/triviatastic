@@ -68,6 +68,8 @@ function SubmitQuestion() {
             const res = await submitquestionService.createQuestion(question);
             if (res == 201){
                 setSuccess(true);
+                const update = await submitquestionService.getUserQuestions(userId)
+                setQuestions(update.questions)
             }
             else {
                 setSuccess(false);

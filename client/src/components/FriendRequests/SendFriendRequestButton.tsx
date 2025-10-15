@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 // import axios from 'axios';
 // import { useUser } from '@/hooks/useUser';
 import friendsService from '@/utils/friendsService';

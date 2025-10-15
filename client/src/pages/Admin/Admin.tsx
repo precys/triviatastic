@@ -21,6 +21,10 @@ function Admin() {
   // Token is unpacked from AuthentificationHook
   const { token, logout } = AuthentificationHook();
   // navigate object to handle navigation after request, in this case if token is invalid go back to login
+  const [modalBool, setModalBool] = useState<boolean>(false);
+  const [status, setStatus] = useState<string>("")
+  const [userId, setUserId] = useState<string>("")
+  const [questionId, setQuestionId] = useState<string>("")
   const navigate = useNavigate();
 
   // useEffect to render on empty array list, page loading, to fill out questions
@@ -57,8 +61,7 @@ function Admin() {
   // statusUpdate function that sends request to statusUpdate endpoint for approval or denial
   const statusUpdate = async (questionId: string, newStatus: string) => {
     try {
-      const res = await adminService.updateQuestionStatus(questionId, newStatus)
-      console.log(res)
+      await adminService.updateQuestionStatus(questionId, newStatus)
       
       setQuestions((prev) =>
           prev.filter((question) => question.questionId !== questionId)
@@ -72,8 +75,7 @@ function Admin() {
   // deleteUser function to delete user given an user Id
   const deleteUser = async (userId: string) => {
     try {
-      const res = await adminService.deleteUser(userId)
-      console.log(res);
+      await adminService.deleteUser(userId)
 
       setUsers((prev) =>
         prev.filter((user) => user.userId !== userId)
@@ -81,6 +83,20 @@ function Admin() {
     }
     catch (err) {
       console.error(`Error deleting user. Error: ${err}`)
+    }
+  }
+
+  // bool function for modal
+  const handleModal = async (bool: boolean, userId?: string, questionId?: string, status?: string) => {
+    setModalBool(bool);
+    if (userId){
+      setUserId(userId)
+    }
+    if (questionId){
+      setQuestionId(questionId)
+    }
+    if (status){
+      setStatus(status)
     }
   }
 
@@ -117,8 +133,8 @@ function Admin() {
                         difficulty={question.difficulty}
                         correct_answer={question.correct_answer}
                         incorrect_answers={question.incorrect_answers}
-                        statusUpdate={statusUpdate}
-                        username={question.username || "banned user"}
+                        handleModal={handleModal}
+                        username={question.username || "Banned User"}
                       />
                     ))}
                   </div>
@@ -141,15 +157,45 @@ function Admin() {
                         easy_count={user.easy_count}
                         med_count={user.med_count}
                         hard_count={user.hard_count}
-                        deleteUser={deleteUser}
+                        handleModal={handleModal}
                       />
                     ))}
                   </div>
                 </div>
-            }
+              }
           </div>
         </div>
       </div>
+      {modalBool && 
+          <div className="modal d-block" tabIndex={-1}>
+              <div className="modal-dialog">
+                  <div className="modal-content">
+                      <div className="modal-header">
+                          <h5 className="modal-title">
+                            Are you sure you want to{" "}
+                            {tab === "questions" ? (status === "approved" ? "approve" : "deny") : "delete"}{" "}
+                            this {tab === "questions" ? "question" : "user"}?
+                          </h5>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => handleModal(false)}> No </button>
+                        <button type="button" className="btn btn-danger" onClick={() => {
+                          if (tab === "questions" && status){
+                            statusUpdate(questionId, status)
+                          }
+                          else if (tab === "users"){
+                            deleteUser(userId)
+                          }
+                          setModalBool(false)
+                          setStatus("")
+                          setQuestionId("")
+                          setUserId("")
+                        }}> Yes </button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        }
     </>
   );
 }

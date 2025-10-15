@@ -48,6 +48,7 @@ function Login() {
                 }
                 else {
                     setLoginError(true);
+                    console.log(loginError)
                 }
             }
 
