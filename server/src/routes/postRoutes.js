@@ -4,7 +4,7 @@ const { authenticate } = require('../utils/jwt');
 const {
     createNewPost, getUserPosts, getSinglePost, updatePost, deletePost,
     likePost, addComment, getComments, 
-    getFeedPosts,
+    getFeedPosts, getFriendsFeedPosts,
 } = require('../controllers/postController');
 
 // Create & fetch posts
@@ -23,5 +23,6 @@ router.get('/:userId/posts/:postId/comments', authenticate, getComments);
 
 // Feed
 router.get('/feed', authenticate, getFeedPosts);
+router.get('/feed/friends/:userId', authenticate, getFriendsFeedPosts); // get friends feed
 
 module.exports = router;

@@ -58,3 +58,11 @@
   color: #333;
   margin-top: 0.5rem;
 }
+
+.post-username {
+  cursor: pointer;
+}
+
+.post-username:hover {
+  text-decoration: underline;
+}
