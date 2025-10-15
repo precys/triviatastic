@@ -61,13 +61,15 @@ async function getComments(postId) {
   return await postDAO.getComments(postId);
 }
 
-
-
+// get global feed posts
+async function getGlobalFeed() {
+  return await postDAO.getGlobalFeedPosts();
+}
 
 
 
 
 module.exports = {
   createPost, getUserPosts, getPostById, updatePost, deletePost,
-  toggleLike, addComment, getComments
+  toggleLike, addComment, getComments, getGlobalFeed,
 };
