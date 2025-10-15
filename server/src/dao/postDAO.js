@@ -3,6 +3,7 @@ const { logger } = require('../utils/logger');
 // aws sdk v3 imports
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient, PutCommand, QueryCommand, GetCommand, UpdateCommand, DeleteCommand, } = require("@aws-sdk/lib-dynamodb");
+const { get } = require('http');
 
 // create document client
 const client = new DynamoDBClient({ region: "us-east-1" });
@@ -54,13 +55,16 @@ async function createPost(userId, data) {
 
 
 // get user posts
-async function getUserPosts(userId) {
+async function getUserPosts(profileUserId, currentUserId) {
+  // profileUserId: whose profile posts we are fetching
+  // currentUserId: logged-in user
+
   const result = await documentClient.send(
     new QueryCommand({
       TableName: TABLE_NAME,
       KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
       ExpressionAttributeValues: {
-        ':pk': `USER#${userId}`,
+        ':pk': `USER#${profileUserId}`,
         ':sk': 'POST#',
       },
       ScanIndexForward: false, // newest first
@@ -69,8 +73,9 @@ async function getUserPosts(userId) {
 
   const posts = result.Items || [];
 
-  // likes count and liked flag
+  // likes count and whether current user has liked each post
   for (const post of posts) {
+    // count likes
     const likeQuery = await documentClient.send(
       new QueryCommand({
         TableName: TABLE_NAME,
@@ -79,11 +84,14 @@ async function getUserPosts(userId) {
           ':pk': `POST#${post.postId}`,
           ':sk': 'LIKE#',
         },
+        Select: "ALL_ATTRIBUTES",
       })
     );
 
-    const likeCount = likeQuery.Items?.length || 0;
-    const liked = !!likeQuery.Items?.find((i) => i.SK === `LIKE#${userId}`);
+    const likeCount = likeQuery.Count || (likeQuery.Items?.length || 0);
+
+    // check if the current viewer has liked it
+    const liked = !!(currentUserId && likeQuery.Items?.find((i) => i.SK === `LIKE#${currentUserId}`));
 
     post.likes = likeCount;
     post.liked = liked;
@@ -138,96 +146,76 @@ async function deletePost(userId, postId) {
   return result.Attributes || null;
 }
 
-// like
-async function addLike(userId, postId) {
-  const item = {
+
+// toggle like item
+async function toggleLikeItem(userId, postId) {
+  if (!userId || !postId) throw new Error("toggleLikeItem requires userId and postId");
+
+  const key = {
     PK: `POST#${postId}`,
     SK: `LIKE#${userId}`,
-    userId,
-    postId,
-    createdAt: new Date().toISOString(),
   };
 
-  await documentClient.send(new PutCommand({
+  // check whether this user's LIKE item exists
+  const getCmd = new GetCommand({
     TableName: TABLE_NAME,
-    Item: item,
-    ConditionExpression: 'attribute_not_exists(SK)', // prevent duplicates
-  }));
+    Key: key,
+  });
 
-  return item;
+  const getRes = await documentClient.send(getCmd);
+
+  if (getRes.Item) {
+    // user already liked, delete only this user's like item
+    const delCmd = new DeleteCommand({
+      TableName: TABLE_NAME,
+      Key: key,
+    });
+    await documentClient.send(delCmd);
+    return { liked: false };
+  } else {
+    // user has not liked, create like item
+    const putCmd = new PutCommand({
+      TableName: TABLE_NAME,
+      Item: {
+        ...key,
+        userId,
+        postId,
+        createdAt: new Date().toISOString(),
+      },
+      
+      ConditionExpression: "attribute_not_exists(PK) AND attribute_not_exists(SK)",
+    });
+
+    try {
+      await documentClient.send(putCmd);
+    } catch (err) {
+      
+      if (err.name !== "ConditionalCheckFailedException") throw err;
+    }
+
+    return { liked: true };
+  }
 }
 
-// remove like
-async function removeLike(userId, postId) {
-  const result = await documentClient.send(new DeleteCommand({
+// count likes for a post
+async function getLikesCount(postId) {
+  if (!postId) return 0;
+
+  const q = new QueryCommand({
     TableName: TABLE_NAME,
-    Key: {
-      PK: `POST#${postId}`,
-      SK: `LIKE#${userId}`,
+    KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+    ExpressionAttributeValues: {
+      ":pk": `POST#${postId}`,
+      ":sk": "LIKE#",
     },
-    ReturnValues: 'ALL_OLD',
-  }));
+    Select: "COUNT",
+  });
 
-  return result.Attributes || null;
-}
-
-// has user liked
-async function hasUserLiked(userId, postId) {
-  const result = await documentClient.send(new GetCommand({
-    TableName: TABLE_NAME,
-    Key: {
-      PK: `POST#${postId}`,
-      SK: `LIKE#${userId}`,
-    },
-  }));
-  return !!result.Item;
+  const res = await documentClient.send(q);
+  return res.Count || 0;
 }
 
 
-// unlike
-async function addUnlike(userId, postId) {
-  const item = {
-    PK: `POST#${postId}`,
-    SK: `UNLIKE#${userId}`,
-    userId,
-    postId,
-    createdAt: new Date().toISOString(),
-  };
-
-  await documentClient.send(new PutCommand({
-    TableName: TABLE_NAME,
-    Item: item,
-    ConditionExpression: 'attribute_not_exists(SK)',
-  }));
-
-  return item;
-}
-
-//remove unlike
-async function removeUnlike(userId, postId) {
-  const result = await documentClient.send(new DeleteCommand({
-    TableName: TABLE_NAME,
-    Key: {
-      PK: `POST#${postId}`,
-      SK: `UNLIKE#${userId}`,
-    },
-    ReturnValues: 'ALL_OLD',
-  }));
-
-  return result.Attributes || null;
-}
-
-// has user unliked
-async function hasUserUnliked(userId, postId) {
-  const result = await documentClient.send(new GetCommand({
-    TableName: TABLE_NAME,
-    Key: {
-      PK: `POST#${postId}`,
-      SK: `UNLIKE#${userId}`,
-    },
-  }));
-  return !!result.Item;
-}
 
 // comment
 async function addComment(userId, postId, content) {
@@ -275,6 +263,6 @@ async function getComments(postId) {
 
 module.exports = {
   createPost, getUserPosts, getPostById, updatePost, deletePost,
-  addLike, removeLike, hasUserLiked, addUnlike, removeUnlike, hasUserUnliked,
+  toggleLikeItem, getLikesCount, getLikesCount,
   addComment, getComments
 };

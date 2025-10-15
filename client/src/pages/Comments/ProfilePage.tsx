@@ -113,22 +113,22 @@ export default function ProfilePage() {
 
   // toggle like
   const handleLikeToggle = async (id: string, type: "myPosts" | "friendsFeed") => {
-    const updateLikes = (posts: PostData[]) =>
-      posts.map((p) =>
-        p.postId === id
-          ? {
-              ...p,
-              liked: !p.liked,
-              likes: p.liked ? (p.likes || 1) - 1 : (p.likes || 0) + 1,
-            }
-          : p
-      );
+    if (!currentUserId) return;
 
-    if (type === "myPosts") setUserPosts((prev) => updateLikes(prev));
-    else setFriendsPosts((prev) => updateLikes(prev));
+      try {
+      const res = await commentService.toggleLike(currentUserId, id);
+      const updatedLikes = res.likes;
+      const updatedLiked = res.liked;
 
-    try {
-      await commentService.toggleLike(currentUserId, id);
+      const updatePosts = (posts: PostData[]) =>
+        posts.map((p) =>
+          p.postId === id
+            ? { ...p, likes: updatedLikes, liked: updatedLiked }
+            : p
+        );
+
+      if (type === "myPosts") setUserPosts((prev) => updatePosts(prev));
+      else setFriendsPosts((prev) => updatePosts(prev));
     } catch (err) {
       console.error("Failed to toggle like:", err);
     }
