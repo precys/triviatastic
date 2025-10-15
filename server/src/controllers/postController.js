@@ -15,8 +15,10 @@ async function createNewPost(req, res) {
 // get all posts for a user
 async function getUserPosts(req, res) {
   try {
-    const { userId } = req.params;
-    const posts = await postService.getUserPosts(userId);
+    const profileUserId = req.params.userId; // the profile we're viewing
+    const currentUserId = req.user && req.user.userId; // logged-in viewer
+
+    const posts = await postService.getUserPosts(profileUserId, currentUserId);
     res.json(posts);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -59,30 +61,23 @@ async function deletePost(req, res) {
 // toggle like
 async function likePost(req, res) {
   try {
-    const { userId, postId } = req.params;
-    const result = await postService.toggleLike(userId, postId);
+    const actorUserId = req.user && req.user.userId; // logged in user from jwt
+    const { postId } = req.params;
 
-    res.status(200).json({
-      message: result.toggled === 'on' ? 'Post liked' : 'Like removed',
-      like: result.like || null,
-    });
+    if (!actorUserId) {
+      return res.status(401).json({ error: "Not authenticated" });
+    }
+    if (!postId) {
+      return res.status(400).json({ error: "postId required in URL" });
+    }
+
+    const result = await postService.toggleLike(actorUserId, postId);
+
+    // result = { likes, liked }
+    return res.status(200).json(result);
   } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-}
-
-// toggle unlike
-async function unlikePost(req, res) {
-  try {
-    const { userId, postId } = req.params;
-    const result = await postService.toggleUnlike(userId, postId);
-
-    res.status(200).json({
-      message: result.toggled === 'on' ? 'Post unliked' : 'Unlike removed',
-      unlike: result.unlike || null,
-    });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error("toggle like error:", err);
+    return res.status(500).json({ error: err.message || "Failed to toggle like" });
   }
 }
 
@@ -118,5 +113,5 @@ async function getComments(req, res) {
 
 module.exports = {
   createNewPost, getUserPosts, getSinglePost, updatePost, deletePost,
-  likePost, unlikePost, addComment, getComments
+  likePost, addComment, getComments
 };

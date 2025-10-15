@@ -3,7 +3,7 @@ const router = express.Router();
 const { authenticate } = require('../utils/jwt');
 const {
     createNewPost, getUserPosts, getSinglePost, updatePost, deletePost,
-    likePost, unlikePost, addComment, getComments, 
+    likePost, addComment, getComments, 
     // getFeedPosts
 } = require('../controllers/postController');
 
@@ -18,7 +18,6 @@ router.delete('/:userId/posts/:postId', authenticate, deletePost);
 
 // Extras
 router.post('/:userId/posts/:postId/like', authenticate, likePost);
-router.post('/:userId/posts/:postId/unlike', authenticate, unlikePost);
 router.post('/:userId/posts/:postId/comments', authenticate, addComment);
 router.get('/:userId/posts/:postId/comments', authenticate, getComments);
 
