@@ -39,14 +39,17 @@ function QuestionScreen({changeScreen, setGame, question}: QuestionScreenProps) 
     <>
         <div className = "bg-light card m-3">
             <h1 className="text-center m-3">Question: </h1>
-            <p className="text-center m-3">{question.question}</p>
+            <p className="text-center m-3">{format(question.question)}</p>
         </div>
         <MultipleChoice answers={answers} answerQuestion={answerQuestion}/>
     </>
     );
 }
 
-function randomShuffle(array: string[]) {    
+function format(input: String) : String {
+    return input.replaceAll("&#039;", "\'").replaceAll("&rsquo;", "\'").replaceAll('&quot;', '\"').replaceAll("&amp;", "&");
+}
+function randomShuffle(array: string[]) : void {    
     if(Math.random() > 0.5) {
         array.reverse();
     }
