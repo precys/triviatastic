@@ -116,10 +116,20 @@ async function getFeedPosts(req, res) {
   }
 }
 
-
+// get friends feed posts
+async function getFriendsFeedPosts(req, res) {
+  try {
+    const { userId } = req.params;
+    const posts = await postService.getFriendsFeedPosts(userId);
+    res.json(posts);
+  } catch (err) {
+    console.error("Error fetching friends feed:", err);
+    res.status(500).json({ error: "Failed to load friends feed" });
+  }
+}
 
 
 module.exports = {
   createNewPost, getUserPosts, getSinglePost, updatePost, deletePost,
-  likePost, addComment, getComments, getFeedPosts,
+  likePost, addComment, getComments, getFeedPosts, getFriendsFeedPosts,
 };

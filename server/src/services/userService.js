@@ -134,6 +134,9 @@ async function getStats(userId) {
   const user = await userDAO.findUserById(userId);
   if (!user) throw new Error("User not found");
 
+  // get friend count from DAO
+  const friendCount = await userDAO.getFriendCount(userId);
+
   return {
     hi_score: user.hi_score,
     game_count: user.game_count,
@@ -142,7 +145,8 @@ async function getStats(userId) {
     med_count: user.med_count,
     hard_count: user.hard_count,
     category_counts: user.category_counts,
-    category_scores: user.category_scores
+    category_scores: user.category_scores,
+    friend_count: friendCount, //friend count
   };
 }
 

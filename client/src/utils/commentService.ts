@@ -6,13 +6,13 @@ async function getPosts(userId: string) {
   return res.data;
 }
 
-// fetch friends' posts (if applicable later)
-async function getFriendsPosts(userId: string) {
-  const res = await axiosClient.get(`/posts/${userId}/friends/posts`);
+// fetch friends' posts (future paginated?
+async function getFriendsFeedPosts(userId: string) {
+  const res = await axiosClient.get(`/posts/feed/friends/${userId}`);
   return res.data;
 }
 
-// fetch recent 20 posts from all users (future)
+// fetch recent 20 posts from all users (future) paginated?
 async function getRecentPosts() {
   const res = await axiosClient.get(`/posts/feed`);
   return res.data;
@@ -39,7 +39,7 @@ async function toggleLike(userId: string, postId: string) {
 
 export default {
   getPosts,
-  getFriendsPosts,
+  getFriendsFeedPosts,
   getRecentPosts,
   addComment,
   toggleLike,
