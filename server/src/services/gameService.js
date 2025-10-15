@@ -1,6 +1,6 @@
 const { logger } = require('../utils/logger');
 const gameDAO = require("../dao/gameDAO");
-const { getUserById, updateUser } = require("../dao/userDAO");
+const { findUserById, updateUser } = require("../dao/userDAO");
 
 // difficulties and point structure
 const difficultyPoints = { easy: 1, medium: 3, hard: 5 };
@@ -42,7 +42,7 @@ async function submitAnswer(userId, gameId, { questionDifficulty, correct } = {}
 
 // finish game normally
 async function finishGame(userId, gameId, answeredQuestions = []) {
-  const user = await getUserById(userId);
+  const user = await findUserById(userId);
   const game = await gameDAO.getGame(gameId, userId);
   if (!game) throw new Error("game not found");
 
@@ -50,15 +50,19 @@ async function finishGame(userId, gameId, answeredQuestions = []) {
 
   answeredQuestions.forEach(q => {
     if (q.userAnsweredCorrectly) {
-      const points = difficultyPoints[q.question_difficulty] || 0;
+      const points = difficultyPoints[q.difficulty] || 0;
       gameScore += points;
 
-      if (q.question_difficulty === "easy") easyCorrect++;
-      if (q.question_difficulty === "medium") medCorrect++;
-      if (q.question_difficulty === "hard") hardCorrect++;
+      if (q.difficulty === "easy") easyCorrect++;
+      if (q.difficulty === "medium") medCorrect++;
+      if (q.difficulty === "hard") hardCorrect++;
     }
   });
   // update user stats
+  console.log(easyCorrect);
+  console.log(medCorrect);
+  console.log(hardCorrect);
+  console.log(gameScore);
   user.game_count += 1;
   user.easy_count += easyCorrect;
   user.med_count += medCorrect;

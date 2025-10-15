@@ -1,11 +1,13 @@
 import { useState, FormEvent } from 'react';
+import { useLocation } from 'react-router-dom';
 
 interface Props {
   onSubmit: (content: string) => void;
 }
 
 export default function CommentForm({ onSubmit }: Props) {
-  const [content, setContent] = useState('');
+  const {state} = useLocation();
+  const [content, setContent] = useState(state);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();

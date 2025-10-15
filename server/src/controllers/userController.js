@@ -232,8 +232,9 @@ async function respondToFriendRequest(req, res){
 //delete a friend request
 async function deleteFriendRequest (req, res){
   const { userId, requestId } = req.params;
+  const sent = req.query.sent === "true";
 
-  const result = await userService.deleteFriendRequest(userId, requestId);
+  const result = await userService.deleteFriendRequest(userId, requestId, sent);
 
    if(!result){
     res.status(400).json({ message: "Unable to delete friend request"})
