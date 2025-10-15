@@ -106,7 +106,7 @@ export default function ProfilePage() {
   const loadFriendsPosts = async () => {
     if (!currentUserId) return;
     try {
-      const data = await commentService.getFriendsPosts(currentUserId);
+      const data = await commentService.getFriendsFeedPosts(currentUserId);
       const posts = Array.isArray(data) ? data : [];
       setFriendsPosts(sortPostsNewestFirst(posts));
     } catch (err) {
