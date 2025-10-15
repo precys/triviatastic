@@ -45,6 +45,16 @@ function SubmitQuestion() {
     const handleVisible = async () => {
         setVisible(false);
     }
+
+    const handleIncorrectAnswers = async (i: number, incorrectAnswer: string) => {
+        setIncorrectAnswers((prev) => {
+            const updated = [...prev];
+            updated[i] = incorrectAnswer;
+
+            setQuestion((q) => ({ ...q, incorrect_answers: updated }));
+            return updated
+        })
+    }
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -64,7 +74,6 @@ function SubmitQuestion() {
             }
 
             setVisible(true)
-            console.log(visible)
             
         }
         catch (err){
@@ -89,14 +98,6 @@ function SubmitQuestion() {
 
         return stringsValid && incorrectValid;
     };
-
-    const handleIncorrectAnswers = async (i: number, incorrectAnswer: string) => {
-        setIncorrectAnswers((prev) => {
-            const updated = [...prev];
-            updated[i] = incorrectAnswer;
-            return updated
-        })
-    }
 
     const handleTrueFalse = async (value: "True" | "False") => {
         setQuestion({ ...question, correct_answer: value, incorrect_answers: [value === "True" ? "False" : "True"]})
