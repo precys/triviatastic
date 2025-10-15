@@ -2,55 +2,60 @@ import axios from 'axios';
 import { useEffect, useState } from 'react'
 import friendsService from '@/utils/friendsService';
 
-interface FriendsListResponse{
-    message: string;
-    "Friend Count": number;
-    friends: string[];
-}
+// interface FriendsListResponse{
+//     message: string;
+//     "Friend Count": number;
+//     friends: string[];
+// }
 
 interface FriendsListProps{
     userId: string;
     onFriendsLoaded?: (friends: string[]) => void;
+    addedFriend?: (friend: string) => void;
 }
 
-function FriendsList({ userId, onFriendsLoaded  } : FriendsListProps) {
+function FriendsList({ userId, onFriendsLoaded, addedFriend  } : FriendsListProps) {
     const [friendsList, setFriendsList] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [message, setMessage] = useState<string>("");
-    // const user = userFromToken();
-    // const userId = user.userId || "";
 
+    // get friends
     useEffect (() =>{
         if (!userId){
             console.log("userId is not provided in the URL");
             return;
         } 
-        const getFriends = async() => {
-            const data = await friendsService.getFriends(userId);
-            setFriendsList(data.friends);
+
+        try{
+            setLoading(true);
+            const getFriends = async() => {
+                const data = await friendsService.getFriends(userId);
+                setFriendsList(data.friends);
+                if (onFriendsLoaded) onFriendsLoaded(data.friends);
+                setLoading(false);
+            };
+            getFriends();
+        }catch(err){
+            console.error("Error fetching friends:", err);
+            setError("Failed to load friends.");
             setLoading(false);
-        };
-        
-    //     axios.get<{ friends: string[]; message?: string }>(`http://localhost:3000/users/${userId}/friends`)
-    //         .then((res) => {
-    //             setFriendsList(res.data.friends || []);
-    //             if (onFriendsLoaded) onFriendsLoaded(res.data.friends || []);
-    //                 setLoading(false);
-    //             })
-    //             .catch((err) => {
-    //                 console.error(err);
-    //                 setError("Failed to load friends list");
-    //                 setLoading(false);
-    //             });
-        getFriends();
-    },[userId])
+        }
+    },[userId, onFriendsLoaded])
+
+    // new friends added
+    const addFriendToList = (friend: string) => {
+        if (!friendsList.includes(friend)) {
+            const updated = [...friendsList, friend];
+            setFriendsList(updated);
+            if (onFriendsLoaded) onFriendsLoaded(updated);
+            if (addedFriend) addedFriend(friend); // call parent callback
+        }
+    };
 
     console.log(friendsList);
     if (loading) return <p>Loading friends...</p>;
     if (error) return <p>{error}</p>;
     
-
   return (
       <div>
         <h3>

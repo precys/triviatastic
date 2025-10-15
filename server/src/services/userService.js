@@ -244,8 +244,20 @@ async function sendFriendRequest(senderId, friendUsername){
         throw new Error(`${receiver.username} is already your friend`);
     }
 
-    const requestId = crypto.randomUUID();
+    const existingRequests = await userDAO.getFriendRequestsByStatus(sender.userId, "pending", true);
+    const existingRequest = existingRequests.find(req => req.userFriendId === receiver.userId);
+    
+    if (existingRequest) {
+      // if a pending or accepted request already exists, do not send again
+      if (existingRequest.status === "pending" || existingRequest.status === "accepted") {
+        return {
+          message: "Friend request already sent or accepted.",
+          status: existingRequest.status,
+        };
+      }
+    }
 
+    const requestId = crypto.randomUUID();
     const requestItem = {
         PK: `FRIENDREQ#${receiver.userId}`, //receiver of the friend request
         SK: `REQUEST#${requestId}`, // identifier for each request
@@ -264,9 +276,9 @@ async function sendFriendRequest(senderId, friendUsername){
     return {
         message: `Friend request to ${receiver.username} sent!`,
         friendId: receiver.userId,
-        friendUsername: receiver.username
+        friendUsername: receiver.username,
+        status: "pending"
     }
-
 }
 
 //add a friend 

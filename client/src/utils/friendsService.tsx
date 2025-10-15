@@ -6,7 +6,7 @@ async function getFriends(userId : string){
 }
 
 async function getFriendRequests(userId: string, status: "pending" | "accepted" | "denied", sent: boolean = false){
-    const res = await axiosClient.get(`/users/${userId}/friend-requests`, {params: { status, sent },});
+    const res = await axiosClient.get(`/users/${userId}/friend-requests`, { params: { status, sent } });
     return res.data;
 }
 
@@ -30,6 +30,33 @@ async function removeFriend(username: string, friendUsername: string){
     return res.data;
 }
 
+// uses existing getFriendRequests and getFriends Functions
+async function getFriendRequestsStatus(senderId: string, receiverUsername: string){
+    // check if already friends
+    const friendsData = await getFriends(senderId);
+    if (friendsData.friends.includes(receiverUsername)) return "accepted";
+
+    // check pending requests sent by a sender
+    const sentPending = await getFriendRequests(senderId, "pending", true)
+    if (sentPending.some((req : any) => req.receiverUsername === receiverUsername)) return "pending";
+    
+    // check denied requests sent by sender
+    const sentDenied = await getFriendRequests(senderId, "denied", true);
+    if (sentDenied.some((req: any) => req.receiverUsername === receiverUsername)) return "denied";
+
+    // check accepted requests sent by sender
+    const sentAccepted = await getFriendRequests(senderId, "accepted", true);
+    if (sentAccepted.requests?.some((req: any) => req.receiverUsername === receiverUsername)) {
+        return "accepted";
+    }
+    // check requests received by sender 
+    const receivedPending = await getFriendRequests(senderId, "pending", false);
+    if (receivedPending.requests?.some((req: any) => req.senderUsername === receiverUsername)) {
+        return "pending";
+    }
+
+    return "not_sent"; 
+}
 
 export default {
     getFriends,
@@ -37,5 +64,6 @@ export default {
     sendFriendReq,
     respondToFriendReq,
     deleteFriendReq,
-    removeFriend
+    removeFriend,
+    getFriendRequestsStatus
 }
