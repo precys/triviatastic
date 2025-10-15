@@ -1,6 +1,4 @@
-import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import AuthentificationHook from "../../components/Context/AuthentificationHook";
 import MultipleChoice from './MultipleChoice';
 import gameService from '@/utils/gameService';
 
@@ -29,7 +27,6 @@ function QuestionScreen({changeScreen, setGame, question}: QuestionScreenProps) 
     }
 
     const navigate = useNavigate();
-    const {token} = AuthentificationHook();
     const {game_id} = useParams();
 
     const correctSound = new Audio("/correct.mp3");
