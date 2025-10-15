@@ -26,6 +26,7 @@ export default function ProfilePage() {
   // Try to get value from username path parameter
   const { username: paramUsername } = useParams<{ username: string }>();
 
+
   // Simple if-conditional, if pathUsername is undefined, meaning no :username path param, access page for /profile
   if (paramUsername){
     // If paramUsername does have value, meaning /path/:username, do below logic
