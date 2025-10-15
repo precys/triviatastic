@@ -1,5 +1,6 @@
 const { logger } = require('../utils/logger');
 const postService = require('../services/postService');
+const { get } = require('../routes/postRoutes');
 
 // create a new post for a user
 async function createNewPost(req, res) {
@@ -105,13 +106,20 @@ async function getComments(req, res) {
 }
 
 
-
-
+// get global feed posts
+async function getFeedPosts(req, res) {
+  try {
+    const posts = await postService.getGlobalFeed();
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
 
 
 
 
 module.exports = {
   createNewPost, getUserPosts, getSinglePost, updatePost, deletePost,
-  likePost, addComment, getComments
+  likePost, addComment, getComments, getFeedPosts,
 };
