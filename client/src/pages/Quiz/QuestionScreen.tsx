@@ -2,24 +2,25 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import AuthentificationHook from "../../components/Context/AuthentificationHook";
 import MultipleChoice from './MultipleChoice';
+import gameService from '@/utils/gameService';
 
 function QuestionScreen({changeScreen, setGame, question}: QuestionScreenProps) {
+    function playSoundEffect(correct: boolean) {
+        const soundToPlay = correct ? correctSound : incorrectSound;
+
+        if(soundToPlay) {
+            soundToPlay.play();
+        }
+    }
     function answerQuestion(selection: string) {
         const correct = question.correct_answer === selection;
 
-        axios.post(`http://localhost:3000/games/${game_id}/answer`,
-            {
-                questionDifficulty: question.difficulty,
-                correct
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}` 
-                }
-            })
+        gameService.answer(game_id, question.difficulty, correct)
         .then((response) => {
             setGame(response.data);
+            playSoundEffect(correct);
             changeScreen(correct ? "Correct!" : "Incorrect.");
+            question.userAnsweredCorrectly = correct;
         })
         .catch((error) => {
             console.error(error);
@@ -31,8 +32,12 @@ function QuestionScreen({changeScreen, setGame, question}: QuestionScreenProps) 
     const {token} = AuthentificationHook();
     const {game_id} = useParams();
 
+    const correctSound = new Audio("/correct.mp3");
+    const incorrectSound = new Audio("/incorrect.mp3");
+
     const answers: string[] = [...question.incorrect_answers, question.correct_answer];
     randomShuffle(answers);
+
     return (
     <>
         <div className = "bg-light card m-3">
@@ -80,8 +85,9 @@ type Question = {
     question: string,
     correct_answer: string,
     incorrect_answers: Array<string>,
-    status?: string
-    createdAt?: Date
+    status?: string,
+    createdAt?: Date,
+    userAnsweredCorrectly?: boolean
 }
 
 type Game = {

@@ -2,25 +2,18 @@ import {useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import AuthentificationHook from "../../components/Context/AuthentificationHook";
 import axios from "axios";
+import gameService from "@/utils/gameService";
+import submitQuestionService from "@/utils/submitquestionService";
 
 function CreateQuiz() {
     const [settings, setSettings] = useState<Settings>({category: "any", questionDifficulty: "easy", number: 10});
+    const [warning, setWarning] = useState<String>("");
     const navigate = useNavigate();
     const {token, logout} = AuthentificationHook();
 
     function newGame() {
-        axios.post("http://localhost:3000/games/start", 
-            {
-                category: settings.category,
-                questionDifficulty: settings.questionDifficulty
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}` 
-                }
-            })
+        gameService.startGame(settings)
         .then((response) => {
-            console.log(response.data);
             getQuestions(settings, response.data);
         })
         .catch((error) => {
@@ -33,12 +26,7 @@ function CreateQuiz() {
     }
 
     function getQuestions(settings: Settings, game: Game) {
-        axios.get(`http://localhost:3000/questions/category?category=${settings.category}&n=${settings.number}&difficulty=${settings.questionDifficulty}&type=any`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}` 
-                }
-            })
+        submitQuestionService.getQuestionsForGame(settings)
             .then((response) => {
                 const questions : Array<Question> = response.data.questions;
                 console.log(`Success, length : ${questions.length}`);
@@ -55,17 +43,27 @@ function CreateQuiz() {
                             }
                         }
                     );
+                    setWarning("Not enough questions.");
+                }
+                else if(error.response.status == 501) {
 
-                    alert("Not enough questions");
+                    axios.post(`http://localhost:3000/games/${game.gameId}/end`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${token}` 
+                            }
+                        }
+                    );
+                    setWarning("Please try again.");
                 }
             });
     }
     
 
     return (
-        <div className="bg-light card mb-2 m-3">
-            <h1 className="m-3 p-3">Create Game</h1>
-            <div className="center m-3 justify-content-center">
+        <div className="bg-light card mb-2 m-3 p-3">
+            <h1 className="p-3">Create Game</h1>
+            <div className="center justify-content-center">
                 <label className="m-3" htmlFor="number">Number of Questions: </label>
                 <select value = {settings.number} id = "number" onChange={(e) => {setSettings({...settings, number: parseInt(e.target.value)})}}>
                     <option value = {10}>10</option>
@@ -96,6 +94,7 @@ function CreateQuiz() {
                 <button className="btn btn-success m-3 float-end" onClick={newGame}>Start Game</button>
 
             </div>
+            { warning && <p className="text-danger p-3">{warning}</p> }
         
         </div>
     );
