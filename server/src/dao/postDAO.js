@@ -2,7 +2,7 @@ const { logger } = require('../utils/logger');
 
 // aws sdk v3 imports
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const { DynamoDBDocumentClient, PutCommand, QueryCommand, GetCommand, UpdateCommand, DeleteCommand, } = require("@aws-sdk/lib-dynamodb");
+const { DynamoDBDocumentClient, PutCommand, QueryCommand, GetCommand, UpdateCommand, DeleteCommand, ScanCommand } = require("@aws-sdk/lib-dynamodb");
 const { get } = require('http');
 
 // create document client
@@ -40,6 +40,8 @@ async function createPost(userId, data) {
     username,
     content: data.content,
     createdAt: new Date().toISOString(),
+    GlobalFeedPK: "POST", // for global feed query
+    GlobalFeedSK: new Date().toISOString(), // for global feed query
   };
 
   await documentClient.send(
@@ -256,6 +258,47 @@ async function getComments(postId) {
 
 
 
+// get all posts across all users (global feed)
+async function getGlobalFeedPosts() {
+  // query all posts via gsi
+  const result = await documentClient.send(
+    new QueryCommand({
+      TableName: TABLE_NAME,
+      IndexName: "GlobalFeed-index",
+      KeyConditionExpression: "GlobalFeedPK = :pk",
+      ExpressionAttributeValues: {
+        ":pk": "POST",
+      },
+      ScanIndexForward: false, // newest first
+    })
+  );
+
+  const posts = result.Items || [];
+
+  // count likes for each post
+  for (const post of posts) {
+    const likeQuery = await documentClient.send(
+      new QueryCommand({
+        TableName: TABLE_NAME,
+        KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+        ExpressionAttributeValues: {
+          ":pk": `POST#${post.postId}`,
+          ":sk": "LIKE#",
+        },
+        Select: "COUNT",
+      })
+    );
+    post.likes = likeQuery.Count || 0;
+  }
+
+  return posts;
+}
+
+
+
+
+
+
 
 
 
@@ -264,5 +307,5 @@ async function getComments(postId) {
 module.exports = {
   createPost, getUserPosts, getPostById, updatePost, deletePost,
   toggleLikeItem, getLikesCount, getLikesCount,
-  addComment, getComments
+  addComment, getComments, getGlobalFeedPosts,
 };

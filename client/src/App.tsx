@@ -16,6 +16,7 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import ProfilePage from "./pages/Comments/ProfilePage";
 import CommentsFeedPage from "./pages/Comments/CommentsFeedPage";
 import SubmitQuestion from './pages/SubmitQuestion/SubmitQuestion';
+import FeedPage from './pages/Comments/FeedPage';
 // CSS imports
 import './App.css';
 
@@ -32,6 +33,7 @@ function App() {
         <Route path="/" element={<Login />} />
         {/* Protected */}
         <Route path="/home" element={<ProtectedRoute> <Home /> </ProtectedRoute>}></Route>
+        <Route path="/feed" element={<FeedPage />} />
         <Route path="/create-game" element={<ProtectedRoute> <CreateQuiz /> </ProtectedRoute>}></Route>
         <Route path="/quiz/:game_id" element={<ProtectedRoute> <Quiz /> </ProtectedRoute>}></Route>
         <Route path="/profile" element={<ProfilePage />} />
