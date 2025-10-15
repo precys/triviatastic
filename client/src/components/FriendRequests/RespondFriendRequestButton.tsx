@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axios from 'axios';
+import friendsService from '@/utils/friendsService';
 
 interface RespondFriendRequestButtonProps {
   senderId: string;
@@ -18,12 +18,17 @@ export default function RespondFriendRequestButton({ senderId, receiverId, reque
         setError(null);
 
         try{
-            const res = await axios.put(`http://localhost:3000/users/${receiverId}/friend-requests/${requestId}`, { status });
-            console.log("Response from backend:", res.data);
+            // const res = await axios.put(`http://localhost:3000/users/${receiverId}/friend-requests/${requestId}`, { status });
+            // console.log("Response from backend:", res.data);
+            const respondToReq = async () => {
+                const data = await friendsService.respondToFriendReq(receiverId, requestId, status);
+                console.log("friend req response data: ", data);
 
-            // Update Button States
-            setResponseStatus(status);
-            setLoading(false);
+                // Update Button States
+                setResponseStatus(status);
+                setLoading(false);
+            }
+            respondToReq();
 
             // send state to parent
             if(onResponse) onResponse(status);
