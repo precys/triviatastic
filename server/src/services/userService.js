@@ -203,6 +203,16 @@ async function getAllUsers (){
 }
 
 
+async function getAllUsers (){
+  const users = await userDAO.getAllUsers();
+
+  return users.map(user => ({
+    userId: user.userId,
+    username:user.username
+  }));
+
+}
+
 // get user's friends
 async function getUsersFriends(user) {
     if (!user) {
@@ -248,10 +258,13 @@ async function sendFriendRequest(senderId, friendUsername){
         createdAt: new Date().toISOString()
     };
 
-    await userDAO.sendFriendRequest(requestItem);
+    const success = await userDAO.sendFriendRequest(requestItem);
+    if (!success) throw new Error("Failed to save friend request in database");
     
     return {
         message: `Friend request to ${receiver.username} sent!`,
+        friendId: receiver.userId,
+        friendUsername: receiver.username
     }
 
 }
@@ -310,17 +323,21 @@ async function denyRequest (userId, friendId){
 }
 
 //get a list of friend requests by status ("pending", "accepted", "denied" )
-async function getFriendRequestsByStatus (userId, status){
+async function getFriendRequestsByStatus (userId, status = "pending", sent = false){
     let validStatuses = ["pending", "accepted", "denied"];
     if (!validStatuses.includes(status)){
         throw new Error ("Invalid Status");
     }
 
-    const requestData = await userDAO.getFriendRequestsByStatus(userId, status);
+    const requestData = await userDAO.getFriendRequestsByStatus(userId, status, sent);
 
     const requestsToDisplay = requestData.map(r => ({
-        username: r.senderUsername,
-        status: r.status
+      requestId: r.requestId,
+      userId: r.userId, // sender
+      userFriendId: r.userFriendId, // receiver
+      senderUsername: r.senderUsername,
+      receiverUsername: r.receiverUsername,
+      status: r.status
     }))
 
     return {
@@ -388,21 +405,36 @@ async function deleteFriendRequest (userId, requestId) {
 
 }
 
-async function removeFriend(usernameToRemoveFrom, friendUsername) {
-  const userToUpdate = await userDAO.getUserByUsername(usernameToRemoveFrom);
-  if(!userToUpdate) {
-    throw new Error("User not found.");
+async function removeFriend(username, friendUsername) {
+  const user = await userDAO.getUserByUsername(username);
+  const friend = await userDAO.getUserByUsername(friendUsername);
+
+  if(!user ||!friend ) {
+    throw new Error("User or friend not found.");
   }
-  userToUpdate.friends = userToUpdate.friends.filter((element) => element != friendUsername);
-  if(!await userDAO.updateUser(userToUpdate)) {
+  console.log("User Friends:", user.friends)
+  console.log("UserFriend Friends:", friend.friends)
+  const updatedUserFriends = (user.friends || []).filter((name) => name !== friend.username);
+  const updatedFriendFriends = (friend.friends || []).filter((name) => name !== user.username);
+
+  const updatedUser = await userDAO.updateFriendsList(user.userId, updatedUserFriends);
+  const updatedFriend = await userDAO.updateFriendsList(friend.userId, updatedFriendFriends);
+
+  console.log("UPDATED User Friends:", updatedUser)
+  console.log("UPDATED UserFriend Friends:", updatedFriend)
+
+   
+  if (!updatedUser || !updatedFriend) {
     return false;
   }
+
   return true;
+
 }
 
 
 module.exports = {
   registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, removeFriend, updateAccount, addFriend, sendFriendRequest,
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers, getUsersScoreByCategory, getUsersStats
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers, getUsersScoreByCategory, getUsersStats, getAllUsers
 };
 
