@@ -1,6 +1,6 @@
 const { logger } = require('../utils/logger');
 const gameDAO = require("../dao/gameDAO");
-const { getUserById, updateUser } = require("../dao/userDAO");
+const { findUserById, updateUser } = require("../dao/userDAO");
 
 // difficulties and point structure
 const difficultyPoints = { easy: 1, medium: 3, hard: 5 };
@@ -42,20 +42,26 @@ async function submitAnswer(userId, gameId, { questionDifficulty, correct } = {}
 
 // finish game normally
 async function finishGame(userId, gameId, answeredQuestions = []) {
-  const user = await getUserById(userId);
+  const user = await findUserById(userId);
   const game = await gameDAO.getGame(gameId, userId);
   if (!game) throw new Error("game not found");
 
-  let easyCorrect = 0, medCorrect = 0, hardCorrect = 0, gameScore = 0;
+  let easyCorrect = 0, medCorrect = 0, hardCorrect = 0, gameScore = 0, streak = 0, maxStreak = 0;
 
   answeredQuestions.forEach(q => {
     if (q.userAnsweredCorrectly) {
-      const points = difficultyPoints[q.question_difficulty] || 0;
+      const points = difficultyPoints[q.difficulty] || 0;
       gameScore += points;
 
-      if (q.question_difficulty === "easy") easyCorrect++;
-      if (q.question_difficulty === "medium") medCorrect++;
-      if (q.question_difficulty === "hard") hardCorrect++;
+      if (q.difficulty === "easy") easyCorrect++;
+      if (q.difficulty === "medium") medCorrect++;
+      if (q.difficulty === "hard") hardCorrect++;
+
+      streak++;
+      if(streak > maxStreak) maxStreak = streak;
+    }
+    else {
+      streak = 0;
     }
   });
   // update user stats
@@ -65,6 +71,7 @@ async function finishGame(userId, gameId, answeredQuestions = []) {
   user.hard_count += hardCorrect;
 
   if (gameScore > user.hi_score) user.hi_score = gameScore;
+  if (maxStreak > user.streak) user.streak = maxStreak;
 
   const category = game.category || "any";
   if (!user.category_counts[category]) user.category_counts[category] = 0;

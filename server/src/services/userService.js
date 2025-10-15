@@ -394,19 +394,41 @@ async function respondToFriendRequest (userFriendId, requestId, status){
 }
 
 //delete a friend request
-async function deleteFriendRequest (userId, requestId) {
+async function deleteFriendRequest (userId, requestId, sent = false) {
   if (!userId || !requestId){
     throw new Error ("User or Friend Request Does Not Exist");
-  }else{
-    if (await userDAO.deleteFriendRequest(userId, requestId)){
-      return{
-        message: `${requestId} was successfully deleted!`
+  }
+
+  let requests = [];
+
+   if (sent) {
+    const pending = await userDAO.getFriendRequestsByStatus(userId, "pending", true);
+    const accepted = await userDAO.getFriendRequestsByStatus(userId, "accepted", true);
+    const denied = await userDAO.getFriendRequestsByStatus(userId, "denied", true);
+
+    requests = [...pending, ...accepted, ...denied];
+  } else {
+    requests = await userDAO.getFriendRequestsByStatus(userId, "pending", false);
+  }
+
+  const request = requests.find(r => r.requestId === requestId);
+
+  if (!request) {
+    throw new Error(sent ? "Sent friend request not found" : "Received friend request not found");
+  }
+
+  const userFriendId = sent ? request.userFriendId : request.userId;
+  if (!userFriendId) throw new Error("Could not find userFriendId for deletion");
+  
+  const deleted = await userDAO.deleteFriendRequest(userFriendId, requestId);
+
+  if(deleted){
+    return{
+        message: `${sent ? "Sent" : "Received"} friend request ${requestId} deleted successfully!`
       };
     }else{
       throw new Error ("Unable to delete Friend Request");
-    } 
-  }
-
+    }
 }
 
 async function removeFriend(username, friendUsername) {

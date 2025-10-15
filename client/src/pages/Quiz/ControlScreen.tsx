@@ -1,10 +1,8 @@
-import axios from 'axios';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import AuthentificationHook from "../../components/Context/AuthentificationHook";
+import gameService from '@/utils/gameService';
 
 
 function ControlScreen({changeScreen, questionState, game}: ControlScreenProps) {
-    const {token} = AuthentificationHook();
     const {game_id} = useParams();
     const {state} = useLocation();
     const navigate = useNavigate();
@@ -16,24 +14,12 @@ function ControlScreen({changeScreen, questionState, game}: ControlScreenProps) 
         changeScreen();
     }
     function handleQuit() {
-        axios.post(`http://localhost:3000/games/${game_id}/end`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}` 
-                }
-            }
-        );
+        gameService.quitGame(game_id);
         navigate("/home");
     }
     function handleFinish() {
-        axios.post(`http://localhost:3000/games/${game_id}/finish`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}` 
-                }
-            }
-        );
-        navigate("/home");
+        gameService.finishGame(game_id, state.questions);
+        navigate("/profile", {state: `I just scored ${game.score} in "${state.settings.category}" on ${state.settings.questionDifficulty} difficulty!`});
     }
 
     return (
