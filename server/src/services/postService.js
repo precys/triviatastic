@@ -35,40 +35,17 @@ async function deletePost(userId, postId) {
   return deleted;
 }
 
-// toggle like
+// toggle like on a post
 async function toggleLike(userId, postId) {
-  const alreadyLiked = await postDAO.hasUserLiked(userId, postId);
-  const alreadyUnliked = await postDAO.hasUserUnliked(userId, postId);
+  if (!userId || !postId) throw new Error("userId and postId required");
 
-  if (alreadyLiked) {
-    await postDAO.removeLike(userId, postId);
-    return { toggled: 'off' }; // removed like
-  }
+  // toggle the LIKE item for the user
+  const toggleResult = await postDAO.toggleLikeItem(userId, postId);
 
-  if (alreadyUnliked) {
-    await postDAO.removeUnlike(userId, postId); // mutually exclusive
-  }
+  // get current total likes
+  const likesCount = await postDAO.getLikesCount(postId);
 
-  const newLike = await postDAO.addLike(userId, postId);
-  return { toggled: 'on', like: newLike };
-}
-
-// toggle unlike
-async function toggleUnlike(userId, postId) {
-  const alreadyUnliked = await postDAO.hasUserUnliked(userId, postId);
-  const alreadyLiked = await postDAO.hasUserLiked(userId, postId);
-
-  if (alreadyUnliked) {
-    await postDAO.removeUnlike(userId, postId);
-    return { toggled: 'off' }; // removed unlike
-  }
-
-  if (alreadyLiked) {
-    await postDAO.removeLike(userId, postId);
-  }
-
-  const newUnlike = await postDAO.addUnlike(userId, postId);
-  return { toggled: 'on', unlike: newUnlike };
+  return { likes: likesCount, liked: !!toggleResult.liked };
 }
 
 // comment
@@ -92,5 +69,5 @@ async function getComments(postId) {
 
 module.exports = {
   createPost, getUserPosts, getPostById, updatePost, deletePost,
-  toggleLike, toggleUnlike, addComment, getComments
+  toggleLike, addComment, getComments
 };
