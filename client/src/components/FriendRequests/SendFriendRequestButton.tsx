@@ -1,63 +1,110 @@
-import React, { useEffect, useState } from 'react'
-// import axios from 'axios';
-// import { useUser } from '@/hooks/useUser';
+import { useEffect, useState } from 'react'
 import friendsService from '@/utils/friendsService';
 
 
 interface SendFriendReqButtonProps{
     senderId: string; //sender
-    // receiverId: string; //receiver
     receiverUsername?: string;
     onRequestSent?: () => void; // callback checking if request was sent successfully 
 }
 
 export default function SendFriendRequestButton( { senderId, receiverUsername, onRequestSent }: SendFriendReqButtonProps) {
   console.log('Sending friend request:', { senderId, receiverUsername });
-    const [reqStatus, setReqStatus ] = useState<string>("Not sent")
+  const [reqStatus, setReqStatus ] = useState<"not_sent" | "pending" | "sent" | "denied" | "error">("not_sent");
+  const [loadingStatus, setLoadingStatus] = useState(true);
+
+    useEffect(() => {
+      if (!receiverUsername) {
+          console.error('Receiver username is undefined');
+          setReqStatus('error');
+          return;
+      }
+
+      const checkStatus = async () => {
+        setLoadingStatus(true);
+        try{
+          const status = await friendsService.getFriendRequestsStatus(senderId, receiverUsername);
+          switch(status) {
+            case "pending":
+                setReqStatus("pending");
+                break;
+            case "accepted":
+                setReqStatus("sent");
+                break;
+            case "denied":
+                setReqStatus("denied");
+                break;
+            default:
+                setReqStatus("not_sent");
+          }
+        }catch(err){
+            console.error("Error fetching friend request status:", err);
+            setReqStatus("error");
+        }finally {
+          setLoadingStatus(false);
+        }
+      };
+      checkStatus();
+    }, [senderId, receiverUsername])
 
     const sendRequest = async () => {
-        if (!receiverUsername) {
+      if (!receiverUsername) {
           console.error('Receiver username is undefined');
-          setReqStatus('Error');
+          setReqStatus('error');
           return;
-        }
-        try{
-            setReqStatus("sending")
-            // const response = await axios.post(`http://localhost:3000/users/${senderId}/friend-requests`, { friendUsername: receiverUsername});
-            // console.log('Friend request response:', response.data);
-            const sendFriendReq = async () =>{
-              const data = await friendsService.sendFriendReq(senderId, receiverUsername);
-              console.log("friend req data", data);
+      }
+
+      if (reqStatus === "pending" || reqStatus === "sent") return; //ensure no duplicate requests are sent
+
+      setLoadingStatus(true);
+      setReqStatus("pending");
+
+      try{
+        const sendFriendReq = async () =>{
+          const data = await friendsService.sendFriendReq(senderId, receiverUsername);
+          console.log("friend req data", data);
+          switch (data.status) {
+            case "pending":
+              setReqStatus("pending");
+              break;
+            case "accepted":
               setReqStatus("sent");
-            }
-            sendFriendReq();
-            if (onRequestSent) onRequestSent();
-        }catch(error : any){
-            if (error.response) {
-              console.error('Response data:', error.response.data);
-              console.error('Status:', error.response.status);
-            } else if (error.request) {
-              console.error('No response:', error.request);
-            } else {
-              console.error('Axios error:', error.message);
-            }
-            setReqStatus('Error');
+              break;
+            case "denied":
+              setReqStatus("denied");
+              break;
+            default:
+              setReqStatus("pending");
+          }
+          setLoadingStatus(false);
         }
+        sendFriendReq();
+        if (onRequestSent) onRequestSent();
+      }catch(err){
+        console.error("Error sending friend request:", err);
+        setReqStatus("error");
+      }
     };
 
   return (
     <button
-      disabled={reqStatus === 'sending'}
+      disabled={loadingStatus || reqStatus === "pending" || reqStatus === "sent"}
       className={`px-3 py-1 rounded ${
-        reqStatus === 'sending' ? 'bg-gray-400 text-black cursor-not-allowed' : 'bg-blue-600 text-black hover:bg-blue-700'
+        loadingStatus || reqStatus === "pending" || reqStatus === "sent"
+          ? "bg-gray-400 text-black cursor-not-allowed"
+          : "bg-blue-600 text-black hover:bg-blue-700"
       }`}
       onClick={sendRequest}
     >
-      {reqStatus === 'sending'
-        ? 'Sending...'
-        : reqStatus === 'sent'
-        ? `Request Sent!`
-        : 'Send Friend Request'}
+      {loadingStatus
+        ? "Checking..."
+        : reqStatus === "pending"
+        ? "Request Pending"
+        : reqStatus === "sent"
+        ? "Request Sent!"
+        : reqStatus === "denied"
+        ? "Send Again"
+        : "Send Friend Request"}
     </button>
   );
 }

@@ -69,6 +69,14 @@ export default function ProfilePage() {
   const [stats, setStats] = useState<any>(null);
   const currentUserId = userId || "";
 
+  // update friends list
+  const [friends, setFriends] = useState<string[]>([]);
+
+  // update when a friend request is accepted
+  const handleFriendAdded = (username: string) => {
+    setFriends(prev => [...prev, username]);
+  };
+
   // tabs for friend requests
   const [activeRequestTab, setActiveRequestTab] = useState<'received' | 'sent'>('received');
   const [activeStatus, setActiveStatus] = useState<"pending" | "accepted" | "denied">("pending");
@@ -204,10 +212,11 @@ export default function ProfilePage() {
                   />
                 ) : (
                   <SendFriendRequestButton
+                    key={username}
                     senderId={currentUser?.userId ?? ""}
                     receiverUsername={username}
                     onRequestSent={() =>
-                      console.log("Friend request sent successfully")
+                      console.log("Friend request sent successfully!")
                       // setIsFriend(true);
                     }
                   />
@@ -252,74 +261,81 @@ export default function ProfilePage() {
       {/* friends + friend requests */}
       <div className="mb-4">
         {/* <h3>Friends</h3> */}
-        <FriendsList userId={currentUserId} />
+        <FriendsList userId={currentUserId} onFriendsLoaded={setFriends} addedFriend={handleFriendAdded} />
         {/* <h4>Add new friends</h4>
         <UserList userId={currentUserId} /> */}
         
-        <h4>Manage Friend Requests</h4>
-        {/* Received / Sent Tabs */}
-        <ul className="nav nav-tabs mb-3">
-          {(["received", "sent"] as const).map((tab) => (
-            <li className="nav-item" key={tab}>
-              <button
-                className={`nav-link ${activeRequestTab === tab ? "active" : ""}`}
-                onClick={() => setActiveRequestTab(tab)}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            </li>
-          ))}
-        </ul>
+        {isOwnProfile && (
+          <>
+            <h4>Manage Friend Requests</h4>
 
-        {/* Status Filter */}
-        <div className="d-flex justify-content-center gap-2 mb-3">
-          {(["pending", "accepted", "denied"] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => setActiveStatus(status)}
-              className={`btn btn-sm ${
-                activeStatus === status
-                  ? status === "pending"
-                    ? "btn-warning text-white"
-                    : status === "accepted"
-                    ? "btn-success text-white"
-                    : "btn-danger text-white"
-                  : "btn-outline-secondary"
-              }`}
-            >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
-            </button>
-          ))}
-        </div>
+            {/* Received / Sent Tabs */}
+            <ul className="nav nav-tabs mb-3">
+              {(["received", "sent"] as const).map((tab) => (
+                <li className="nav-item" key={tab}>
+                  <button
+                    className={`nav-link ${activeRequestTab === tab ? "active" : ""}`}
+                    onClick={() => setActiveRequestTab(tab)}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                </li>
+              ))}
+            </ul>
 
-        {/* Status Description */}
-        <p className="text-muted small mb-3 text-center">
-          {activeRequestTab === "received"
-            ? activeStatus === "pending"
-              ? "Pending requests you need to respond to."
-              : activeStatus === "accepted"
-              ? "Requests you've accepted."
-              : "Requests you've denied."
-            : activeStatus === "pending"
-            ? "Users that have not responded yet."
-            : activeStatus === "accepted"
-            ? "Users who accepted your requests."
-            : "Users who denied your requests."}
-        </p>
+            {/* Status Filter */}
+            <div className="d-flex justify-content-center gap-2 mb-3">
+              {(["pending", "accepted", "denied"] as const).map((status) => (
+                <button
+                  key={status}
+                  onClick={() => setActiveStatus(status)}
+                  className={`btn btn-sm ${
+                    activeStatus === status
+                      ? status === "pending"
+                        ? "btn-warning text-white"
+                        : status === "accepted"
+                        ? "btn-success text-white"
+                        : "btn-danger text-white"
+                      : "btn-outline-secondary"
+                  }`}
+                >
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                </button>
+              ))}
+            </div>
 
-        {/* FriendRequestsList */}
-        <FriendRequestsList
-          currentUserId={currentUserId}
-          sent={activeRequestTab === "sent"}
-          requests={activeRequestTab === "received" ? receivedRequests : sentRequests}
-          loading={activeRequestTab === "received" ? loadingReceived : loadingSent}
-          error={activeRequestTab === "received" ? errorReceived ?? "" : errorSent ?? ""}
-          activeStatus={activeStatus}
-          onResponse={(id, status) =>
-            console.log(`Request ${id} updated to ${status}`)
-          }
-        />
-          
+            {/* Status Description */}
+            <p className="text-muted small mb-3 text-center">
+              {activeRequestTab === "received"
+                ? activeStatus === "pending"
+                  ? "Pending requests you need to respond to."
+                  : activeStatus === "accepted"
+                  ? "Requests you've accepted."
+                  : "Requests you've denied."
+                : activeStatus === "pending"
+                ? "Users that have not responded yet."
+                : activeStatus === "accepted"
+                ? "Users who accepted your requests."
+                : "Users who denied your requests."}
+            </p>
+
+            {/* FriendRequestsList */}
+            <FriendRequestsList
+              currentUserId={currentUserId}
+              sent={activeRequestTab === "sent"}
+              requests={activeRequestTab === "received" ? receivedRequests : sentRequests}
+              loading={activeRequestTab === "received" ? loadingReceived : loadingSent}
+              error={activeRequestTab === "received" ? errorReceived ?? "" : errorSent ?? ""}
+              activeStatus={activeStatus}
+              onResponse={(id, status) =>
+                console.log(`Request ${id} updated to ${status}`)
+              }
+              onFriendAdded={(username : string) => {
+                if (username) handleFriendAdded(username); // dynamically add friend
+              }}
+            />
+          </>
+        )}
       </div>
 
       {/* tabs */}
