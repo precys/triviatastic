@@ -1,4 +1,5 @@
 import { PostData } from "@/types/postModel";
+import { Link } from "react-router-dom";
 
 interface PostListProps {
   posts: PostData[];
@@ -25,7 +26,13 @@ export default function PostList({ posts, onLike, type }: PostListProps) {
                 style={{ width: "40px", height: "40px" }}
               />
               <div>
-                <strong>{post.username || "Unknown User"}</strong>
+                <Link
+                  to={`/profile/${post.username}`}
+                  className="text-primary fw-bold post-username"
+                  title={`View ${post.username}'s profile`}
+                >
+                  {post.username || "Unknown User"}
+                </Link>
                 <div className="text-muted small">
                   {new Date(post.createdAt).toLocaleString()}
                 </div>
