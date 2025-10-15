@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react"
 import Admin from "./Admin";
 import { MemoryRouter } from "react-router-dom";
 import Authentication from "../../components/Context/Authentication";
-import adminService from "@/utils/adminService";
+import adminService from "../../utils/adminService";
+import userEvent from "@testing-library/user-event";
 
 jest.mock("../../utils/adminService.tsx")
 const mockedAdminService = adminService as jest.Mocked<typeof adminService>;
@@ -23,7 +24,7 @@ describe("Test for Admin page", () => {
             correct_answer: "True",
             incorrect_answers: ["False"], 
         }]
-        mockedAdminService.getPendingQuestions.mockResolvedValueOnce({questions: questions});
+        mockedAdminService.getPendingQuestions.mockResolvedValueOnce({questions});
 
         const users = [{
             username: "jestUser",
@@ -37,7 +38,7 @@ describe("Test for Admin page", () => {
             med_count: 0,
             hard_count: 0,
         }]
-        mockedAdminService.getUsersStats.mockResolvedValueOnce({users: users})
+        mockedAdminService.getUsersStats.mockResolvedValueOnce(users)
 
         render(
             <Authentication>
@@ -49,15 +50,23 @@ describe("Test for Admin page", () => {
     })
 
     // Default behavior
-    test(`Checks if default value of tab is questions`, () => {
-        // const tabElement = screen.getBy
-
+    test(`Checks if default value of tab is questions`, async () => {
+        const tabElement = await screen.findByText(`Pending Questions: 1`)
+        expect(tabElement).toBeInTheDocument();
     })
 
-    // Checks if P
-    test("renders PENDING", () => {
-        const pendingText = screen.getByText("PENDING:");
-        expect(pendingText).toBeInTheDocument();
-  });
+    // Checks if cards rendered by defaults
+    test("renders question card by default when Admin page loads", async () => {
+        const questionCard = await screen.findByText("Sample question?");
+        expect(questionCard).toBeInTheDocument();
+    });
 
+    // If tab for Users show up, make sure to check of user cards populate
+    test("switches tab to 'users' and displays user cards", async () => {
+        const usersTabButton = screen.getByRole("button", { name: /Users/i });
+        await userEvent.click(usersTabButton);
+
+        const userCard = await screen.findByText(/jestUser/i);
+        expect(userCard).toBeInTheDocument();
+    });
 })
