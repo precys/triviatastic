@@ -74,6 +74,7 @@ export default function FriendRequestsList({ currentUserId, sent, requests, load
             <DeleteFriendRequestButton
               userId={currentUserId}
               requestId={req.requestId}
+              sent={sent}
               onDeleted={() => handleDeleteCallback(req.requestId)}
             />
           </div>
