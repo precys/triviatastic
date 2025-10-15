@@ -1,10 +1,10 @@
-import axios from "axios";
+import friendsService from "@/utils/friendsService";
 import { useState } from "react";
 
 interface DeleteFriendRequestButtonProps {
   userId: string;
   requestId: string;
-  onDeleted?: () => void; // callback to update parent state FriendRequestsList
+  onDeleted?: () => void; // callback
 }
 
 export default function DeleteFriendRequestButton({ userId, requestId, onDeleted }: DeleteFriendRequestButtonProps) {
@@ -13,15 +13,19 @@ export default function DeleteFriendRequestButton({ userId, requestId, onDeleted
   const handleDelete = async () => {
     if (!userId || !requestId) return;
 
-    setLoading(true);
     try {
-      const res = await axios.delete(`http://localhost:3000/users/${userId}/friends-requests/${requestId}`);
-      console.log("Delete response", res.data);
+      setLoading(true);
+      const deleteFriendReq = async () => {
+        const data = await friendsService.deleteFriendReq(userId, requestId);
+        console.log("deleted friend req: ", data);
+        setLoading(false);
+      }
+      // const res = await axios.delete(`http://localhost:3000/users/${userId}/friends-requests/${requestId}`);
+      // console.log("Delete response", res.data);
+      deleteFriendReq();
       if (onDeleted) onDeleted(); // notify parent to remove request from state
     } catch (err) {
       console.error("Failed to delete friend request:", err);
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -13,6 +13,8 @@ import "./ProfilePage.css";
 import FriendRequestsList from "@/components/FriendRequests/FriendRequestsList";
 import { useFriendRequests } from "@/hooks/useFriendRequests";
 import SendFriendRequestButton from "@/components/FriendRequests/SendFriendRequestButton";
+import RemoveFriendButton from "@/components/Friends/RemoveFriendButton";
+import friendsService from "@/utils/friendsService";
 
 export default function ProfilePage() {
   // Andrew comments for clarifications
@@ -40,6 +42,25 @@ export default function ProfilePage() {
   }
   // checks if the user looking at their own profile
   const isOwnProfile = currentUser.username === username;
+
+  // checking friendship status 
+  const [isFriend, setIsFriend] = useState(false);
+  const [loadingFriendStatus, setLoadingFriendStatus] = useState(true);
+  
+  useEffect(() =>{
+    if(!currentUser?.userId || !username || isOwnProfile) return;
+      const fetchFriendsStatus = async () => {
+        try{
+          setLoadingFriendStatus(true);
+          const friendData = await friendsService.getFriends(currentUser.userId ?? "");
+          setIsFriend(friendData.friends.includes(username));
+          setLoadingFriendStatus(false);
+        }catch(err){
+          console.error("Error checking friend status:", err);
+        }
+      };
+      fetchFriendsStatus();
+  }, [currentUser?.userId, username, isOwnProfile])
 
   const [activeTab, setActiveTab] = useState<"myPosts" | "friendsFeed">("myPosts");
   const [userPosts, setUserPosts] = useState<PostData[]>([]);
@@ -171,14 +192,25 @@ export default function ProfilePage() {
           </div>
           {/*  Send Friend Request only if not own profile */}
             {!isOwnProfile && username && (
-              <div className="ms-auto"> {/* margin-left auto pushes it to the right */}
-                <SendFriendRequestButton
-                  senderId={currentUser?.userId ?? ""}
-                  receiverUsername={username}
-                  onRequestSent={() =>
-                    console.log("Friend request sent successfully")
-                  }
-                />
+              <div className="ms-auto">
+                {loadingFriendStatus? (
+                  <span className="text-muted">Checking friendship...</span>
+                ) : isFriend? (
+                  <RemoveFriendButton 
+                    username={currentUser.username ?? ""}
+                    friendUsername={username}
+                    onRemoved={() => setIsFriend(false)}
+                  />
+                ) : (
+                  <SendFriendRequestButton
+                    senderId={currentUser?.userId ?? ""}
+                    receiverUsername={username}
+                    onRequestSent={() =>
+                      console.log("Friend request sent successfully")
+                      // setIsFriend(true);
+                    }
+                  />
+                )}
               </div>
             )}
         </div>

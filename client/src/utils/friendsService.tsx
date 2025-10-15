@@ -15,8 +15,27 @@ async function sendFriendReq (senderId: string, receiverUsername: string){
     return res.data;
 }
 
+async function respondToFriendReq (receiverId: string, requestId: string, status: 'accepted' | 'denied'){
+    const res = await axiosClient.put(`http://localhost:3000/users/${receiverId}/friend-requests/${requestId}`, { status });
+    return res.data;
+}
+
+async function deleteFriendReq(userId: string, requestId: string){
+    const res = await axiosClient.delete(`http://localhost:3000/users/${userId}/friends-requests/${requestId}`);
+    return res.data;
+}
+
+async function removeFriend(username: string, friendUsername: string){
+    const res = await axiosClient.delete(`http://localhost:3000/users/${username}/friends/${friendUsername}`);
+    return res.data;
+}
+
+
 export default {
     getFriends,
     getFriendRequests,
-    sendFriendReq
+    sendFriendReq,
+    respondToFriendReq,
+    deleteFriendReq,
+    removeFriend
 }
