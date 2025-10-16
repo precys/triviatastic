@@ -258,7 +258,27 @@ async function deleteFriend (req, res){
   }
 }
 
+// router function to update a user's suspension status
+async function updateUserSuspend(req, res){
+  const { userId } = req.params
+  const { suspend } = req.query
+
+  try {
+    const data = await userService.updateUserSuspend(userId, suspend)
+    if (data){
+      return res.status(201).json({message:`Updated User suspension`, user: data})
+    }
+    else {
+      return res.status(500).json({message:`Invalid userId or suspend.`})
+    }
+  }
+  catch (err){
+    logger.error(`Error userController | updateUserSuspend | ${err}`)
+    return res.status(400).json({message:`Server-side error.`})
+  }
+}
+
 module.exports = { registerUser, loginUser, getStats, updateProfile, deleteAccount, getUsersFriends, sendFriendRequest, 
   getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, deleteFriend, findUserById, getAllUsers, getUsersScoreByCategory,
-  getUsersStats };
+  getUsersStats, updateUserSuspend };
 

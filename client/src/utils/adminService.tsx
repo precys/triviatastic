@@ -20,9 +20,15 @@ async function deleteUser(userId: string){
     return res.data;
 }
 
+async function updateUserSuspend(userId: string, suspend: boolean){
+    const res = await axiosClient.patch(`/users/${userId}?suspend=${suspend}`)
+    return res.data
+}
+
 export default {
     getPendingQuestions,
     getUsersStats,
     updateQuestionStatus,
-    deleteUser
+    deleteUser,
+    updateUserSuspend
 }

@@ -5,14 +5,20 @@ async function login(username: string, password: string) {
         username,
         password,
     }
-    const res = await axiosClient.post(`/users/login`, body);
+    try {
+        const res = await axiosClient.post(`/users/login`, body);
 
-    if (res.status == 201){
-        return res.data;
+        if (res.status == 201){
+            return res.data;
+        }
+        else {
+            return null;
+        }
     }
-    else {
-        return null;
+    catch (err){
+        console.log(`${err}`)
     }
+
 }
 
 async function register(username: string, password: string) {
@@ -21,7 +27,8 @@ async function register(username: string, password: string) {
         password,
     }
     const res = await axiosClient.post(`/users/register`, body);
-    if (res.status == 201){
+    if (res.status == 200){
+        console.log(res)
         return res.data;
     }
     else {
