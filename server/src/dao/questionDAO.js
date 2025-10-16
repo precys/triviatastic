@@ -151,12 +151,13 @@ async function deleteQuestion(question){
 async function getAllQuestionsByStatus(status){
     const params = {
         TableName: TABLE_NAME,
-        FilterExpression: "#status = :status",
+        FilterExpression: "begins_with(PK, :PKPrefix) AND #status = :status",
         ExpressionAttributeNames: {
             "#status": "status",
         },
         ExpressionAttributeValues: {
             ":status": status,
+            ":PKPrefix": "CATEGORY#"
         }
     };
     const command = new ScanCommand(params);
