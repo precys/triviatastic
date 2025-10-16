@@ -304,8 +304,41 @@ async function getFriendCount(userId) {
 
 
 
+// Changed boolean suspened to suspend/unsuspend user
+async function updateUserSuspend(userId, suspend){
+  const params = {
+    TableName: TABLE_NAME,
+    Key: {
+      PK: `USER#${userId}`,
+      SK: "PROFILE",
+    },
+    UpdateExpression: "SET suspended = :suspend",
+    ExpressionAttributeValues: {
+      ":suspend": !!suspend,
+    },
+    ReturnValues: "ALL_NEW",
+  };
+  const command = new UpdateCommand(params)
+  
+  try{
+    const data = await documentClient.send(command)
+    
+    if (data){
+      return data
+    }
+    else {
+      logger.error(`Failed UPDATE | updateUserSuspend`)
+      return null
+    }
+  }
+  catch (err){
+    logger.error(`Error userDAO | updateUserSuspend | ${err}`);
+    return null;
+  }
+}
+
 module.exports = {
   createUser, deleteUserById, getUserByUsername, updateUser, findUserById, getUsersFriendsByUserId, updateFriendsList, sendFriendRequest, 
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers, getFriendCount,
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers, getFriendCount, updateUserSuspend
 };
 

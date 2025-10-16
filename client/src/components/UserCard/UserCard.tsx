@@ -1,7 +1,7 @@
 import { User } from "../../types/user";
 
 interface UserProps extends User {
-    deleteUser: (userId: string) => void ;
+  handleModal: (args: {bool: boolean, userId?: string, questionId?: string, status?: string, suspend?: boolean}) => void,
 }
 
 function UserCard({
@@ -15,23 +15,21 @@ function UserCard({
   easy_count,
   med_count,
   hard_count,
-  deleteUser,
+  suspended,
+  handleModal,
 }: UserProps) {
 
   return (
     <div className="card w-100">
         <div className="card-body">
             <h5 className="card-title">  {username} <span className="fs-6 fw-lighter"> {userId} </span></h5>
-            <p className="card-text"> 
+            <div className="card-text"> 
               <div className="d-flex gap-3">
                 <span className="fs-6">Games Played: {game_count}</span>
                 [
                 {Object.entries(category_counts).map(([category, count]) => (
                   <span key={category}> {category} Games: {count} </span>
                 ))}]
-
-
-
               </div>
               <div className="d-flex gap-4">
                 <span className="fs-6">Longest Streak: {streak}</span>
@@ -47,12 +45,12 @@ function UserCard({
                   ))}
                 ]
               </div>
-            </p>
-            <span className="w-100 d-flex gap-4">
-                
-            </span>
-            <span className="w-100 d-flex justify-content-end">
-              <button className="btn btn-danger w-25" onClick={() => deleteUser(userId)}> 
+            </div>
+            <span className="w-100 d-flex justify-content-end gap-1 mt-2">
+              <button className="btn btn-danger w-25" onClick={() => handleModal({bool: true, userId, suspend: !suspended})}> 
+                {suspended ? "Unsuspend" : "Suspend"}
+              </button>
+              <button className="btn btn-danger w-25" onClick={() => handleModal({bool: true, userId,})}> 
                 Ban
               </button>
             </span>

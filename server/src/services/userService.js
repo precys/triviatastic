@@ -32,12 +32,13 @@ async function registerUser({ username, password }) {
     easy_count: 0,
     med_count: 0,
     hard_count: 0,
+    suspended: false,
     createdAt: new Date().toISOString()
   };
   
   const createdUser = await userDAO.createUser(userItem);
   const token = generateToken(createdUser);
-  return { token, userId: createdUser.userId, username: createdUser.username };
+  return { token, userId: createdUser.userId, username: createdUser.username, suspended: user.suspended };
 }
 
 // login
@@ -54,7 +55,7 @@ async function loginUser({ username, password }) {
   if (!match) throw new Error("Invalid credentials");
 
   const token = generateToken(user);
-  return { token, userId: user.userId, username: user.username, role: user.role };
+  return { token, userId: user.userId, username: user.username, role: user.role, suspended: user.suspended };
 }
 
 // ADMINS: update user accounts
@@ -161,6 +162,7 @@ async function getUsersStats (){
     streak: user.streak,
     category_counts: user.category_counts,
     category_scores: user.category_scores,
+    suspended: user.suspended,
     hi_score: user.hi_score,
     easy_count: user.easy_count,
     med_count: user.med_count,
@@ -470,9 +472,30 @@ async function removeFriend(username, friendUsername) {
 
 }
 
+// function to update user suspend attribute
+async function updateUserSuspend(userId, suspend){
+  if (userId && suspend){
+    try {
+      const data = await userDAO.updateUserSuspend(userId, suspend)
+      if (data){
+        return data
+      }
+      else {
+        return null
+      }
+    }
+    catch (err){
+      logger.error(`Error userService | updateUserSuspend | ${err}`)
+      return null
+    }
+  }
+  else {
+    throw new Error(`userId and suspend have no value.`)
+  }
+}
 
 module.exports = {
   registerUser, loginUser, getStats, updateProfile, deleteUserById, findUserById, getUsersFriends, removeFriend, updateAccount, addFriend, sendFriendRequest,
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers, getUsersScoreByCategory, getUsersStats, getAllUsers
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers, getUsersScoreByCategory, getUsersStats, getAllUsers, updateUserSuspend
 };
 

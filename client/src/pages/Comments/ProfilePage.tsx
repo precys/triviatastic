@@ -5,7 +5,7 @@ import { PostData } from "@/types/postModel";
 import commentService from "@/utils/commentService";
 import { getUserStats } from "@/utils/userService";
 import { userFromToken } from "@/utils/userFromToken";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AuthentificationHook from "@/components/Context/AuthentificationHook";
 // import UserList from "@/components/FriendRequests/UserList";
 import FriendsList from "@/components/Friends/FriendsList";
@@ -15,6 +15,7 @@ import { useFriendRequests } from "@/hooks/useFriendRequests";
 import SendFriendRequestButton from "@/components/FriendRequests/SendFriendRequestButton";
 import RemoveFriendButton from "@/components/Friends/RemoveFriendButton";
 import friendsService from "@/utils/friendsService";
+import profileService from "@/utils/profileService";
 
 export default function ProfilePage() {
   // Andrew comments for clarifications
@@ -76,6 +77,10 @@ export default function ProfilePage() {
   const handleFriendAdded = (username: string) => {
     setFriends(prev => [...prev, username]);
   };
+
+  // boolean for modal visibilty when deleting own account
+  const [deleteBool, setDeleteBool] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   // tabs for friend requests
   const [activeRequestTab, setActiveRequestTab] = useState<'received' | 'sent'>('received');
@@ -185,6 +190,21 @@ export default function ProfilePage() {
     }
   };
 
+  const handleProfileDelete = async () => {
+    try {
+      if (isOwnProfile){
+        await profileService.deleteProfile(currentUserId)
+        navigate("/")
+      }
+    }
+    catch (err){
+      console.error(`Error deleting account. ${err}`)
+    }
+  }
+
+  const handleDeleteModal = async (bool: boolean) => {
+    setDeleteBool(bool)
+  }
 
   return (
     <div className="container mt-4">
@@ -223,6 +243,7 @@ export default function ProfilePage() {
                 )}
               </div>
             )}
+            {isOwnProfile && (<button type="button" className="btn btn-secondary" onClick={() => handleDeleteModal(true)}> Delete Profile </button>)}
         </div>
       </div>
 
@@ -369,6 +390,22 @@ export default function ProfilePage() {
       {activeTab === "friendsFeed" && (
         <PostList posts={friendsPosts} onLike={handleLikeToggle} type="friendsFeed" />
       )}
+      {deleteBool && 
+          <div className="modal d-block" tabIndex={-1}>
+              <div className="modal-dialog">
+                  <div className="modal-content">
+                      <div className="modal-header">
+                          <h5 className="modal-title"> Are you sure you want to delete your account? </h5>
+                      </div>
+                      <div className="modal-footer">
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => handleDeleteModal(false)}> No </button>
+                        <button type="button" className="btn btn-danger" onClick={() => handleProfileDelete()}> Yes </button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      }
     </div>
+
   );
 }

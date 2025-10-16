@@ -1,7 +1,7 @@
 import { QuestionInterface } from "../../types/question"
 
 interface QuestionProps extends QuestionInterface {
-  statusUpdate?: (questionId: string, status: string) => void,
+  handleModal: (args: {bool: boolean, userId?: string, questionId?: string, status?: string, suspend?: boolean}) => void,
   status?: string,
   username: string,
   questionId: string,
@@ -15,7 +15,7 @@ function QuestionCard({
     difficulty,
     correct_answer,
     incorrect_answers,
-    statusUpdate,
+    handleModal,
     status,
     username
 }: QuestionProps) {
@@ -36,13 +36,13 @@ function QuestionCard({
               <span> {type} </span>
               <span> {difficulty} </span>
             </div>
-            {statusUpdate && (
+            {handleModal && (
               <div className="w-100 d-flex gap-2">
-                <button className="btn btn-danger w-50" onClick={() => statusUpdate(questionId, "denied")}> 
-                Deny 
+                <button className="btn btn-danger w-50" onClick={() => handleModal({bool: true, questionId, status: "denied"})}> 
+                  Deny 
                 </button>
-                <button className="btn btn-success w-50" onClick={() => statusUpdate(questionId, "approved")}> 
-                Approve 
+                <button className="btn btn-success w-50" onClick={() => handleModal({bool: true, questionId, status: "approved"})}> 
+                  Approve 
                 </button>
               </div>
             )}
