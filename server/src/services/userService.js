@@ -8,6 +8,7 @@ async function registerUser({ username, password }) {
   // check if username already exists
   const existingUser = await userDAO.getUserByUsername(username);
   if (existingUser) {
+    console.log("HERE IN CONSOLE")
     return res.status(409).json({message:`Username has already been taken.`})
     // throw new Error("Username already taken");
   }
@@ -38,6 +39,7 @@ async function registerUser({ username, password }) {
   
   const createdUser = await userDAO.createUser(userItem);
   const token = generateToken(createdUser);
+  
   return { token, userId: createdUser.userId, username: createdUser.username, suspended: user.suspended };
 }
 

@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import QuestionCard from "../../components/QuestionCard/QuestionCard";
 import UserCard from "../../components/UserCard/UserCard"
 import AuthentificationHook from "../../components/Context/AuthentificationHook";
-import { useNavigate } from "react-router-dom";
 import { QuestionInterface } from "../../types/question";
 import { User } from  "../../types/user";
 
@@ -19,14 +18,13 @@ function Admin() {
   const [users, setUsers] = useState<User[]>([]);
   const [tab, setTab] = useState<string>("questions");
   // Token is unpacked from AuthentificationHook
-  const { token, logout } = AuthentificationHook();
+  const { token } = AuthentificationHook();
   // navigate object to handle navigation after request, in this case if token is invalid go back to login
   const [modalBool, setModalBool] = useState<boolean>(false);
   const [suspend, setSuspend] = useState<boolean | null>();
   const [status, setStatus] = useState<string | null>("")
   const [userId, setUserId] = useState<string | null>("")
   const [questionId, setQuestionId] = useState<string | null>("")
-  const navigate = useNavigate();
 
   // useEffect to render on empty array list, page loading, to fill out questions
   useEffect(() => {
@@ -41,8 +39,7 @@ function Admin() {
       }
       
       getPendingQuestions();
-  }, [token, navigate, logout]);
-
+  }, [token]);
   // useEffefct to render on page load, filling up users with their stats
     useEffect(() => {
       const getUsersStats = async () => {
@@ -56,9 +53,8 @@ function Admin() {
       }
 
       getUsersStats();
-  }, [token, navigate, logout]);
+  }, [token]);
 
-  console.log(users)
   // statusUpdate function that sends request to statusUpdate endpoint for approval or denial
   const statusUpdate = async (questionId: string, newStatus: string) => {
     try {

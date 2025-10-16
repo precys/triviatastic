@@ -26,14 +26,22 @@ async function register(username: string, password: string) {
         username,
         password,
     }
-    const res = await axiosClient.post(`/users/register`, body);
-    if (res.status == 200){
-        console.log(res)
-        return res.data;
+    try {
+        const res = await axiosClient.post(`/users/register`, body);
+        if (res.status == 200){
+            console.log(res)
+            return res.data;
+        }
+        else {
+            return null;
+        }
     }
-    else {
-        return null;
+    catch (err){
+        console.error(err)
+        return null
     }
+
+
 }
 
 async function getUsers(){
