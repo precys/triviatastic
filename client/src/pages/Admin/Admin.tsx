@@ -108,9 +108,9 @@ function Admin() {
       const res = await adminService.updateUserSuspend(userId, suspend)
       setUsers(prev =>
         prev.map(user =>
-          user.userId === userId ? { ...user, suspended: res.suspend } : user
+          user.userId === userId ? { ...user, suspended: res.user.Attributes.suspended } : user
       )
-    );
+      );
     }
     catch (err){
       console.error(`Error updating user suspension. ${err}`)

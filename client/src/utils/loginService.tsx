@@ -17,6 +17,7 @@ async function login(username: string, password: string) {
     }
     catch (err){
         console.log(`${err}`)
+        return null;
     }
 
 }
@@ -37,7 +38,7 @@ async function register(username: string, password: string) {
         }
     }
     catch (err){
-        console.error(err)
+        console.error(`${err}`)
         return null
     }
 

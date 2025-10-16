@@ -30,7 +30,9 @@ async function loginUser(req, res) {
 // get user stats
 async function getStats(req, res) {
   try {
-    const stats = await userService.getStats(req.user.userId);
+    const { userId } = req.params
+    const stats = await userService.getStats(userId);
+    console.log(stats)
     res.json(stats);
   } catch (err) {
     logger.error(`Get stats error: ${err.message}`, { service: 'userController' });

@@ -139,7 +139,10 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!currentUserId) return;
     getUserStats(currentUserId)
-      .then((s) => setStats(s))
+      .then((s) => {
+        setStats(s)
+        console.log(stats)
+      })
       .catch((err) => console.error("Error fetching stats:", err));
   }, [currentUserId]);
 
