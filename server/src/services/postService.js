@@ -66,10 +66,14 @@ async function getGlobalFeed() {
   return await postDAO.getGlobalFeedPosts();
 }
 
+// get friends feed posts
+async function getFriendsFeedPosts(userId) {
+  return await postDAO.getFriendsFeedPosts(userId);
+}
 
 
 
 module.exports = {
   createPost, getUserPosts, getPostById, updatePost, deletePost,
-  toggleLike, addComment, getComments, getGlobalFeed,
+  toggleLike, addComment, getComments, getGlobalFeed, getFriendsFeedPosts,
 };

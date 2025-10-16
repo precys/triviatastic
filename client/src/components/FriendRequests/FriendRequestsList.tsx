@@ -11,8 +11,8 @@ interface FriendRequestsListProps {
     loading: boolean;
     error?: string;
     activeStatus: "pending" | "accepted" | "denied";
-    onResponse?: (requestId: string, status: "accepted" | "denied") => void; //callback to check if a request was responded to
-    onFriendAdded?: () => void; //callback to refresh FriendsList
+    onResponse?: (requestId: string, status: "accepted" | "denied", username?: string) => void; //callback to check if a request was responded to
+    onFriendAdded?: (username: string) => void; //callback to refresh FriendsList
 }
 
 export default function FriendRequestsList({ currentUserId, sent, requests, loading, error="", activeStatus, onResponse, onFriendAdded, }: FriendRequestsListProps) {
@@ -23,12 +23,12 @@ export default function FriendRequestsList({ currentUserId, sent, requests, load
     setLocalRequests(requests);
   }, [requests]);
 
-  const handleResponse = (requestId: string, status: "accepted" | "denied") => {
+  const handleResponse = (requestId: string, status: "accepted" | "denied", username?: string) => {
       setLocalRequests((prev) =>
           prev.map((r) => (r.requestId === requestId ? { ...r, status } : r))
       );
-      if (onResponse) onResponse(requestId, status);
-      if (status === "accepted" && onFriendAdded) onFriendAdded(); // refresh friends list
+      if (onResponse) onResponse(requestId, status, username);
+      if (status === "accepted" && onFriendAdded && username) onFriendAdded(username); // refresh friends list
   };
 
     // Callback when a friend request is successfully deleted
@@ -64,9 +64,10 @@ export default function FriendRequestsList({ currentUserId, sent, requests, load
             {!sent && req.status === "pending" && (
               <RespondFriendRequestButton
                 senderId={req.userId || ""}
+                senderUsername={req.senderUsername || ""}
                 receiverId={currentUserId}
                 requestId={req.requestId}
-                onResponse={(status) => handleResponse(req.requestId, status)}
+                onResponse={(status, username) => handleResponse(req.requestId, status, username)}
               />
             )}
 

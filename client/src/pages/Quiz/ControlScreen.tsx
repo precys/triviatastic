@@ -1,11 +1,8 @@
-import axios from 'axios';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import AuthentificationHook from "../../components/Context/AuthentificationHook";
 import gameService from '@/utils/gameService';
 
 
 function ControlScreen({changeScreen, questionState, game}: ControlScreenProps) {
-    const {token} = AuthentificationHook();
     const {game_id} = useParams();
     const {state} = useLocation();
     const navigate = useNavigate();

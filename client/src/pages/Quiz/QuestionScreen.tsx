@@ -1,6 +1,4 @@
-import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import AuthentificationHook from "../../components/Context/AuthentificationHook";
 import MultipleChoice from './MultipleChoice';
 import gameService from '@/utils/gameService';
 
@@ -29,7 +27,6 @@ function QuestionScreen({changeScreen, setGame, question}: QuestionScreenProps) 
     }
 
     const navigate = useNavigate();
-    const {token} = AuthentificationHook();
     const {game_id} = useParams();
 
     const correctSound = new Audio("/correct.mp3");
@@ -42,14 +39,17 @@ function QuestionScreen({changeScreen, setGame, question}: QuestionScreenProps) 
     <>
         <div className = "bg-light card m-3">
             <h1 className="text-center m-3">Question: </h1>
-            <p className="text-center m-3">{question.question}</p>
+            <p className="text-center m-3">{format(question.question)}</p>
         </div>
         <MultipleChoice answers={answers} answerQuestion={answerQuestion}/>
     </>
     );
 }
 
-function randomShuffle(array: string[]) {    
+function format(input: String) : String {
+    return input.replaceAll("&#039;", "\'").replaceAll("&rsquo;", "\'").replaceAll('&quot;', '\"').replaceAll("&amp;", "&");
+}
+function randomShuffle(array: string[]) : void {    
     if(Math.random() > 0.5) {
         array.reverse();
     }

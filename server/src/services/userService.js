@@ -135,6 +135,9 @@ async function getStats(userId) {
   const user = await userDAO.findUserById(userId);
   if (!user) throw new Error("User not found");
 
+  // get friend count from DAO
+  const friendCount = await userDAO.getFriendCount(userId);
+
   return {
     hi_score: user.hi_score,
     game_count: user.game_count,
@@ -143,7 +146,8 @@ async function getStats(userId) {
     med_count: user.med_count,
     hard_count: user.hard_count,
     category_counts: user.category_counts,
-    category_scores: user.category_scores
+    category_scores: user.category_scores,
+    friend_count: friendCount, //friend count
   };
 }
 
@@ -246,8 +250,20 @@ async function sendFriendRequest(senderId, friendUsername){
         throw new Error(`${receiver.username} is already your friend`);
     }
 
-    const requestId = crypto.randomUUID();
+    const existingRequests = await userDAO.getFriendRequestsByStatus(sender.userId, "pending", true);
+    const existingRequest = existingRequests.find(req => req.userFriendId === receiver.userId);
+    
+    if (existingRequest) {
+      // if a pending or accepted request already exists, do not send again
+      if (existingRequest.status === "pending" || existingRequest.status === "accepted") {
+        return {
+          message: "Friend request already sent or accepted.",
+          status: existingRequest.status,
+        };
+      }
+    }
 
+    const requestId = crypto.randomUUID();
     const requestItem = {
         PK: `FRIENDREQ#${receiver.userId}`, //receiver of the friend request
         SK: `REQUEST#${requestId}`, // identifier for each request
@@ -266,9 +282,9 @@ async function sendFriendRequest(senderId, friendUsername){
     return {
         message: `Friend request to ${receiver.username} sent!`,
         friendId: receiver.userId,
-        friendUsername: receiver.username
+        friendUsername: receiver.username,
+        status: "pending"
     }
-
 }
 
 //add a friend 

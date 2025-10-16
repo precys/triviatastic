@@ -46,7 +46,7 @@ async function finishGame(userId, gameId, answeredQuestions = []) {
   const game = await gameDAO.getGame(gameId, userId);
   if (!game) throw new Error("game not found");
 
-  let easyCorrect = 0, medCorrect = 0, hardCorrect = 0, gameScore = 0;
+  let easyCorrect = 0, medCorrect = 0, hardCorrect = 0, gameScore = 0, streak = 0, maxStreak = 0;
 
   answeredQuestions.forEach(q => {
     if (q.userAnsweredCorrectly) {
@@ -56,19 +56,22 @@ async function finishGame(userId, gameId, answeredQuestions = []) {
       if (q.difficulty === "easy") easyCorrect++;
       if (q.difficulty === "medium") medCorrect++;
       if (q.difficulty === "hard") hardCorrect++;
+
+      streak++;
+      if(streak > maxStreak) maxStreak = streak;
+    }
+    else {
+      streak = 0;
     }
   });
   // update user stats
-  console.log(easyCorrect);
-  console.log(medCorrect);
-  console.log(hardCorrect);
-  console.log(gameScore);
   user.game_count += 1;
   user.easy_count += easyCorrect;
   user.med_count += medCorrect;
   user.hard_count += hardCorrect;
 
   if (gameScore > user.hi_score) user.hi_score = gameScore;
+  if (maxStreak > user.streak) user.streak = maxStreak;
 
   const category = game.category || "any";
   if (!user.category_counts[category]) user.category_counts[category] = 0;

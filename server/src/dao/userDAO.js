@@ -281,6 +281,29 @@ async function deleteFriendRequest (userFriendId, requestId){
 
 }
 
+// count how many friends a user has
+async function getFriendCount(userId) {
+  const result = await documentClient.send(
+    new GetCommand({
+      TableName: TABLE_NAME,
+      Key: {
+        PK: `USER#${userId}`,
+        SK: `PROFILE`,
+      },
+    })
+  );
+
+  const user = result.Item;
+  if (!user) return 0;
+
+  // friends might be undefined or empty array
+  return Array.isArray(user.friends) ? user.friends.length : 0;
+}
+
+
+
+
+
 // Changed boolean suspened to suspend/unsuspend user
 async function updateUserSuspend(userId, suspend){
   const params = {
@@ -316,6 +339,6 @@ async function updateUserSuspend(userId, suspend){
 
 module.exports = {
   createUser, deleteUserById, getUserByUsername, updateUser, findUserById, getUsersFriendsByUserId, updateFriendsList, sendFriendRequest, 
-  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers, updateUserSuspend
+  getFriendRequestsByStatus, respondToFriendRequest, deleteFriendRequest, getAllUsers, getFriendCount, updateUserSuspend
 };
 

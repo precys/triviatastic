@@ -1,4 +1,5 @@
 const { logger } = require('../utils/logger');
+const userDAO = require('./userDAO');
 
 // aws sdk v3 imports
 const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
@@ -42,6 +43,7 @@ async function createPost(userId, data) {
     createdAt: new Date().toISOString(),
     GlobalFeedPK: "POST", // for global feed query
     GlobalFeedSK: new Date().toISOString(), // for global feed query
+    authorId: userId, // for authorId-index
   };
 
   await documentClient.send(
@@ -295,6 +297,57 @@ async function getGlobalFeedPosts() {
 }
 
 
+// get posts from all friends
+async function getFriendsFeedPosts(userId, currentUserId) {
+  const friends = await userDAO.getUsersFriendsByUserId(userId);
+  if (!Array.isArray(friends) || friends.length === 0) return [];
+
+  let allPosts = [];
+
+  for (const friendUsername of friends) {
+    const friend = await userDAO.getUserByUsername(friendUsername);
+    if (!friend || !friend.userId) continue;
+
+    const result = await documentClient.send(
+      new QueryCommand({
+        TableName: TABLE_NAME,
+        IndexName: "authorId-index",
+        KeyConditionExpression: "authorId = :authorId",
+        ExpressionAttributeValues: { ":authorId": friend.userId },
+        ScanIndexForward: false, // newest first
+      })
+    );
+
+    const posts = result.Items || [];
+
+    // fetch likes for each post
+    for (const post of posts) {
+      const likeQuery = await documentClient.send(
+        new QueryCommand({
+          TableName: TABLE_NAME,
+          KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
+          ExpressionAttributeValues: {
+            ":pk": `POST#${post.postId}`,
+            ":sk": "LIKE#",
+          },
+          Select: "ALL_ATTRIBUTES",
+        })
+      );
+
+      post.likes = likeQuery.Count || (likeQuery.Items?.length || 0);
+      post.liked = !!(currentUserId && likeQuery.Items?.some(i => i.SK === `LIKE#${currentUserId}`));
+    }
+
+    allPosts.push(...posts);
+  }
+
+  allPosts.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  return allPosts;
+}
+
+
+
+
 
 
 
@@ -307,5 +360,5 @@ async function getGlobalFeedPosts() {
 module.exports = {
   createPost, getUserPosts, getPostById, updatePost, deletePost,
   toggleLikeItem, getLikesCount, getLikesCount,
-  addComment, getComments, getGlobalFeedPosts,
+  addComment, getComments, getGlobalFeedPosts, getFriendsFeedPosts,
 };
