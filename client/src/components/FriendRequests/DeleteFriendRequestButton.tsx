@@ -5,7 +5,7 @@ interface DeleteFriendRequestButtonProps {
   userId: string;
   requestId: string;
   sent: boolean;
-  onDeleted?: () => void; // callback
+  onDeleted?: () => void; // callback to check for deletion
 }
 
 export default function DeleteFriendRequestButton({ userId, requestId, sent, onDeleted }: DeleteFriendRequestButtonProps) {
@@ -18,16 +18,11 @@ export default function DeleteFriendRequestButton({ userId, requestId, sent, onD
 
     try {
       setLoading(true);
-      const deleteFriendReq = async () => {
-        const data = await friendsService.deleteFriendReq(userId, requestId, sent);
-        console.log("deleted friend req: ", data);
-        setDeleted(true);
-        setLoading(false);
-      }
-      // const res = await axios.delete(`http://localhost:3000/users/${userId}/friends-requests/${requestId}`);
-      // console.log("Delete response", res.data);
-      deleteFriendReq();
-      if (onDeleted) onDeleted(); // notify parent to remove friend request from state
+      const data = await friendsService.deleteFriendReq(userId, requestId, sent);
+      console.log("deleted friend req: ", data);
+      setLoading(false);
+
+      if (onDeleted) onDeleted(); 
     } catch (err) {
         console.error("Failed to delete friend request:", err);
         setError("Failed to remove friend request.");
@@ -37,11 +32,11 @@ export default function DeleteFriendRequestButton({ userId, requestId, sent, onD
 
   return (
     <button
-      className="text-red-500 hover:underline disabled:text-gray-400"
+      className="btn btn-outline-danger btn-sm px-3 py-2 rounded-pill shadow-sm"
       onClick={handleDelete}
       disabled={loading}
     >
-      {loading ? "Deleting..." : "Delete"}
+      {loading ? "Deleting..." : "Delete Friend Request"}
     </button>
   );
 }

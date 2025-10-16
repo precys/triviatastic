@@ -16,13 +16,6 @@ export default function RemoveFriendButton({ username, friendUsername, onRemoved
     setLoading(true);
     setError(null);
     try {
-      // await axios.delete(
-      //   `http://localhost:3000/users/${username}/friends/${friendUsername}`, {
-      //     headers: {
-      //       Authorization: `Bearer ${token}` 
-      //     },
-      //   }
-      // );
       const removeFriend = async () => {
         const data = await friendsService.removeFriend(username, friendUsername);
         console.log(`${friendUsername} removed: `, data);
@@ -51,7 +44,7 @@ export default function RemoveFriendButton({ username, friendUsername, onRemoved
     <button
       onClick={handleRemove}
       disabled={loading}
-      className="bg-red-500 text-black px-3 py-1 rounded hover:bg-red-600 disabled:opacity-50"
+      className="btn btn-danger btn-sm rounded-pill px-3 py-2 shadow-sm"
     >
       {loading ? "Removing..." : "Remove Friend"}
     </button>

@@ -72,10 +72,12 @@ export default function ProfilePage() {
 
   // update friends list
   const [friends, setFriends] = useState<string[]>([]);
+  const [newFriend, setNewFriend] = useState<string | null >(null);
 
-  // update when a friend request is accepted
+  // update friendslist dynamically when a friend request is accepted
   const handleFriendAdded = (username: string) => {
     setFriends(prev => [...prev, username]);
+    setNewFriend(username);
   };
 
   // boolean for modal visibilty when deleting own account
@@ -219,7 +221,7 @@ export default function ProfilePage() {
               <span className="badge bg-info text-dark">Friends: {stats?.friend_count ?? 0}</span>
             </div>
           </div>
-          {/*  Send Friend Request only if not own profile */}
+          {/*  Send Friend Request Button appears only if user is not looking at their own profile */}
             {!isOwnProfile && username && (
               <div className="ms-auto">
                 {loadingFriendStatus? (
@@ -237,7 +239,6 @@ export default function ProfilePage() {
                     receiverUsername={username}
                     onRequestSent={() =>
                       console.log("Friend request sent successfully!")
-                      // setIsFriend(true);
                     }
                   />
                 )}
@@ -281,16 +282,13 @@ export default function ProfilePage() {
 
       {/* friends + friend requests */}
       <div className="mb-4">
-        {/* <h3>Friends</h3> */}
-        <FriendsList userId={currentUserId} onFriendsLoaded={setFriends} addedFriend={handleFriendAdded} />
-        {/* <h4>Add new friends</h4>
-        <UserList userId={currentUserId} /> */}
+        <FriendsList userId={currentUserId} onFriendsLoaded={setFriends} addedFriend={newFriend} />
         
         {isOwnProfile && (
           <>
             <h4>Manage Friend Requests</h4>
 
-            {/* Received / Sent Tabs */}
+            {/* Received / Sent Tabs for Friend Requests */}
             <ul className="nav nav-tabs mb-3">
               {(["received", "sent"] as const).map((tab) => (
                 <li className="nav-item" key={tab}>
@@ -329,7 +327,7 @@ export default function ProfilePage() {
             <p className="text-muted small mb-3 text-center">
               {activeRequestTab === "received"
                 ? activeStatus === "pending"
-                  ? "Pending requests you need to respond to."
+                  ? "Pending requests to respond to."
                   : activeStatus === "accepted"
                   ? "Requests you've accepted."
                   : "Requests you've denied."
@@ -352,7 +350,7 @@ export default function ProfilePage() {
                 console.log(`Request ${id} updated to ${status}`)
               }
               onFriendAdded={(username : string) => {
-                if (username) handleFriendAdded(username); // dynamically add friend
+                if (username) handleFriendAdded(username);
               }}
             />
           </>

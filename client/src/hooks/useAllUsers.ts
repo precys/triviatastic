@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { User } from "@/hooks/useUser"; // reuse your User interface
+import { User } from "@/hooks/useUser"; 
 
 export function useAllUsers() {
   const [users, setUsers] = useState<User[]>([]);
