@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import axiosClient from '@/utils/axiosClient';
 import friendsService from '@/utils/friendsService';
 
@@ -7,10 +7,11 @@ interface RespondFriendRequestButtonProps {
   senderUsername: string;
   receiverId: string;
   requestId: string;
-  onResponse?: (status: 'accepted' | 'denied', username?: string) => void; //callback to parent FriendRequestsList if request was responded to
+  onResponse?: (status: 'accepted' | 'denied', username?: string) => void; // callback if request was responded to
+  onFriendAdded?: (username: string) => void; // callback if a new friend was added from a request
 }
 
-export default function RespondFriendRequestButton({ senderId, senderUsername, receiverId, requestId, onResponse } : RespondFriendRequestButtonProps) {
+export default function RespondFriendRequestButton({ senderId, senderUsername, receiverId, requestId, onResponse, onFriendAdded } : RespondFriendRequestButtonProps) {
     const [loading, setLoading] = useState(false);
     const [responseStatus, setResponseStatus] = useState<"accepted" | "denied" | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -22,21 +23,20 @@ export default function RespondFriendRequestButton({ senderId, senderUsername, r
         try{
             const res = await axiosClient.put(`/users/${receiverId}/friend-requests/${requestId}`, { status });
             console.log("Response from backend:", res.data);
-            // const res = await axios.put(`http://localhost:3000/users/${receiverId}/friend-requests/${requestId}`, { status });
-            // console.log("Response from backend:", res.data);
             const respondToReq = async () => {
                 const data = await friendsService.respondToFriendReq(receiverId, requestId, status);
                 console.log("friend req response data: ", data);
 
-                // Update Button States
+                if (status === 'accepted' && senderUsername) {
+                    if (onFriendAdded) onFriendAdded(senderUsername);
+                }
+
                 setResponseStatus(status);
                 setLoading(false);
             }
             respondToReq();
 
-            // send state to parent
-            if(onResponse) onResponse(status, status === "accepted" ? senderUsername : undefined);
-            // if(onResponse) onResponse(status);
+            if(onResponse) onResponse(status, senderUsername);
 
         }catch(error){
             console.error("Error responding to friend request: ", error)
@@ -61,23 +61,24 @@ export default function RespondFriendRequestButton({ senderId, senderUsername, r
     }
   
     return (
-        <div className="space-x-2">
+        <div className="d-flex gap-3 align-items-center">
             <button
-                className="bg-green-500 text-black px-3 py-1 rounded hover:bg-green-600 disabled:opacity-50"
+                className="btn btn-success btn-sm px-3 py-2 rounded-pill shadow-sm border-0"
                 disabled={loading}
                 onClick={() => handleResponse("accepted")}
             >
                 {loading ? "..." : "Accept"}
             </button>
+
             <button
-                className="bg-red-500 text-black px-3 py-1 rounded hover:bg-red-600 disabled:opacity-50"
+                className="btn btn-danger btn-sm px-3 py-2 rounded-pill shadow-sm border-0"
                 disabled={loading}
                 onClick={() => handleResponse("denied")}
             >
                 {loading ? "..." : "Deny"}
             </button>
 
-            {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+            {error && <p className="text-danger small mt-1 mb-0">{error}</p>}
         </div>
   );
 }

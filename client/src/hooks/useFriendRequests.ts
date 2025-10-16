@@ -1,4 +1,3 @@
-// hooks/useFriendRequests.ts
 import { useState, useEffect } from "react";
 import friendsService from "@/utils/friendsService";
 
@@ -30,27 +29,6 @@ export function useFriendRequests(userId: string, status: "pending" | "accepted"
       setLoading(false);
     }
 
-    // axios.get(`http://localhost:3000/users/${userId}/friend-requests`, {
-    //     params: { status, sent },
-    //   })
-    //   .then((res) => {
-    //     const data = Array.isArray(res.data) ? res.data : [];
-    //     const mappedRequests: FriendRequest[] = data.map((r: any) => ({
-    //       requestId: r.requestId,
-    //       userId: r.userId,
-    //       userFriendId: r.userFriendId,
-    //       senderUsername: r.senderUsername,
-    //       receiverUsername: r.receiverUsername,
-    //       status: r.status,
-    //     }));
-    //     setRequests(mappedRequests);
-    //   })
-    //   .catch((err) => {
-    //     console.error("Error loading friend requests:", err?.response?.data || err.message);
-    //     setError("Failed to load friend requests");
-    //     setRequests([]);
-    //   })
-    //   .finally(() => setLoading(false));
     getFriendRequests();
   }, [userId, status, sent]);
 

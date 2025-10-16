@@ -1,5 +1,6 @@
+// old implementation
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 
 interface friendReqButtonProps{
@@ -11,8 +12,6 @@ function FriendRequestButton( { senderId, receiverId }: friendReqButtonProps ) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [message, setMessage] = useState<string>("");
-
-    
 
     const sendRequest = () => {
         setLoading(true);
@@ -29,9 +28,6 @@ function FriendRequestButton( { senderId, receiverId }: friendReqButtonProps ) {
             });
     }
        
-    // if (loading) return <p>Loading friends...</p>;
-    // if (error) return <p>{error}</p>;
-
   return (
     <div>
         < button onClick={sendRequest} disabled={loading}> 

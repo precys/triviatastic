@@ -1,17 +1,10 @@
-import axios from 'axios';
 import { useEffect, useState } from 'react'
 import friendsService from '@/utils/friendsService';
-
-// interface FriendsListResponse{
-//     message: string;
-//     "Friend Count": number;
-//     friends: string[];
-// }
 
 interface FriendsListProps{
     userId: string;
     onFriendsLoaded?: (friends: string[]) => void;
-    addedFriend?: (friend: string) => void;
+    addedFriend?: string | null;
 }
 
 function FriendsList({ userId, onFriendsLoaded, addedFriend  } : FriendsListProps) {
@@ -42,15 +35,13 @@ function FriendsList({ userId, onFriendsLoaded, addedFriend  } : FriendsListProp
         }
     },[userId, onFriendsLoaded])
 
-    // new friends added
-    const addFriendToList = (friend: string) => {
-        if (!friendsList.includes(friend)) {
-            const updated = [...friendsList, friend];
+    useEffect(() => {
+        if (addedFriend && !friendsList.includes(addedFriend)){
+            const updated = [...friendsList, addedFriend];
             setFriendsList(updated);
             if (onFriendsLoaded) onFriendsLoaded(updated);
-            if (addedFriend) addedFriend(friend); // call parent callback
         }
-    };
+    }, [addedFriend]);
 
     console.log(friendsList);
     if (loading) return <p>Loading friends...</p>;
