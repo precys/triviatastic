@@ -26,5 +26,3 @@ export default function UsersList({ currentUserId, users } : UserListProps) {
     </div>
   )
 }
-
-//export default UsersList

@@ -193,20 +193,7 @@ async function getUsersScoreByCategory(category){
   return usersScoresByCategory.sort((a, b) => b.category_score - a.category_score);
 }
 
-
-
 // get all User status users
-async function getAllUsers (){
-  const users = await userDAO.getAllUsers();
-
-  return users.map(user => ({
-    userId: user.userId,
-    username:user.username
-  }));
-
-}
-
-
 async function getAllUsers (){
   const users = await userDAO.getAllUsers();
 
@@ -420,7 +407,10 @@ async function deleteFriendRequest (userId, requestId, sent = false) {
 
     requests = [...pending, ...accepted, ...denied];
   } else {
-    requests = await userDAO.getFriendRequestsByStatus(userId, "pending", false);
+    const pending = await userDAO.getFriendRequestsByStatus(userId, "pending", false);
+    const accepted = await userDAO.getFriendRequestsByStatus(userId, "accepted", false);
+    const denied = await userDAO.getFriendRequestsByStatus(userId, "denied", false);
+    requests = [...pending, ...accepted, ...denied];
   }
 
   const request = requests.find(r => r.requestId === requestId);
@@ -429,7 +419,7 @@ async function deleteFriendRequest (userId, requestId, sent = false) {
     throw new Error(sent ? "Sent friend request not found" : "Received friend request not found");
   }
 
-  const userFriendId = sent ? request.userFriendId : request.userId;
+  const userFriendId = request.userFriendId;
   if (!userFriendId) throw new Error("Could not find userFriendId for deletion");
   
   const deleted = await userDAO.deleteFriendRequest(userFriendId, requestId);

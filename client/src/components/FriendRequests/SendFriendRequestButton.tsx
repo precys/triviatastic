@@ -89,10 +89,10 @@ export default function SendFriendRequestButton( { senderId, receiverUsername, o
   return (
     <button
       disabled={loadingStatus || reqStatus === "pending" || reqStatus === "sent"}
-      className={`px-3 py-1 rounded ${
+      className={`btn btn-primary btn-sm rounded-pill px-3 py-2 shadow-sm ${
         loadingStatus || reqStatus === "pending" || reqStatus === "sent"
-          ? "bg-gray-400 text-black cursor-not-allowed"
-          : "bg-blue-600 text-black hover:bg-blue-700"
+          ? "disabled btn-secondary"
+          : ""
       }`}
       onClick={sendRequest}
     >
@@ -101,7 +101,7 @@ export default function SendFriendRequestButton( { senderId, receiverUsername, o
         : reqStatus === "pending"
         ? "Request Pending"
         : reqStatus === "sent"
-        ? "Request Sent!"
+        ? "Sent"
         : reqStatus === "denied"
         ? "Send Again"
         : "Send Friend Request"}

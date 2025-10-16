@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { useFriendRequests, FriendRequest } from "@/hooks/useFriendRequests";
-import SendFriendRequestButton from "./SendFriendRequestButton";
+import { FriendRequest } from "@/hooks/useFriendRequests";
 import RespondFriendRequestButton from "./RespondFriendRequestButton";
 import DeleteFriendRequestButton from "./DeleteFriendRequestButton";
 
 interface FriendRequestsListProps {
     currentUserId: string;
-    sent: boolean; // prop to toggle received/sent requests
+    sent: boolean; //for toggling between received/sent requests
     requests: FriendRequest[];
     loading: boolean;
     error?: string;
@@ -28,7 +27,7 @@ export default function FriendRequestsList({ currentUserId, sent, requests, load
           prev.map((r) => (r.requestId === requestId ? { ...r, status } : r))
       );
       if (onResponse) onResponse(requestId, status, username);
-      if (status === "accepted" && onFriendAdded && username) onFriendAdded(username); // refresh friends list
+      if (status === "accepted" && onFriendAdded && username) onFriendAdded(username); // refreshes friends list
   };
 
     // Callback when a friend request is successfully deleted
@@ -36,7 +35,6 @@ export default function FriendRequestsList({ currentUserId, sent, requests, load
     setLocalRequests((prev) => prev.filter((r) => r.requestId !== requestId));
   };
     
-    // Filter requests by status
   const filteredRequests = localRequests.filter(r => r.status === activeStatus);
   console.log("Filtered Requests:", filteredRequests);
 
@@ -59,19 +57,20 @@ export default function FriendRequestsList({ currentUserId, sent, requests, load
             </span>
           </div>
 
-          <div className="flex gap-2">
-            {/* Respond buttons only for received pending requests */}
-            {!sent && req.status === "pending" && (
-              <RespondFriendRequestButton
-                senderId={req.userId || ""}
-                senderUsername={req.senderUsername || ""}
-                receiverId={currentUserId}
-                requestId={req.requestId}
-                onResponse={(status, username) => handleResponse(req.requestId, status, username)}
-              />
-            )}
+          <div className="d-flex align-items-center gap-3">
+            <div className="d-flex gap-2">
+              {!sent && req.status === "pending" && (
+                <RespondFriendRequestButton
+                  senderId={req.userId || ""}
+                  senderUsername={req.senderUsername || ""}
+                  receiverId={currentUserId}
+                  requestId={req.requestId}
+                  onResponse={(status, username) => handleResponse(req.requestId, status, username)}
+                  onFriendAdded={onFriendAdded}
+                />
+              )}
+            </div>
 
-            {/* Delete button */}
             <DeleteFriendRequestButton
               userId={currentUserId}
               requestId={req.requestId}

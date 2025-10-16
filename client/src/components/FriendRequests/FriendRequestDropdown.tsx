@@ -1,11 +1,6 @@
-import React from 'react'
-import { useState, useEffect } from "react";
-import axios from "axios";
 import { useUser, User } from "@/hooks/useUser";
-import FriendRequestButton from "@/components/FriendRequests/SendFriendRequestButton";
-import UsersList from '../Friends/UsersList';
+import SendFriendRequestButton from '@/components/FriendRequests/SendFriendRequestButton';
 import RemoveFriendButton from '../Friends/RemoveFriendButton';
-// import { User } from "/@hooks/useAllUsers";
 
 interface FriendRequestProps {
   currentUser: User;
@@ -36,6 +31,7 @@ export default function FriendRequestDropdown({ currentUser, users, selectedUser
         Select a User
       </label>
 
+      {/* Dropdown to select a user */}
       <select
         id="friendSelect"
         className="border p-2 rounded w-full"
@@ -63,11 +59,12 @@ export default function FriendRequestDropdown({ currentUser, users, selectedUser
               }}
             />
           ) : (
-            <FriendRequestButton
+            <SendFriendRequestButton
               senderId={currentUser.userId}
-              receiverId={selectedUser.userId}
               receiverUsername={selectedUser.username}
-              onSuccess={() => console.log(`Request sent to ${selectedUser.username}`)}
+              onRequestSent={() =>
+                console.log(`Friend request sent to ${selectedUser.username}`)
+              }
             />
           )}
         </div>
