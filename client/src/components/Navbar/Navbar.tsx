@@ -41,11 +41,14 @@ function Navbar() {
                   Profile
                 </Link>
               </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/submit-question">
-                  Submit Question
-                </Link>
-              </li>
+
+              {userRole == "USER" &&
+                <li className="nav-item">
+                  <Link className="nav-link" to="/submit-question">
+                    Submit Question
+                  </Link>
+                </li>
+              }
 
               {userRole == "ADMIN" &&               
                 <li className="nav-item">
@@ -55,6 +58,10 @@ function Navbar() {
                 </li>
               }
 
+
+
+            </ul>
+            <ul className="navbar-nav ms-auto">
               <form className="d-flex" role="search">
                 <select className="form-select" onChange={(e) => {setSelectedUser(e.target.value); handleUserLookup(e.target.value);}} value={selectedUser}>
                   <option value="">Search Users</option>
@@ -64,8 +71,6 @@ function Navbar() {
                 </select>
               </form>
 
-            </ul>
-            <ul className="navbar-nav ms-auto">
               <li className="nav-item ms-auto">
                 <Link className="nav-link" to="/" onClick={() => handleLogout()}>
                   Logout
