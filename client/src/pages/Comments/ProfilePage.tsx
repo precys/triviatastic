@@ -78,6 +78,7 @@ export default function ProfilePage() {
   const handleFriendAdded = (username: string) => {
     setFriends(prev => [...prev, username]);
     setNewFriend(username);
+    loadFriendsPosts()
   };
 
   // boolean for modal visibilty when deleting own account
