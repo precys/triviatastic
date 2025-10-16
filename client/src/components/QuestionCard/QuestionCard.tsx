@@ -1,7 +1,7 @@
 import { QuestionInterface } from "../../types/question"
 
 interface QuestionProps extends QuestionInterface {
-  handleModal: (bool: boolean, userId: "", questionId: string, status: string) => void,
+  handleModal: (args: {bool: boolean, userId?: string, questionId?: string, status?: string, suspend?: boolean}) => void,
   status?: string,
   username: string,
   questionId: string,
@@ -38,10 +38,10 @@ function QuestionCard({
             </div>
             {handleModal && (
               <div className="w-100 d-flex gap-2">
-                <button className="btn btn-danger w-50" onClick={() => handleModal(true, "", questionId, "denied")}> 
+                <button className="btn btn-danger w-50" onClick={() => handleModal({bool: true, questionId, status: "denied"})}> 
                   Deny 
                 </button>
-                <button className="btn btn-success w-50" onClick={() => handleModal(true, "", questionId, "approved")}> 
+                <button className="btn btn-success w-50" onClick={() => handleModal({bool: true, questionId, status: "approved"})}> 
                   Approve 
                 </button>
               </div>

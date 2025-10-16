@@ -4,7 +4,8 @@ export interface User {
     game_count: number,
     streak: number,
     category_counts: { [category: string]: number }; 
-    category_scores: { [category: string]: number }; 
+    category_scores: { [category: string]: number };
+    suspended: boolean,
     hi_score: number,
     easy_count: number,
     med_count: number,

@@ -8,7 +8,7 @@ function Login() {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [register, setRegister] = useState<boolean>(false);
-    const [loginError, setLoginError] = useState<boolean>(false);
+    const [loginError, setLoginError] = useState<string | null>();
     const [registerError, setRegisterError] = useState<boolean>(false);
     // Unpack login, setrole, url from Authentification Hook
     const { login, setRole, setUsers } = AuthentificationHook();
@@ -20,13 +20,12 @@ function Login() {
     const handleLogin = async () => {
         try {
             setRegisterError(false);
-            setLoginError(false);
+            setLoginError(null);
             let res;
 
              // Added if-conditional to check if user is being registered or not
             if (register){
                 res = await loginService.register(username, password);
-
             }
             else {
                 // if not register, login
@@ -35,20 +34,24 @@ function Login() {
 
             // Login and register take the same body format, use same code, just change url depending on registering or not.
             if (res){
-                login(res.token);
-                setRole(res.role);
-                const users = await loginService.getUsers()
-                setUsers(users)
-                setLoginError(false);
-                navigate("/home");
+                if (res.suspended){
+                    setLoginError("User is suspended.");
+                }
+                else{
+                    login(res.token);
+                    setRole(res.role);
+                    const users = await loginService.getUsers()
+                    setUsers(users)
+                    setLoginError(null);
+                    navigate("/home");
+                }
             }
             else {
                 if (register){
                     setRegisterError(true);
                 }
                 else {
-                    setLoginError(true);
-                    console.log(loginError)
+                    setLoginError("Invalid username/password.");
                 }
             }
 
@@ -65,7 +68,7 @@ function Login() {
                 <div className="p-5 border border-secondary bg-light">
                     {loginError && 
                         <div className="fs-6 text-danger">
-                            Invalid username or password. 
+                            {loginError}
                         </div>
                     }
                     {registerError && 
