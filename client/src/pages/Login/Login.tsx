@@ -26,7 +26,6 @@ function Login() {
              // Added if-conditional to check if user is being registered or not
             if (register){
                 res = await loginService.register(username, password);
-                console.log("HERE")
             }
             else {
                 // if not register, login

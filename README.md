@@ -28,8 +28,8 @@ winston (^3.17.0)
 
 Built on Vite + React w/ TypeScript
 react (^19.1.1)  
-react-router-dom (^7.9.3)
-react-dom  (^19.1.1)
+react-router-dom (^7.9.3)  
+react-dom  (^19.1.1)  
 axios (^1.12.2)  
 
 ## Environmental Variables

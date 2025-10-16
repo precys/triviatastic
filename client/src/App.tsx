@@ -2,12 +2,8 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 // Components imports
 import Navbar from "./components/Navbar/Navbar";
-import CreateQuiz from "./components/CreateQuiz/CreateQuiz";
 import AuthentificationHook from './components/Context/AuthentificationHook';
 // Page imports
-
-import Profile from './pages/Profile'; // Gwen's Profile Page, will condense into 1 profile page later
-
 import Login from './pages/Login/Login';
 import Home from "./pages/Home/Home";
 import Admin from "./pages/Admin/Admin";
@@ -33,12 +29,11 @@ function App() {
         <Route path="/" element={<Login />} />
         {/* Protected */}
         <Route path="/home" element={<ProtectedRoute> <Home /> </ProtectedRoute>}></Route>
-        <Route path="/feed" element={<FeedPage />} />
-        <Route path="/create-game" element={<ProtectedRoute> <CreateQuiz /> </ProtectedRoute>}></Route>
+        <Route path="/feed" element={<ProtectedRoute> <FeedPage /> </ProtectedRoute>} />
         <Route path="/quiz/:game_id" element={<ProtectedRoute> <Quiz /> </ProtectedRoute>}></Route>
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/profile/:username" element={<ProfilePage />} />
-        <Route path="/feed" element={<CommentsFeedPage />} />
+        <Route path="/profile" element={<ProtectedRoute> <ProfilePage /> </ProtectedRoute>} />
+        <Route path="/profile/:username" element={<ProtectedRoute> <ProfilePage /> </ProtectedRoute>} />
+        <Route path="/feed" element={<ProtectedRoute> <CommentsFeedPage /> </ProtectedRoute>} />
         <Route path="/submit-question" element={<ProtectedRoute> <SubmitQuestion /> </ProtectedRoute>} />
         {/* Admin Only */}
         {userRole == "ADMIN" && <Route path="/admin" element={<ProtectedRoute> <Admin /> </ProtectedRoute>}></Route>}

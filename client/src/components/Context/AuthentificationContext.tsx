@@ -15,6 +15,7 @@ export interface AuthContextType{
     logout: () => void;
     users: User[];
     setUsers: (users: User[]) => void;
+    delUsers: (userId: string) => void;
 }
 
 // Initialize AuthContext

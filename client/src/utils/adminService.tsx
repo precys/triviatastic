@@ -21,6 +21,7 @@ async function deleteUser(userId: string){
 }
 
 async function updateUserSuspend(userId: string, suspend: boolean){
+    console.log("SUSPEND:", suspend)
     const res = await axiosClient.patch(`/users/${userId}?suspend=${suspend}`)
     return res.data
 }

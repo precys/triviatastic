@@ -32,9 +32,15 @@ function Authentication({children}: { children: ReactNode }) {
         setToken(null);
     }
 
+    const delUsers = (userId: string) => {
+        setUsers((prev) =>
+            prev.filter((user) => user.userId !== userId)
+        );
+    }
+
     // Set the Provider of the context to the values we want to get for the nested components
     return (
-        <AuthContext.Provider value={{ token, login, logout, userRole, setRole, users, setUsers}}>
+        <AuthContext.Provider value={{ token, login, logout, userRole, setRole, users, setUsers, delUsers}}>
             {children}
         </AuthContext.Provider>
     )

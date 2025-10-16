@@ -18,7 +18,7 @@ function Admin() {
   const [users, setUsers] = useState<User[]>([]);
   const [tab, setTab] = useState<string>("questions");
   // Token is unpacked from AuthentificationHook
-  const { token } = AuthentificationHook();
+  const { token, delUsers } = AuthentificationHook();
   // navigate object to handle navigation after request, in this case if token is invalid go back to login
   const [modalBool, setModalBool] = useState<boolean>(false);
   const [suspend, setSuspend] = useState<boolean | null>();
@@ -77,6 +77,7 @@ function Admin() {
       setUsers((prev) =>
         prev.filter((user) => user.userId !== userId)
       );
+      delUsers(userId)
     }
     catch (err) {
       console.error(`Error deleting user. Error: ${err}`)
@@ -108,9 +109,9 @@ function Admin() {
       const res = await adminService.updateUserSuspend(userId, suspend)
       setUsers(prev =>
         prev.map(user =>
-          user.userId === userId ? { ...user, suspended: res.suspend } : user
+          user.userId === userId ? { ...user, suspended: res.user.Attributes.suspended } : user
       )
-    );
+      );
     }
     catch (err){
       console.error(`Error updating user suspension. ${err}`)
