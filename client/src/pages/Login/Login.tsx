@@ -31,7 +31,6 @@ function Login() {
                 // if not register, login
                 res = await loginService.login(username, password);
             }
-            console.log(res)
 
             // Login and register take the same body format, use same code, just change url depending on registering or not.
             if (res){

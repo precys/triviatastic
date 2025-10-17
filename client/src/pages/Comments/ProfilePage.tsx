@@ -174,7 +174,7 @@ export default function ProfilePage() {
   };
 
   // toggle like
-  const handleLikeToggle = async (id: string, type: "myPosts" | "friendsFeed") => {
+  const handleLikeToggle = async (id: string, type: "myPosts" | "friendsFeed" | "feed") => {
     if (!currentUserId) return;
 
       try {

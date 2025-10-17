@@ -1,4 +1,5 @@
 // Package imports
+const crypto = require('crypto');
 // Util imports
 const { logger } = require("../utils/logger");
 const questionDAO = require("../dao/questionDAO");

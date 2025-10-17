@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const bcrypt = require("bcrypt");
 const userDAO = require("../dao/userDAO");
 const { generateToken } = require("../utils/jwt");
@@ -38,7 +39,7 @@ async function registerUser({ username, password }) {
   
   const createdUser = await userDAO.createUser(userItem);
   const token = generateToken(createdUser);
-  return { token, userId: createdUser.userId, username: createdUser.username, suspended: createdUser.suspended };
+  return { token, userId: createdUser.userId, username: createdUser.username, suspended: createdUser.suspended, role: createdUser.role };
 }
 
 // login
@@ -456,9 +457,17 @@ async function removeFriend(username, friendUsername) {
 
 // function to update user suspend attribute
 async function updateUserSuspend(userId, suspend){
+  let bool;
+  if (suspend == "false"){
+    bool = false;
+  }
+  else {
+    bool = true;
+  }
+
   if (userId && suspend){
     try {
-      const data = await userDAO.updateUserSuspend(userId, suspend)
+      const data = await userDAO.updateUserSuspend(userId, bool)
       if (data){
         return data
       }
