@@ -1,4 +1,5 @@
 const { logger } = require('../utils/logger');
+const crypto = require('crypto');
 const userDAO = require('./userDAO');
 
 // aws sdk v3 imports
