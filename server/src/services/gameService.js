@@ -1,4 +1,5 @@
 const { logger } = require('../utils/logger');
+const crypto = require('crypto');
 const gameDAO = require("../dao/gameDAO");
 const { findUserById, updateUser } = require("../dao/userDAO");
 

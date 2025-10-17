@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const bcrypt = require("bcrypt");
 const userDAO = require("../dao/userDAO");
 const { generateToken } = require("../utils/jwt");
