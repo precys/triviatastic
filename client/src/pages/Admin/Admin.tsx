@@ -107,9 +107,12 @@ function Admin() {
   const handleSuspend = async (userId: string, suspend: boolean) => {
     try {
       const res = await adminService.updateUserSuspend(userId, suspend)
+      const userSuspendBool = res.user.Attributes.suspended
+      
+
       setUsers(prev =>
         prev.map(user =>
-          user.userId === userId ? { ...user, suspended: res.user.Attributes.suspended } : user
+          user.userId === userId ? { ...user, suspended: userSuspendBool } : user
       )
       );
     }
