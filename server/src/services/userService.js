@@ -260,7 +260,7 @@ async function sendFriendRequest(senderId, friendUsername){
         userFriendId: receiver.userId,
         senderUsername: sender.username,
         receiverUsername: receiver.username,
-        status: "pending", //may change attribute name
+        status: "pending", 
         createdAt: new Date().toISOString()
     };
 
@@ -301,7 +301,6 @@ async function addFriend(userId, friendId){
 
     return{
         message: `${userFriend.username} accepted ${user.username}'s friend request!` 
-        //friends: user.friends
     };
 }
 
@@ -324,7 +323,6 @@ async function denyRequest (userId, friendId){
 
     return{
         message: `${userFriend.username} denied ${user.username}'s friend request.` 
-        //friends: user.friends
     };
 }
 
@@ -369,12 +367,9 @@ async function respondToFriendRequest (userFriendId, requestId, status){
     const acceptedResult = await addFriend(userId, userFriendId);
 
     return{
-      // message: `Friend request ${status}`,
       message: acceptedResult.message,
       requestId,
-      status,
-      // message: acceptedResult.message,
-      // friends: acceptedResult.friends
+      status
     };
   }else{
     if(status == "denied"){
@@ -382,12 +377,9 @@ async function respondToFriendRequest (userFriendId, requestId, status){
       const denyResult = await denyRequest(userId, userFriendId);
 
       return{
-        // message: `Friend request ${status}`,
         message: denyResult.message,
         requestId,
-        status,
-        // message: acceptedResult.message,
-        // friends: acceptedResult.friends
+        status
       };
     }else{
       throw new Error ("Response to Friend Request Not Found");

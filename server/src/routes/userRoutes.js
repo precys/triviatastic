@@ -13,11 +13,7 @@ router.get('/:userId/stats', authenticate, getStats);
 router.patch('/:userId/profile', authenticate, updateProfile);
 router.get(`/leaderboard`, authenticate, getUsersScoreByCategory)
 router.patch(`/:userId`, authenticate, updateUserSuspend)
-//router.get('/:userId/friends', authenticate, getUsersFriends); // uncomment later
 
-
-// for testing purposes
- // add authentication later 
 router.get('/:userId', authenticate, findUserById);
 router.get('/:userId/friends', authenticate, getUsersFriends); // get a user's friend list
 router.delete('/:username/friends/:friendUsername', authenticate, deleteFriend); //delete friend

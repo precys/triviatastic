@@ -193,15 +193,13 @@ async function updateFriendsList (userId, friendsList){ //formerly called addFri
 async function getFriendRequestsByStatus (userId, status, sent = false){
   let command;
 
-  // base filter
   const filterExpression = "#status = :status";
   const expressionAttributeNames = { "#status": "status" };
   const expressionAttributeValues = sent
     ? { ":senderId": userId, ":status": status }
     : { ":pk": `FRIENDREQ#${userId}`, ":status": status };
 
-  if (sent) {
-    // SENT requests, using GSI
+  if (sent) { //uses GSI for requests that were sent
     command = new QueryCommand({
       TableName: TABLE_NAME,
       IndexName: "sender-index", // GSI 
@@ -210,8 +208,7 @@ async function getFriendRequestsByStatus (userId, status, sent = false){
       ExpressionAttributeNames: expressionAttributeNames,
       ExpressionAttributeValues: expressionAttributeValues,
     });
-  } else {
-    // RECEIVED requests, using PK
+  } else { // uses PK for requests that were received
     command = new QueryCommand({
       TableName: TABLE_NAME,
       KeyConditionExpression: "PK = :pk",
@@ -233,7 +230,7 @@ async function getFriendRequestsByStatus (userId, status, sent = false){
 
 }
 
-//respond to a friend req
+//respond to a friend request
 async function respondToFriendRequest (userFriendId, requestId, status){
   const command = new UpdateCommand ({
     TableName: TABLE_NAME, 
@@ -299,10 +296,6 @@ async function getFriendCount(userId) {
   // friends might be undefined or empty array
   return Array.isArray(user.friends) ? user.friends.length : 0;
 }
-
-
-
-
 
 // Changed boolean suspened to suspend/unsuspend user
 async function updateUserSuspend(userId, suspend){

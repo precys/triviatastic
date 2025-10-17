@@ -200,7 +200,6 @@ async function sendFriendRequest (req, res){
 async function getFriendRequestsByStatus (req, res){
   const { userId } = req.params;
   const { status = "pending", sent } = req.query;
-  //console.log("REQ QUERY STATUS:", req.query.status);
   const sentFlag = sent === "true";
   
   if (!userId) {
@@ -255,7 +254,6 @@ async function deleteFriend (req, res){
     console.error("Error in deleteFriend:", error.message);
     res.status(400).json({ message: "Unable to remove friend"})
   } else{
-    // res.status(200).json(result)
     res.status(200).json({ message: `${friendUsername} removed from ${username}'s friends list.` });
   }
 }
