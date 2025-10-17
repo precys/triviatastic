@@ -9,6 +9,7 @@ import { User } from  "../../types/user";
 interface Question extends QuestionInterface {
   username: string,
   questionId: string,
+  status?: string,
 }
 
 // Admin panel component
@@ -154,8 +155,9 @@ function Admin() {
                         difficulty={question.difficulty}
                         correct_answer={question.correct_answer}
                         incorrect_answers={question.incorrect_answers}
+                        status={question.status}
+                        username={question.username ?? "Banned User"}
                         handleModal={handleModal}
-                        username={question.username || "Banned User"}
                       />
                     ))}
                   </div>
