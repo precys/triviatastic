@@ -12,6 +12,9 @@ const config: Config = {
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1', 
+  },
   coveragePathIgnorePatterns: [
     '/node_modules/',
     '/coverage',

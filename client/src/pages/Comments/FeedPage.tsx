@@ -22,6 +22,11 @@ export default function FeedPage() {
   }, []);
 
   const handleLikeToggle = async (postId: string) => {
+    if (!currentUser?.userId) {
+      console.error("User not logged in");
+      return;
+    }
+    
     try {
       const res = await commentService.toggleLike(currentUser.userId, postId);
       setPosts((prev) =>

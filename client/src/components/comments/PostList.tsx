@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 interface PostListProps {
   posts: PostData[];
-  onLike: (id: string, type: "myPosts" | "friendsFeed") => void;
-  type: "myPosts" | "friendsFeed";
+  onLike: (id: string, type: "myPosts" | "friendsFeed" | "feed") => void;
+  type: "myPosts" | "friendsFeed" | "feed";
 }
 
 export default function PostList({ posts, onLike, type }: PostListProps) {
