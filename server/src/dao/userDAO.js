@@ -306,7 +306,6 @@ async function getFriendCount(userId) {
 
 // Changed boolean suspened to suspend/unsuspend user
 async function updateUserSuspend(userId, suspend){
-  console.log(`SUSPEND ${suspend}`)
   const params = {
     TableName: TABLE_NAME,
     Key: {
@@ -315,7 +314,7 @@ async function updateUserSuspend(userId, suspend){
     },
     UpdateExpression: "SET suspended = :suspended",
     ExpressionAttributeValues: {
-      ":suspended": Boolean(!suspend),
+      ":suspended": Boolean(suspend),
     },
     ReturnValues: "ALL_NEW",
   };
@@ -323,7 +322,6 @@ async function updateUserSuspend(userId, suspend){
   
   try{
     const data = await documentClient.send(command)
-    console.log(data)
     
     if (data){
       return data

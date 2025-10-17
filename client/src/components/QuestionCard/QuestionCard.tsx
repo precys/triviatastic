@@ -1,7 +1,7 @@
 import { QuestionInterface } from "../../types/question"
 
 interface QuestionProps extends QuestionInterface {
-  handleModal: (args: {bool: boolean, userId?: string, questionId?: string, status?: string, suspend?: boolean}) => void,
+  handleModal?: (args: { bool: boolean; userId?: string; questionId?: string; status?: string; suspend?: boolean }) => Promise<void>,
   status?: string,
   username: string,
   questionId: string,
@@ -31,7 +31,7 @@ function QuestionCard({
               <span className="fs-6"> Incorrect Answers: {incorrect_answers.join(", ")} </span>
             </p>
             <div className="w-100 d-flex gap-4">
-              <span className="fs-6"> by <span className="fs-6 fw-bold"> {username} </span></span>
+              <span className="fs-6"> by <span className="fs-6 fw-bold"> {username ?? "Banned User"} </span></span>
               <span> {category} </span>
               <span> {type} </span>
               <span> {difficulty} </span>

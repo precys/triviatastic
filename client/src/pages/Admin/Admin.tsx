@@ -9,6 +9,7 @@ import { User } from  "../../types/user";
 interface Question extends QuestionInterface {
   username: string,
   questionId: string,
+  status?: string,
 }
 
 // Admin panel component
@@ -107,9 +108,12 @@ function Admin() {
   const handleSuspend = async (userId: string, suspend: boolean) => {
     try {
       const res = await adminService.updateUserSuspend(userId, suspend)
+      const userSuspendBool = res.user.Attributes.suspended
+      
+
       setUsers(prev =>
         prev.map(user =>
-          user.userId === userId ? { ...user, suspended: res.user.Attributes.suspended } : user
+          user.userId === userId ? { ...user, suspended: userSuspendBool } : user
       )
       );
     }
@@ -151,8 +155,9 @@ function Admin() {
                         difficulty={question.difficulty}
                         correct_answer={question.correct_answer}
                         incorrect_answers={question.incorrect_answers}
+                        status={question.status}
+                        username={question.username ?? "Banned User"}
                         handleModal={handleModal}
-                        username={question.username || "Banned User"}
                       />
                     ))}
                   </div>

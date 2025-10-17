@@ -201,8 +201,6 @@ function SubmitQuestion() {
                         ))}
                     </div>
 
-
-
                     {visible && 
                         <div className="modal d-block" tabIndex={-1}>
                             <div className="modal-dialog">
