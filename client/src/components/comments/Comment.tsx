@@ -24,7 +24,7 @@ export default function Comment({ comment, onReply, onLike }: Props) {
             <p className="mb-2">{comment.content}</p>
 
             <div className="d-flex gap-2 mb-1">
-              <LikeButton likes={comment.likes || 0} liked={comment.liked || false} onToggle={() => onLike(comment.commentId)} />
+              {/* <LikeButton likes={comment.likes || 0} liked={comment.liked || false} onToggle={() => onLike(comment.commentId)} /> */}
               <button className="btn btn-link btn-sm p-0" onClick={() => setShowReplyForm(!showReplyForm)}>Reply</button>
             </div>
 
